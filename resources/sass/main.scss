@@ -1,0 +1,31 @@
+// If you want to override variables do it here
+@import "variables";
+
+// Import styles
+@import "~@coreui/coreui/scss/coreui-standalone";
+
+// Bootstrap
+@import "~bootstrap/scss/bootstrap";
+
+// New Age template customed styles
+@import "./custom/new-age";
+
+// If you want to add something do it here
+@import "custom";
+
+// ie fixes
+@import "ie-fix";
+
+/* CoreUI Icons Set */
+@import '~@coreui/icons/css/coreui-icons.min.css';
+
+/* Import Font Awesome Icons Set */
+$fa-font-path: '~font-awesome/fonts';
+@import '~font-awesome/scss/font-awesome.scss';
+
+/* Import Simple Line Icons Set */
+$simple-line-font-path: '~simple-line-icons/fonts/';
+@import '~simple-line-icons/scss/simple-line-icons.scss';
+
+/* Import Bootstrap Vue Styles */
+@import '~bootstrap-vue/dist/bootstrap-vue.css';

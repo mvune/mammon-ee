@@ -1,0 +1,60 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "npm run development",
+        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "watch": "npm run development -- --watch",
+        "watch-poll": "npm run watch -- --watch-poll",
+        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "prod": "npm run production",
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+    },
+    "dependencies": {
+        "@coreui/coreui": "^2.1.6",
+        "@coreui/coreui-plugin-chartjs-custom-tooltips": "^1.2.0",
+        "@coreui/icons": "0.3.0",
+        "@coreui/vue": "^2.1.2",
+        "axios": "^0.18.0",
+        "bootstrap": "^4.2.1",
+        "bootstrap-vue": "^2.0.0-rc.11",
+        "chart.js": "^2.7.3",
+        "core-js": "^2.6.2",
+        "css-vars-ponyfill": "^1.16.2",
+        "font-awesome": "^4.7.0",
+        "jquery": "^3.3.1",
+        "lodash": "^4.17.11",
+        "perfect-scrollbar": "^1.4.0",
+        "popper.js": "^1.14.7",
+        "simple-line-icons": "^2.4.1",
+        "startbootstrap-new-age": "^5.0.3",
+        "vue": "^2.5.22",
+        "vue-chartjs": "^3.4.0",
+        "vue-perfect-scrollbar": "^0.1.0",
+        "vue-router": "^3.0.2"
+    },
+    "devDependencies": {
+        "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+        "@vue/cli-plugin-babel": "^3.3.0",
+        "@vue/cli-plugin-e2e-nightwatch": "^3.3.0",
+        "@vue/cli-plugin-eslint": "^3.3.0",
+        "@vue/cli-plugin-unit-jest": "^3.3.0",
+        "@vue/cli-service": "^3.3.0",
+        "@vue/test-utils": "^1.0.0-beta.28",
+        "babel-core": "^7.0.0-bridge.0",
+        "babel-jest": "^23.6.0",
+        "cross-env": "^5.1",
+        "growl": "^1.10.5",
+        "https-proxy-agent": "^2.2.1",
+        "laravel-mix": "^4.0.7",
+        "node-sass": "^4.11.0",
+        "resolve-url-loader": "^2.3.1",
+        "sass": "^1.15.2",
+        "sass-loader": "^7.1.0",
+        "vue-template-compiler": "^2.5.22"
+    },
+    "babel": {
+        "plugins": [
+            "@babel/plugin-syntax-dynamic-import"
+        ]
+    }
+}

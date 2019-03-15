@@ -1,0 +1,18 @@
+{
+    "Name": "Naam",
+    "E-Mail Address": "E-mailadres",
+    "Password": "Wachtwoord",
+    "Confirm Password": "Herhaal wachtwoord",
+    "Remember Me": "Ingelogd blijven",
+    "Forgot Your Password?": "Wachtwoord vergeten?",
+    "Reset Password": "Wachtwoord herstellen",
+    "Send Password Reset Link": "Stuur e-mail",
+
+    "Menu": "Menu",
+    "Login": "Inloggen",
+    "Register": "Registreren",
+    "New Account": "Nieuw account",
+    "Create Account": "Account aanmaken",
+    "Dashboard": "Mijn-<span><img src=\"/favicon.png\" class=\"inline-mijn-ee\" height=\"28\" alt=\"ee\"></span>",
+    "Logout": "Log uit"
+}

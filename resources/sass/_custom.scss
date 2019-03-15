@@ -1,0 +1,63 @@
+// Bootstrap overrides
+.card {
+    .card-header {
+        border-bottom: none;
+        color: white;
+        background-color: $theme-quaternary;
+
+        h1 {
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+    }
+
+    .card-body {
+        background-color: $light;
+    }
+}
+
+// Dashboard
+.app {
+    margin-top: -$padding-top-total;
+}
+
+.app-header {
+    position: fixed;
+    padding: 0;
+}
+
+.app-footer {
+    font-size: 0.8em;
+
+    a {
+        color: $theme-quaternary;
+    }
+}
+
+
+// Global
+.alt-bg {
+    background-color: $dark;
+}
+
+#top {
+    padding-top: $padding-top-total;
+}
+
+.inline-ee {
+    margin-left: -10px;
+    margin-right: -10px;
+}
+
+.inline-mijn-ee {
+    margin-top: -3px;
+}
+
+.auth-card {
+    margin-top: 50px;
+
+    .card-header {
+        color: inherit;
+        background-color: $theme-primary;
+    }
+}

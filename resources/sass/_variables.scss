@@ -1,0 +1,10 @@
+@import "./custom/variables";
+
+// CoreUI variable overrides
+$sidebar-nav-link-hover-bg: $theme-tertiary;
+$sidebar-nav-link-active-icon-color: $theme-primary;
+
+// Variable declarations
+$header-height: 53px;
+$padding-top: 12px;
+$padding-top-total: $header-height + $padding-top;
