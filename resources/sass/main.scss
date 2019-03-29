@@ -10,6 +10,9 @@
 // New Age template customed styles
 @import "./custom/new-age";
 
+// Bootstrap overrides
+@import "bootstrap-overrides";
+
 // If you want to add something do it here
 @import "custom";
 
@@ -17,7 +20,7 @@
 @import "ie-fix";
 
 /* CoreUI Icons Set */
-@import '~@coreui/icons/css/coreui-icons.min.css';
+// @import '~@coreui/icons/css/coreui-icons.min.css';
 
 /* Import Font Awesome Icons Set */
 $fa-font-path: '~font-awesome/fonts';

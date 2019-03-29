@@ -12,10 +12,12 @@ import 'core-js/es7/array'
 
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
-import App from './App'
-import router from './_router'
+import Vuelidate from 'vuelidate'
+import App from './mijn-ee/App'
+import router from './mijn-ee/router'
 
 Vue.use(BootstrapVue)
+Vue.use(Vuelidate)
 
 /* eslint-disable no-new */
 new Vue({

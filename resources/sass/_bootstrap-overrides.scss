@@ -1,0 +1,28 @@
+.card {
+    .card-header {
+        border-bottom: none;
+        color: white;
+        background-color: $theme-quaternary;
+
+        h1 {
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+    }
+
+    .card-body {
+        background-color: $light;
+    }
+}
+
+.modal-header,
+.modal-body,
+.modal-footer {
+    background-color: $light;
+    border-top: 0;
+    border-bottom: 0;
+}
+
+.modal-header {
+    color: $theme-tertiary;
+}

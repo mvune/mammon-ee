@@ -4,8 +4,8 @@
       <i class="fa fa-user-o"></i>
     </template>
     <template slot="dropdown">
-      <b-dropdown-item><i class="fa fa-user" /> Profiel</b-dropdown-item>
-      <b-dropdown-item to="/logout" @click="logout($event)"><i class="fa fa-lock" /> Log uit</b-dropdown-item>
+      <b-dropdown-item :to="{ name: 'Account' }"><i class="fa fa-user" /> Account</b-dropdown-item>
+      <b-dropdown-item to="/mijn-ee/logout" @click.prevent="logout()"><i class="fa fa-lock" /> Log uit</b-dropdown-item>
 
       <form id="logout-form" action="/logout" method="POST" style="display: none;">
         <input type="hidden" name="_token" v-bind:value="token">
@@ -17,18 +17,17 @@
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
 export default {
-  name: 'HeaderAccountDropdown',
+  name: 'AccountDropdown',
   components: {
-    AppHeaderDropdown
+    AppHeaderDropdown,
   },
   data () {
     return {
-      token: $('meta[name="csrf-token"]').attr('content')
+      token: $('meta[name="csrf-token"]').attr('content'),
     }
   },
   methods: {
-    logout ($event) {
-      $event.preventDefault();
+    logout () {
       document.getElementById('logout-form').submit();
     }
   }

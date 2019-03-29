@@ -5,5 +5,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset(mix('js/main.js')) }}"></script>
+<script src="{{ asset(mix('js/app.js')) }}"></script>
 @endpush

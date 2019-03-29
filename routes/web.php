@@ -11,10 +11,13 @@
 |
 */
 
-Auth::routes();
+Route::get('/', 'HomeController@index')->name('home');
 
 Route::get('/mijn-ee/{vue_capture?}', 'DashboardController@index')
     ->where('vue_capture', '[\/\w\.\,\-]*')
-    ->name('dashboard');
+    ->name('dashboard')
+    ->middleware('auth');
 
-Route::get('/', 'HomeController@index')->name('home');
+Auth::routes();
+
+Route::delete('/destroy', 'Api\AccountController@destroy');

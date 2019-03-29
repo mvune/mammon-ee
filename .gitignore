@@ -11,3 +11,8 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+
+# Laravel Telescope
+/app/Providers/TelescopeServiceProvider.php
+/config/telescope.php
+/public/vendor/telescope

@@ -1,5 +1,5 @@
-<!-- Navigation -->
 @if (!Route::is('dashboard'))
+<!-- Navigation -->
 <nav class="navbar navbar-expand-md navbar-light fixed-top" id="mainNav">
     <div class="container">
         @if (Route::is('home'))

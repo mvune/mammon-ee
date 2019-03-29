@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app animated fadeIn">
     <AppHeader fixed>
       <SidebarToggler class="d-lg-none" display="md" mobile />
       <a class="navbar-brand" href="/">
@@ -7,9 +7,11 @@
         <img class="navbar-brand-minimized" src="/favicon.png" width="30" height="30" alt="ee">
       </a>
       <SidebarToggler class="d-md-down-none" display="lg" />
+
+      <Breadcrumb :list="list"/>
       
       <b-navbar-nav class="ml-auto mr-3">
-        <HeaderAccountDropdown/>
+        <AccountDropdown/>
       </b-navbar-nav>
     </AppHeader>
 
@@ -21,9 +23,9 @@
         <SidebarFooter/>
         <SidebarMinimizer/>
       </AppSidebar>
+
       <main class="main">
-        <Breadcrumb :list="list"/>
-        <div class="container-fluid">
+        <div class="main-inner container-fluid">
           <router-view></router-view>
         </div>
       </main>
@@ -38,10 +40,16 @@
   </div>
 </template>
 
+<style>
+  p {
+    font-size: 14px;
+  }
+</style>
+
 <script>
-import nav from '@/_nav'
 import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFooter, SidebarForm, SidebarHeader, SidebarMinimizer, SidebarNav, Footer as TheFooter, Breadcrumb } from '@coreui/vue'
-import HeaderAccountDropdown from './HeaderAccountDropdown'
+import nav from './nav'
+import AccountDropdown from '@/mijn-ee/partials/AccountDropdown'
 
 export default {
   name: 'DefaultContainer',
@@ -50,7 +58,7 @@ export default {
     AppSidebar,
     TheFooter,
     Breadcrumb,
-    HeaderAccountDropdown,
+    AccountDropdown,
     SidebarForm,
     SidebarFooter,
     SidebarToggler,

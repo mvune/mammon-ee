@@ -126,7 +126,7 @@
   </div>
 </section>
 
-<footer>
+<footer class="home-footer">
   <div class="container">
     <p>&copy; Mammon-ee 2019</p>
     <ul class="list-inline">
