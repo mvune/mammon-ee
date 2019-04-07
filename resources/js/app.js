@@ -19,12 +19,20 @@ import router from './mijn-ee/router'
 Vue.use(BootstrapVue)
 Vue.use(Vuelidate)
 
+Vue.mixin({
+  methods: {
+    showEeAlert (alertKey) {
+      this.$root.$emit('show-alert', alertKey);
+    }
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   template: '<App/>',
   components: {
-    App
+  App
   }
 });

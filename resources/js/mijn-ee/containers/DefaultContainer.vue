@@ -15,6 +15,8 @@
       </b-navbar-nav>
     </AppHeader>
 
+    <AlertBox />
+
     <div class="app-body">
       <AppSidebar fixed>
         <SidebarHeader/>
@@ -34,7 +36,7 @@
     <TheFooter>
       <!--footer-->
       <div class="ml-auto">
-        Powered by <a href="https://coreui.io">CoreUI for Vue</a>
+        Powered by <a href="https://coreui.io" target="_blank" rel="noopener">CoreUI for Vue</a>
       </div>
     </TheFooter>
   </div>
@@ -50,6 +52,7 @@
 import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFooter, SidebarForm, SidebarHeader, SidebarMinimizer, SidebarNav, Footer as TheFooter, Breadcrumb } from '@coreui/vue'
 import nav from './nav'
 import AccountDropdown from '@/mijn-ee/partials/AccountDropdown'
+import AlertBox from '@/mijn-ee/partials/AlertBox'
 
 export default {
   name: 'DefaultContainer',
@@ -59,6 +62,7 @@ export default {
     TheFooter,
     Breadcrumb,
     AccountDropdown,
+    AlertBox,
     SidebarForm,
     SidebarFooter,
     SidebarToggler,

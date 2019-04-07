@@ -7,8 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Lang;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\User as UserResource;
 
-class AccountController extends Controller
+class UserAccountController extends Controller
 {
     /**
      * Get the specified resource.
@@ -17,7 +18,7 @@ class AccountController extends Controller
      */
     public function show()
     {
-        return Auth::user();
+        return new UserResource(Auth::user());
     }
 
     /**

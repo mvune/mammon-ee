@@ -1,5 +1,6 @@
 $(function () {
+    // Auto dismiss alert
     setTimeout(function () {
-        $('.alert').alert('close');
-    }, 4000);
+        $('.alert-main-auto-dismiss').alert('close');
+    }, 30000);
 });

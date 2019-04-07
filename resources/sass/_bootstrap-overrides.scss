@@ -26,3 +26,10 @@
 .modal-header {
     color: $theme-tertiary;
 }
+
+// CoreUI overrides
+.sidebar {
+    .nav-link.active:hover .nav-icon {
+        color: $theme-primary;
+    }
+}

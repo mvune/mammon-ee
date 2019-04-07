@@ -20,4 +20,4 @@ Route::get('/mijn-ee/{vue_capture?}', 'DashboardController@index')
 
 Auth::routes();
 
-Route::delete('/destroy', 'Api\AccountController@destroy');
+Route::delete('/destroy', 'Api\UserAccountController@destroy');

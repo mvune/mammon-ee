@@ -57,8 +57,8 @@
       <b-col sm="6" md="5" lg="4" offset-md="1" offset-lg="2">
         <div class="danger-box">
           <h3>Account verwijderen</h3>
-          <p>Let op! Deze actie kan niet ongedaan worden gemaakt. Dan weet u dat.</p>
-          <button @click="showDeleteModal = true" class="btn btn-danger">Verwijder account</button>
+          <p>Verwijder uw account en alle bijbehorende gegevens.</p>
+          <button @click="showDeleteModal = true" class="btn btn-danger">Verwijderen</button>
         </div>
       </b-col>
     </b-row>
@@ -72,7 +72,8 @@
       ok-variant="danger"
       centered lazy
     >
-      Weet u zeker dat u dit account wilt verwijderen?
+      <p>Weet u zeker dat u dit account wilt verwijderen?</p>
+      <p><strong>Let op!</strong> Deze actie kan niet ongedaan worden gemaakt.</p>
     </b-modal>
     <form id="delete-account-form" action="/destroy" method="POST" style="display: none;">
       <input type="hidden" name="_method" value="DELETE">
@@ -82,17 +83,9 @@
 </template>
 
 <style scoped>
-form {
-  margin-bottom: 1rem;
-}
-
-label {
-  margin-bottom: 0.1rem;
-}
-
-.form-group {
-  margin-bottom: 0.49rem;
-}
+form { margin-bottom: 1rem; }
+label { margin-bottom: 0.1rem; }
+.form-group { margin-bottom: 0.49rem; }
 </style>
 
 <script>
@@ -100,7 +93,7 @@ import { required, requiredIf, email, minLength, sameAs } from 'vuelidate/lib/va
 import FormFieldError from '@/mijn-ee/partials/FormFieldError'
 
 export default {
-  name: 'account',
+  name: 'profile',
   components: { FormFieldError },
   data () {
     return {
@@ -151,14 +144,21 @@ export default {
           this.form.name = response.data.name;
           this.form.email = response.data.email;
         })
-        .catch(e => console.error(e));
+        .catch(e => this.showEeAlert('defaultError'));
     },
     updateUser () {
-      axios.post('user', this.form)
+      axios.put('user', this.form)
         .then(response => {
+          this.showEeAlert('defaultSuccess');
           this.resetForm();
         })
-        .catch(e => console.error(e));
+        .catch(e => {
+          if (e.response.status == 422) {
+            this.showEeAlert('userAccountWrongPassword');
+          } else {
+            this.showEeAlert('defaultError');
+          }
+        });
     },
     touchFields () {
       this.$v.form.name.$touch();

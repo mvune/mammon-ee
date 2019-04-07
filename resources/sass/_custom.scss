@@ -41,21 +41,105 @@ a.prim-link {
 }
 
 .danger-box {
-    background-color: $light;
-    padding: 18px;
-    margin-top: 0.5rem;
-    border-radius: 0.25rem;
-
     h3 {
         color: $danger;
     }
 }
 
-.alert-home {
+.alert-main {
     position: fixed;
     top: $header-height + 12px;
     right: 12px;
     z-index: 10;
+}
+
+.alert-dashboard {
+    position: fixed;
+    bottom: 0;
+    right: 1rem;
+    width: 18rem;
+    padding-bottom: 2rem;
+    border: 0;
+    background-color: $extra-dark;
+    color: $white;
+    z-index: 10;
+
+    h5 {
+        margin-right: 1.5rem;
+        color: $theme-primary;
+    }
+
+    &.alert-danger {
+        h5 {
+            color: $danger-light;
+        }
+    }
+
+    &.alert-dismissible {
+        padding-right: 1.25rem;
+    }
+
+    & > .close:hover {
+        color: $white;
+    }
+}
+
+.action-button {
+    border: 0;
+    background-color: transparent;
+}
+
+i[class^="icon-"] {
+    font-size: 1rem;
+}
+
+// Tables
+.table {
+    thead {
+        th {
+            background-color: $theme-quaternary;
+            border-color: $theme-quaternary;
+            border-top: 0;
+            color: $white;
+        }
+
+        th.hover-highlight:hover {
+            background-color: darken($theme-quaternary, 5%);
+        }
+
+        th:first-child { border-radius: .25rem 0 0 0; }
+        th:last-child { border-radius: 0 .25rem 0 0; }
+    }
+
+    td {
+        background-color: $white;
+        border-color: $theme-quaternary;
+
+        &.is-editable {
+            min-width: 13rem;
+        }
+
+        &.is-editing {
+            padding: 0.35rem 0.3rem;
+        }
+
+        .form-control {
+            height: calc(1.5em + 0.75rem);
+            padding: 0.375rem 0.4rem;
+            border: 1px solid $theme-secondary;
+        }
+    }
+}
+
+.ee-table-container {
+    position: relative;
+    width: 100%;
+}
+
+.ee-table-spinner {
+    position: absolute;
+    top: 50%;
+    left: 48%;
 }
 
 // Dashboard

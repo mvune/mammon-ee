@@ -1,0 +1,268 @@
+<template>
+  <div class="animated fadeIn">
+    <b-row>
+      <b-col md="10" lg="8" class="ee-table-container">
+        <b-table :items="getItems" :fields="fields" :busy.sync="isBusy" show-empty>
+
+          <template slot="name" slot-scope="row">
+
+            <template v-if="row.item.isEditing">
+              <b-form @submit.prevent="onUpdate(row)" id="accForm" novalidate></b-form>
+
+              <b-form-input form="accForm" v-model="form.name" id="name" />
+              <FormFieldError :form="$v.form" :field="'name'" />
+            </template>
+
+            <template v-if="!row.item.isEditing">
+              {{ row.value }}
+            </template>
+
+          </template>
+
+          <template slot="iban" slot-scope="row">
+
+            <template v-if="row.item.isEditing">
+              <b-form-input form="accForm" v-model="form.iban" />
+              <FormFieldError :form="$v.form" :field="'iban'" />
+            </template>
+
+            <template v-if="!row.item.isEditing">
+              {{ row.value }}
+            </template>
+
+          </template>
+
+          <template slot="edit" slot-scope="row">
+            <template v-if="row.item.isEditing">
+              <button type="submit" form="accForm" aria-label="Opslaan" class="action-button">
+                <i aria-hidden="true" class="icon-check text-primary"></i>
+              </button>
+              <button type="button" aria-label="Annuleren" @click="toggleForm(row)" class="action-button">
+                <i aria-hidden="true" class="icon-close text-danger"></i>
+              </button>
+            </template>
+
+            <template v-if="!row.item.isEditing">
+              <button type="button" aria-label="Verwijderen" @click="row.item.showDeleteModal = true" class="action-button">
+                <i aria-hidden="true" class="icon-trash text-danger"></i>
+              </button>
+              <button type="button" aria-label="Wijzigen" @click="toggleForm(row)" class="action-button">
+                <i aria-hidden="true" class="icon-pencil text-primary"></i>
+              </button>
+
+              <b-modal
+                @ok="onDelete(row)"
+                v-model="row.item.showDeleteModal"
+                title="Rekening verwijderen"
+                cancel-title="Annuleer"
+                ok-title="Verwijder"
+                ok-variant="danger"
+                centered lazy
+              >
+                <p>Weet u zeker dat u rekening <strong>{{ row.item.name }} ({{ row.item.iban }})</strong> wilt verwijderen?</p>
+              </b-modal>
+            </template>
+          </template>
+
+          <template v-if="items.length == 0" v-slot:table-busy>
+            <div class="d-flex justify-content-center">
+              <b-spinner small variant="primary" label="Laden..."></b-spinner>
+            </div>
+          </template>
+
+          <template v-slot:empty>
+            Geen rekeningen.
+          </template>
+
+        </b-table>
+
+        <b-spinner
+          v-if="isBusy && items.length > 0"
+          small
+          variant="primary"
+          label="Laden..."
+          class="ee-table-spinner"
+        ></b-spinner>
+
+        <b-button @click="showAddModal = true" type="button" variant="primary">
+          <i aria-hidden="true" class="icon-plus"></i>
+          Toevoegen
+        </b-button>
+
+        <b-modal
+          @ok="onAdd"
+          v-model="showAddModal"
+          title="Rekening toevoegen"
+          cancel-title="Annuleer"
+          ok-title="Voeg toe"
+          centered lazy
+          size="sm"
+          ref="addAccountModal"
+        >
+          <b-form @submit.prevent="add()" novalidate>
+            <b-form-group>
+              <b-form-input v-model.trim="form.name" type="text" placeholder="Kies een naam" />
+              <FormFieldError :form="$v.form" :field="'name'" />
+            </b-form-group>
+
+            <b-form-group>
+              <b-form-input v-model.trim="form.iban" type="text" placeholder="IBAN" />
+              <FormFieldError :form="$v.form" :field="'iban'" />
+            </b-form-group>
+          </b-form>
+
+        </b-modal>
+      </b-col>
+    </b-row>
+  </div>
+</template>
+
+<script>
+import { required } from 'vuelidate/lib/validators'
+import FormFieldError from '@/mijn-ee/partials/FormFieldError'
+
+export default {
+  name: 'Accounts',
+  components: { FormFieldError },
+  data () {
+    return {
+      fields: [
+        { key: 'name', label: 'Naam', sortable: true, thClass: 'hover-highlight', tdClass: this.getTdClass },
+        { key: 'iban', label: 'IBAN', sortable: true, thClass: 'hover-highlight', tdClass: this.getTdClass },
+        { key: 'saldo', label: 'Saldo', sortable: true, thClass: 'hover-highlight' },
+        { key: 'edit', label: '' },
+      ],
+      items: [],
+      form: {
+        name: '',
+        iban: '',
+      },
+      isBusy: false,
+      showAddModal: false,
+    }
+  },
+  validations: {
+    form: {
+      name: { required },
+      iban: { required },
+    }
+  },
+  methods: {
+    getItems () {
+      return axios.get('accounts')
+        .then(response => {
+          let items = response.data;
+          this.items = this.formatItems(items);
+          return this.items;
+        })
+        .catch(e => {
+          this.showEeAlert('defaultError');
+          return [];
+        });
+    },
+    onAdd (e) {
+      e.preventDefault();
+      this.$v.form.$touch();
+
+      if (!this.$v.form.$invalid) {
+        this.add();
+      }
+    },
+    onUpdate (row) {
+      this.$v.form.$touch();
+
+      if (!this.$v.form.$invalid) {
+        this.update(row);
+      }
+    },
+    add () {
+      this.$nextTick(() => this.$refs.addAccountModal.hide());
+    },
+    update (row) {
+      if (row.item.isEditing) {
+        this.isBusy = true;
+        const data = {
+          id: row.item.id,
+          name: this.form.name,
+          iban: this.form.iban,
+        };
+
+        axios.put(`accounts/${row.item.id}`, data)
+          .then(response => {
+            row.item.name = this.form.name;
+            row.item.iban = this.form.iban;
+            this.toggleForm(row);
+            this.showEeAlert('defaultSuccess');
+            this.isBusy = false;
+          })
+          .catch(e => {
+            if (e.response.status == 422) {
+              this.showEeAlert('defaultWrongInput');
+            } else {
+              this.showEeAlert('defaultError');
+            }
+            this.isBusy = false;
+          });
+      }
+    },
+    onDelete (row) {
+      axios.delete(`accounts/${row.item.id}`)
+        .then(response => {
+          this.items = this.items.filter(function (item) {
+            return item.id !== row.item.id;
+          });
+          this.showEeAlert('bankAccountDeleted');
+        })
+        .catch(e => this.showEeAlert('defaultError'));
+    },
+    toggleForm (row) {
+      this.toggleIsEditing(row);
+      this.setFormData(row);
+      this.focusInputField(row);
+    },
+    toggleIsEditing (row) {
+      const newValue = !row.item.isEditing;
+
+      for (let item of this.items) {
+        item.isEditing = false;
+      }
+
+      row.item.isEditing = newValue;
+    },
+    setFormData (row) {
+      if (row.item.isEditing) {
+        this.form.name = row.item.name;
+        this.form.iban = row.item.iban;
+      } else {
+        this.form.name = '';
+        this.form.iban = '';
+      }
+    },
+    focusInputField (row) {
+      if (row.item.isEditing) {
+        setTimeout(function () {
+          document.getElementById('name').focus();
+        }, 0);
+      }
+    },
+    formatItems (items) {
+      for (let item of items) {
+        item.saldo = '€ 0,00';
+        item.isEditing = false;
+        item.showDeleteModal = false;
+      }
+
+      return items;
+    },
+    getTdClass (value, column, row) {
+      let tdClass = 'is-editable';
+
+      if (row.isEditing) {
+        tdClass += ' is-editing';
+      }
+
+      return tdClass;
+    },
+  }
+}
+</script>

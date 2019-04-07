@@ -4,15 +4,11 @@
     
     <template v-if="form[field].$dirty">
 
-      <span v-if="!form[field].required">Dit veld is verplicht</span>
+      <span v-if="form[field].required === false">Dit veld is verplicht</span>
 
-      <template v-else-if="field === 'email'">
-        <span v-if="!form[field].email">E-mailadres is ongeldig</span>
-      </template>
+      <span v-if="form[field].email === false">E-mailadres is ongeldig</span>
 
-      <template v-else-if="field === 'passwordNew'">
-        <span v-if="!form[field].minLength">Wachtwoord moetminimaal 8 tekens lang zijn</span>
-      </template>
+      <span v-if="form[field].minLength === false">Moet minimaal {{ form[field].$params.minLength.min }} tekens lang zijn</span>
 
       <template v-else-if="field === 'passwordRepeat'">
         <span v-if="form[field].required && !form[field].sameAs">Dit veld komt niet overeen met het nieuwe wachtwoord</span>
