@@ -21,8 +21,15 @@ Vue.use(Vuelidate)
 
 Vue.mixin({
   methods: {
-    showEeAlert (alertKey) {
-      this.$root.$emit('show-alert', alertKey);
+    ee_showAlert (...args) {
+      this.$root.$emit('show-alert', ...args);
+    },
+    ee_errorHandler (e) {
+      if (e.response.status == 422) {
+        this.ee_showAlert('defaultWrongInput', { body: _.find(e.response.data.errors)[0] });
+      } else {
+        this.ee_showAlert('defaultError');
+      }
     }
   }
 })

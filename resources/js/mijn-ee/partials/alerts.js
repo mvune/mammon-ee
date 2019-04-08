@@ -5,15 +5,10 @@ export default {
     title: 'Gelukt',
     body: 'Rekening verwijderd.',
   },
-  userAccountWrongPassword: {
-    variant: 'danger',
-    title: 'Fout',
-    body: 'Wachtwoord onjuist.',
-  },
   defaultWrongInput: {
     variant: 'danger',
-    title: 'Fout',
-    body: 'Ongeldige invoer.',
+    title: 'Ongeldige invoer',
+    body: 'Invoer is ongeldig.',
   },
   defaultError: {
     variant: 'danger',
@@ -23,7 +18,7 @@ export default {
   defaultSuccess: {
     variant: 'success',
     title: 'Gelukt',
-    body: 'Gegevens zijn gewijzigd.',
+    body: 'Gegevens zijn opgeslagen.',
   },
 
 }

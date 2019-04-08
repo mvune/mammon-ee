@@ -34,8 +34,9 @@ export default {
     updateCountDown (countDown) {
       this.countDown = countDown;
     },
-    showAlert (alertKey) {
-      this.alert = alerts[alertKey] || { };
+    showAlert (alertKey, customAlert = { }) {
+      const defaultAlert = alerts[alertKey] || { };
+      this.alert = { ...defaultAlert, ...customAlert };
       this.countDown = this.showTime;
 
       if (!alerts[alertKey]) {

@@ -38,7 +38,7 @@ class UserAccountController extends Controller
         ]);
 
         if (!password_verify($request->password, Auth::user()->password)) {
-            return response()->json(['message' => __('auth.failed')], 422);
+            return response()->json(['errors' => ['password' => [__('auth.wrong_password')]]], 422);
         }
 
         $data = $request->only(['name', 'email']);

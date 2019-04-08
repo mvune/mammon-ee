@@ -35,7 +35,7 @@
     
     <TheFooter>
       <!--footer-->
-      <div class="ml-auto">
+      <div class="ml-auto mt-2">
         Powered by <a href="https://coreui.io" target="_blank" rel="noopener">CoreUI for Vue</a>
       </div>
     </TheFooter>

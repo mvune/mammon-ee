@@ -2,14 +2,14 @@
   <div class="animated fadeIn">
     <b-row>
       <b-col md="10" lg="8" class="ee-table-container">
-        <b-table :items="getItems" :fields="fields" :busy.sync="isBusy" show-empty>
+        <b-table :items="items" :fields="fields" :busy.sync="isBusy" show-empty>
 
           <template slot="name" slot-scope="row">
 
             <template v-if="row.item.isEditing">
               <b-form @submit.prevent="onUpdate(row)" id="accForm" novalidate></b-form>
 
-              <b-form-input form="accForm" v-model="form.name" id="name" />
+              <b-form-input form="accForm" v-model="form.name" />
               <FormFieldError :form="$v.form" :field="'name'" />
             </template>
 
@@ -86,18 +86,19 @@
 
         <b-button @click="showAddModal = true" type="button" variant="primary">
           <i aria-hidden="true" class="icon-plus"></i>
-          Toevoegen
+          Rekening toevoegen
         </b-button>
 
         <b-modal
           @ok="onAdd"
+          @shown="onAddModalShown"
           v-model="showAddModal"
           title="Rekening toevoegen"
           cancel-title="Annuleer"
           ok-title="Voeg toe"
           centered lazy
           size="sm"
-          ref="addAccountModal"
+          ref="addModal"
         >
           <b-form @submit.prevent="add()" novalidate>
             <b-form-group>
@@ -109,8 +110,9 @@
               <b-form-input v-model.trim="form.iban" type="text" placeholder="IBAN" />
               <FormFieldError :form="$v.form" :field="'iban'" />
             </b-form-group>
-          </b-form>
 
+            <b-button type="submit" style="display: none;"></b-button>
+          </b-form>
         </b-modal>
       </b-col>
     </b-row>
@@ -147,18 +149,17 @@ export default {
       iban: { required },
     }
   },
+  mounted () {
+    this.getItems();
+  },
   methods: {
     getItems () {
+      this.isBusy = true;
+
       return axios.get('accounts')
-        .then(response => {
-          let items = response.data;
-          this.items = this.formatItems(items);
-          return this.items;
-        })
-        .catch(e => {
-          this.showEeAlert('defaultError');
-          return [];
-        });
+        .then(response => this.items = this.formatItems(response.data))
+        .catch(this.ee_errorHandler)
+        .then(() => this.isBusy = false);
     },
     onAdd (e) {
       e.preventDefault();
@@ -168,15 +169,30 @@ export default {
         this.add();
       }
     },
+    add () {
+      this.isBusy = true;
+      this.$nextTick(() => this.$refs.addModal.hide());
+
+      axios.post('accounts', this.form)
+        .then(response => {
+          this.getItems().then(() => {
+            this.ee_showAlert('defaultSuccess');
+          });
+        })
+        .catch(e => {
+          this.ee_errorHandler(e);
+          this.isBusy = false;
+        })
+        .then(() => {
+          this.resetForm();
+        });
+    },
     onUpdate (row) {
       this.$v.form.$touch();
 
       if (!this.$v.form.$invalid) {
         this.update(row);
       }
-    },
-    add () {
-      this.$nextTick(() => this.$refs.addAccountModal.hide());
     },
     update (row) {
       if (row.item.isEditing) {
@@ -192,28 +208,22 @@ export default {
             row.item.name = this.form.name;
             row.item.iban = this.form.iban;
             this.toggleForm(row);
-            this.showEeAlert('defaultSuccess');
-            this.isBusy = false;
+            this.ee_showAlert('defaultSuccess');
           })
-          .catch(e => {
-            if (e.response.status == 422) {
-              this.showEeAlert('defaultWrongInput');
-            } else {
-              this.showEeAlert('defaultError');
-            }
-            this.isBusy = false;
-          });
+          .catch(this.ee_errorHandler)
+          .then(() => this.isBusy = false);
       }
     },
     onDelete (row) {
+      this.isBusy = true;
+
       axios.delete(`accounts/${row.item.id}`)
         .then(response => {
-          this.items = this.items.filter(function (item) {
-            return item.id !== row.item.id;
-          });
-          this.showEeAlert('bankAccountDeleted');
+          this.items = this.items.filter(item => item.id !== row.item.id);
+          this.ee_showAlert('bankAccountDeleted');
         })
-        .catch(e => this.showEeAlert('defaultError'));
+        .catch(this.ee_errorHandler)
+        .then(() => this.isBusy = false);
     },
     toggleForm (row) {
       this.toggleIsEditing(row);
@@ -222,12 +232,13 @@ export default {
     },
     toggleIsEditing (row) {
       const newValue = !row.item.isEditing;
-
+      this.toggleAllIsEditingOff();
+      row.item.isEditing = newValue;
+    },
+    toggleAllIsEditingOff () {
       for (let item of this.items) {
         item.isEditing = false;
       }
-
-      row.item.isEditing = newValue;
     },
     setFormData (row) {
       if (row.item.isEditing) {
@@ -240,9 +251,7 @@ export default {
     },
     focusInputField (row) {
       if (row.item.isEditing) {
-        setTimeout(function () {
-          document.getElementById('name').focus();
-        }, 0);
+        this.$nextTick(() => this.$el.querySelector('input').select());
       }
     },
     formatItems (items) {
@@ -253,6 +262,16 @@ export default {
       }
 
       return items;
+    },
+    onAddModalShown () {
+      this.toggleAllIsEditingOff();
+      this.resetForm();
+      setTimeout(() => this.$el.querySelector('input').focus(), 0);
+    },
+    resetForm () {
+      this.form.name = '';
+      this.form.iban = '';
+      this.$v.form.$reset();
     },
     getTdClass (value, column, row) {
       let tdClass = 'is-editable';

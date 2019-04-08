@@ -144,21 +144,15 @@ export default {
           this.form.name = response.data.name;
           this.form.email = response.data.email;
         })
-        .catch(e => this.showEeAlert('defaultError'));
+        .catch(this.ee_errorHandler);
     },
     updateUser () {
       axios.put('user', this.form)
         .then(response => {
-          this.showEeAlert('defaultSuccess');
+          this.ee_showAlert('defaultSuccess');
           this.resetForm();
         })
-        .catch(e => {
-          if (e.response.status == 422) {
-            this.showEeAlert('userAccountWrongPassword');
-          } else {
-            this.showEeAlert('defaultError');
-          }
-        });
+        .catch(this.ee_errorHandler);
     },
     touchFields () {
       this.$v.form.name.$touch();

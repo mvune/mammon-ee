@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\BankAccount;
+use App\Http\Requests\BankAccountRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -25,9 +26,9 @@ class BankAccountController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BankAccountRequest $request)
     {
-        //
+        Auth::user()->bankAccounts()->create($request->all());
     }
 
     /**
@@ -37,13 +38,8 @@ class BankAccountController extends Controller
      * @param  \App\BankAccount  $bankAccount
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, BankAccount $bankAccount)
+    public function update(BankAccountRequest $request, BankAccount $bankAccount)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'iban' => 'required|iban',
-        ]);
-
         $bankAccount->update($request->all());
     }
 
