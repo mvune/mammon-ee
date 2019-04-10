@@ -7,8 +7,9 @@ const DefaultContainer = () => import('@/mijn-ee/containers/DefaultContainer')
 // Views
 const Accounts = () => import('@/mijn-ee/views/Accounts')
 const Dashboard = () => import('@/mijn-ee/views/Dashboard')
-const Profile = () => import('@/mijn-ee/views/Profile')
 const Page404 = () => import('@/mijn-ee/views/Page404')
+const Profile = () => import('@/mijn-ee/views/Profile')
+const Transactions = () => import('@/mijn-ee/views/Transactions')
 
 Vue.use(Router)
 
@@ -27,6 +28,11 @@ export default new Router({
           path: 'dashboard',
           name: 'Dashboard',
           component: Dashboard,
+        },
+        {
+          path: 'transacties',
+          name: 'Transacties',
+          component: Transactions,
         },
         {
           path: 'rekeningen',

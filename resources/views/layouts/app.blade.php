@@ -31,10 +31,10 @@
         {{-- Flash Message --}}
         @if (session()->has('flash_message'))
         <div class="alert alert-warning alert-dismissible alert-main alert-main-auto-dismiss fade show" role="alert">
-          {{ session('flash_message') }}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+            {{ session('flash_message') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
         @endif
 

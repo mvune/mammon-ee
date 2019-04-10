@@ -34,7 +34,7 @@
         </b-modal>
       </b-col>
 
-      <b-col md="10" lg="8" class="ee-spinner-container">
+      <b-col md="10" class="ee-spinner-container">
         <b-table :items="items" :fields="fields" :busy.sync="isBusy" show-empty>
 
           <template slot="name" slot-scope="row">
