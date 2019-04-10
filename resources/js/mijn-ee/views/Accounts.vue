@@ -1,7 +1,40 @@
 <template>
   <div class="animated fadeIn">
     <b-row>
-      <b-col md="10" lg="8" class="ee-table-container">
+      <b-col sm="12">
+        <b-button @click="showAddModal = true" type="button" variant="primary" class="mb-3">
+          <i aria-hidden="true" class="icon-plus"></i>
+          Toevoegen
+        </b-button>
+
+        <b-modal
+          @ok="onAdd"
+          @shown="onAddModalShown"
+          v-model="showAddModal"
+          title="Rekening toevoegen"
+          cancel-title="Annuleer"
+          ok-title="Voeg toe"
+          centered lazy
+          size="sm"
+          ref="addModal"
+        >
+          <b-form @submit.prevent="add()" novalidate>
+            <b-form-group>
+              <b-form-input v-model.trim="form.name" type="text" placeholder="Kies een naam" />
+              <FormFieldError :form="$v.form" :field="'name'" />
+            </b-form-group>
+
+            <b-form-group>
+              <b-form-input v-model.trim="form.iban" type="text" placeholder="IBAN" />
+              <FormFieldError :form="$v.form" :field="'iban'" />
+            </b-form-group>
+
+            <b-button type="submit" style="display: none;"></b-button>
+          </b-form>
+        </b-modal>
+      </b-col>
+
+      <b-col md="10" lg="8" class="ee-spinner-container">
         <b-table :items="items" :fields="fields" :busy.sync="isBusy" show-empty>
 
           <template slot="name" slot-scope="row">
@@ -76,44 +109,7 @@
 
         </b-table>
 
-        <b-spinner
-          v-if="isBusy && items.length > 0"
-          small
-          variant="primary"
-          label="Laden..."
-          class="ee-table-spinner"
-        ></b-spinner>
-
-        <b-button @click="showAddModal = true" type="button" variant="primary">
-          <i aria-hidden="true" class="icon-plus"></i>
-          Rekening toevoegen
-        </b-button>
-
-        <b-modal
-          @ok="onAdd"
-          @shown="onAddModalShown"
-          v-model="showAddModal"
-          title="Rekening toevoegen"
-          cancel-title="Annuleer"
-          ok-title="Voeg toe"
-          centered lazy
-          size="sm"
-          ref="addModal"
-        >
-          <b-form @submit.prevent="add()" novalidate>
-            <b-form-group>
-              <b-form-input v-model.trim="form.name" type="text" placeholder="Kies een naam" />
-              <FormFieldError :form="$v.form" :field="'name'" />
-            </b-form-group>
-
-            <b-form-group>
-              <b-form-input v-model.trim="form.iban" type="text" placeholder="IBAN" />
-              <FormFieldError :form="$v.form" :field="'iban'" />
-            </b-form-group>
-
-            <b-button type="submit" style="display: none;"></b-button>
-          </b-form>
-        </b-modal>
+        <LoadingSpinner :loading="isBusy && items.length > 0" />
       </b-col>
     </b-row>
   </div>
@@ -122,17 +118,18 @@
 <script>
 import { required } from 'vuelidate/lib/validators'
 import FormFieldError from '@/mijn-ee/partials/FormFieldError'
+import LoadingSpinner from '@/mijn-ee/partials/LoadingSpinner'
 
 export default {
   name: 'Accounts',
-  components: { FormFieldError },
+  components: { FormFieldError, LoadingSpinner },
   data () {
     return {
       fields: [
         { key: 'name', label: 'Naam', sortable: true, thClass: 'hover-highlight', tdClass: this.getTdClass },
         { key: 'iban', label: 'IBAN', sortable: true, thClass: 'hover-highlight', tdClass: this.getTdClass },
         { key: 'saldo', label: 'Saldo', sortable: true, thClass: 'hover-highlight' },
-        { key: 'edit', label: '' },
+        { key: 'edit', label: '', tdClass: 'action-buttons-column' },
       ],
       items: [],
       form: {

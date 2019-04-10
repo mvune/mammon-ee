@@ -17,8 +17,13 @@ class CreateAccountsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('iban');
-            $table->unsignedInteger('user_id')->nullable();
+            $table->integer('user_id')->unsigned()->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')
+                  ->references('id')->on('users')
+                  ->onUpdate('cascade')
+                  ->onDelete('cascade');
         });
     }
 

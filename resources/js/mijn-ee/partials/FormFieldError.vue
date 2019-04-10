@@ -1,6 +1,6 @@
 <template>
   <div class="text-danger">
-    <span v-if="!form[field].$dirty || !form[field].$error">&nbsp;</span>
+    <!-- <span v-if="!form[field].$dirty || !form[field].$error">&nbsp;</span> -->
     
     <template v-if="form[field].$dirty">
 

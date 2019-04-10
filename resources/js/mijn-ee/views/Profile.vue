@@ -1,57 +1,61 @@
 <template>
   <div class="animated fadeIn">
     <b-row>
-      <b-col sm="6" md="5" lg="4">
+      <b-col sm="6" md="5" lg="4" class="ee-spinner-container">
         <b-form @submit.prevent="onSubmit()" novalidate>
-          <b-form-group>
-            <label for="name">Naam</label>
-            <b-form-input v-model.trim="form.name" type="text" id="name" />
-            <FormFieldError :form="$v.form" :field="'name'" />
-          </b-form-group>
-
-          <b-form-group>
-            <label for="email">E-mailadres</label>
-            <b-form-input v-model.trim="form.email" type="email" id="email" />
-            <FormFieldError :form="$v.form" :field="'email'" />
-          </b-form-group>
-
-          <b-form-group>
-            <span class="d-flex justify-content-between">
-              <label for="password">Wachtwoord</label>
-              <a
-                @click.prevent="changePassword = !changePassword"
-                href=""
-                class="prim-link"
-              >
-                Wijzigen?
-              </a>
-            </span>
-            <b-form-input v-model="form.password" type="password" id="password" />
-            <FormFieldError :form="$v.form" :field="'password'" />
-          </b-form-group>
-
-          <b-collapse id="collapse-ww" v-model="changePassword">
+          <div :class="{ 'ee-fade': isBusy }">
             <b-form-group>
-              <label for="password">Nieuwe wachtwoord</label>
-              <b-input-group>
-                <b-input-group-text slot="append"><i class="fa fa-lock" aria-hidden="true"></i></b-input-group-text>
-                <b-form-input v-model="form.passwordNew" type="password" id="password-new" />
-              </b-input-group>
-              <FormFieldError :form="$v.form" :field="'passwordNew'" />
+              <label for="name">Naam</label>
+              <b-form-input v-model.trim="form.name" type="text" id="name" />
+              <FormFieldError :form="$v.form" :field="'name'" />
             </b-form-group>
 
             <b-form-group>
-              <label for="password">Herhaal wachtwoord</label>
-              <b-input-group>
-                <b-input-group-text slot="append"><i class="fa fa-lock" aria-hidden="true"></i></b-input-group-text>
-                <b-form-input v-model="form.passwordRepeat" type="password" id="password-repeat" />
-              </b-input-group>
-              <FormFieldError :form="$v.form" :field="'passwordRepeat'" />
+              <label for="email">E-mailadres</label>
+              <b-form-input v-model.trim="form.email" type="email" id="email" />
+              <FormFieldError :form="$v.form" :field="'email'" />
             </b-form-group>
-          </b-collapse>
 
-          <b-button type="submit" variant="primary">Opslaan</b-button>
+            <b-form-group>
+              <span class="d-flex justify-content-between">
+                <label for="password">Wachtwoord</label>
+                <a
+                  @click.prevent="changePassword = !changePassword"
+                  href=""
+                  class="prim-link"
+                >
+                  Wijzigen?
+                </a>
+              </span>
+              <b-form-input v-model="form.password" type="password" id="password" />
+              <FormFieldError :form="$v.form" :field="'password'" />
+            </b-form-group>
+
+            <b-collapse id="collapse-ww" v-model="changePassword">
+              <b-form-group>
+                <label for="password">Nieuwe wachtwoord</label>
+                <b-input-group>
+                  <b-input-group-text slot="append"><i class="fa fa-lock" aria-hidden="true"></i></b-input-group-text>
+                  <b-form-input v-model="form.passwordNew" type="password" id="password-new" />
+                </b-input-group>
+                <FormFieldError :form="$v.form" :field="'passwordNew'" />
+              </b-form-group>
+
+              <b-form-group>
+                <label for="password">Herhaal wachtwoord</label>
+                <b-input-group>
+                  <b-input-group-text slot="append"><i class="fa fa-lock" aria-hidden="true"></i></b-input-group-text>
+                  <b-form-input v-model="form.passwordRepeat" type="password" id="password-repeat" />
+                </b-input-group>
+                <FormFieldError :form="$v.form" :field="'passwordRepeat'" />
+              </b-form-group>
+            </b-collapse>
+          </div>
+
+          <b-button type="submit" variant="primary" class="mt-2" :disabled="isBusy">Opslaan</b-button>
         </b-form>
+
+        <LoadingSpinner :loading="isBusy" />
       </b-col>
 
       <b-col sm="6" md="5" lg="4" offset-md="1" offset-lg="2">
@@ -84,21 +88,23 @@
 
 <style scoped>
 form { margin-bottom: 1rem; }
-label { margin-bottom: 0.1rem; }
-.form-group { margin-bottom: 0.49rem; }
+label { margin-bottom: 0.25rem; }
+.form-group { margin-bottom: 0.75rem; }
 </style>
 
 <script>
 import { required, requiredIf, email, minLength, sameAs } from 'vuelidate/lib/validators'
 import FormFieldError from '@/mijn-ee/partials/FormFieldError'
+import LoadingSpinner from '@/mijn-ee/partials/LoadingSpinner'
 
 export default {
   name: 'profile',
-  components: { FormFieldError },
+  components: { FormFieldError, LoadingSpinner },
   data () {
     return {
       changePassword: false,
       showDeleteModal: false,
+      isBusy: false,
       form: {
         name: '',
         email: '',
@@ -139,20 +145,26 @@ export default {
       document.getElementById('delete-account-form').submit();
     },
     getUser () {
+      this.isBusy = true;
+
       axios.get('user')
         .then(response => {
           this.form.name = response.data.name;
           this.form.email = response.data.email;
         })
-        .catch(this.ee_errorHandler);
+        .catch(this.ee_errorHandler)
+        .then(() => this.isBusy = false);
     },
     updateUser () {
+      this.isBusy = true;
+
       axios.put('user', this.form)
         .then(response => {
           this.ee_showAlert('defaultSuccess');
           this.resetForm();
         })
-        .catch(this.ee_errorHandler);
+        .catch(this.ee_errorHandler)
+        .then(() => this.isBusy = false);
     },
     touchFields () {
       this.$v.form.name.$touch();
