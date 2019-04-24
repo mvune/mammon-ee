@@ -18,6 +18,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/user', 'Api\UserAccountController@show');
     Route::put('/user', 'Api\UserAccountController@update');
 
-    Route::apiResource('accounts', 'Api\BankAccountController');
+    Route::apiResource('accounts', 'Api\BankAccountController')->except(['show']);
+
+    Route::apiResource('transactions', 'Api\TransactionController')->only(['index', 'store']);
 
 });

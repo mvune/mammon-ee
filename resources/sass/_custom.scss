@@ -97,6 +97,10 @@ i[class^="icon-"] {
     margin-bottom: 0;
 }
 
+.uppercase {
+    text-transform: uppercase;
+}
+
 /**** Modal open body jumps fix ****/
 .modal-open {
     overflow: initial;
@@ -159,11 +163,14 @@ body {
 
 .ee-spinner {
     position: absolute;
-    top: 49%;
+    top: 46%;
     left: 46%;
+    z-index: 101;
 }
 
 .ee-fade {
+    @include overlay;
+    background-color: $theme-primary;
     opacity: 0.5;
 }
 

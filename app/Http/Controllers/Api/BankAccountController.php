@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\api;
 
 use App\BankAccount;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\BankAccountRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
 
 class BankAccountController extends Controller
 {

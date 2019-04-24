@@ -32,8 +32,8 @@ class BankAccountRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'iban' => 'required|iban',
+            'name' => 'max:100',
+            'iban' => 'required|max:34',
         ];
     }
 }

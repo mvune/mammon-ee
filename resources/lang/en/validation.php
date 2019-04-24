@@ -116,6 +116,9 @@ return [
     'url' => 'The :attribute format is invalid.',
     'uuid' => 'The :attribute must be a valid UUID.',
 
+    'csv_invalid_format' => 'Csv file hasn\'t got the right format.',
+    'csv_unreadable' => 'Csv file is unreadable.',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
