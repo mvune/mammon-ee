@@ -118,6 +118,7 @@ return [
 
     'csv_invalid_format' => 'Csv file hasn\'t got the right format.',
     'csv_unreadable' => 'Csv file is unreadable.',
+    'user_max_transactions' => 'Maximum of :max transactions for account has been exceeded.',
 
     /*
     |--------------------------------------------------------------------------

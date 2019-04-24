@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\CsvCorrectlyFormatted;
+use App\Rules\UserMaxTransactions;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +29,13 @@ class PostTransactionsRequest extends FormRequest
     {
         return [
             'bank' => 'required',
-            'csv_file' => 'required|file|mimes:csv,txt|max:12000',
+            'csv_file' => [
+                'required',
+                'file',
+                'mimes:csv,txt',
+                'max:12000',
+                new UserMaxTransactions,
+            ],
         ];
     }
 
