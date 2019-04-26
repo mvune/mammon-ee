@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class PostTransactionsRequest extends FormRequest
 {
@@ -33,7 +34,7 @@ class PostTransactionsRequest extends FormRequest
                 'required',
                 'file',
                 'mimes:csv,txt',
-                'max:12000',
+                'max:9000',
                 new UserMaxTransactions,
             ],
         ];
@@ -84,8 +85,19 @@ class PostTransactionsRequest extends FormRequest
                     break;
                 }
 
+                // Format fields.
                 $this->formatFields($transaction);
-                $this->linkToBankAccount($transaction);
+                $this->linkToAccount($transaction);
+
+                $unique = Rule::unique('transactions')->where(function ($query) use ($transaction) {
+                    return $query->where('account_id', $transaction['account_id']);
+                });
+                
+                // Skip duplicate transactions.
+                if (Validator::make($transaction, ['serial_number' => $unique])->fails()) {
+                    continue;
+                }
+
                 $transactions[] = $transaction;
             }
         } else {
@@ -112,24 +124,25 @@ class PostTransactionsRequest extends FormRequest
             $trn[$field] = $this->castToFloat($trn[$field]);
         }
 
+        $trn['serial_number'] = ltrim($trn['serial_number'], '0');
         $trn['created_at'] = Carbon::now();
         $trn['updated_at'] = Carbon::now();
     }
 
-    private function linkToBankAccount(&$trn)
+    private function linkToAccount(&$trn)
     {
-        $bankAccount = $this->getUserBankAccounts()->first(function ($bankAccount) use ($trn) {
-            return $bankAccount->iban === strtoupper(str_replace(' ', '', $trn['iban']));
+        $account = $this->getUserAccounts()->first(function ($account) use ($trn) {
+            return $account->iban === strtoupper(str_replace(' ', '', $trn['iban']));
         });
 
-        if ($bankAccount) {
-            $trn['account_id'] = $bankAccount->id;
+        if ($account) {
+            $trn['account_id'] = $account->id;
         } else {
-            $trn['account_id'] = Auth::user()->bankAccounts()->create([
+            $trn['account_id'] = Auth::user()->accounts()->create([
                 'name' => null,
                 'iban' => $trn['iban'],
             ])->id;
-            $this->bankAccountsFetched = false;
+            $this->accountsFetched = false;
         }
 
         unset($trn['iban']);
@@ -140,14 +153,14 @@ class PostTransactionsRequest extends FormRequest
      * 
      * @return \Illuminate\Support\Collection
      */
-    private function getUserBankAccounts()
+    private function getUserAccounts()
     {
-        if (!$this->bankAccountsFetched) {
-            $this->bankAccounts = Auth::user()->bankAccounts()->get();
-            $this->bankAccountsFetched = true;
+        if (!$this->accountsFetched) {
+            $this->accounts = Auth::user()->accounts()->get();
+            $this->accountsFetched = true;
         }
 
-        return $this->bankAccounts;
+        return $this->accounts;
     }
 
     /**

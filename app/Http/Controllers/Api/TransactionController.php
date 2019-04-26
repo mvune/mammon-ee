@@ -6,15 +6,16 @@ use App\Transaction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostTransactionsRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
     /**
      * @var \Illuminate\Support\Collection
      */
-    private $bankAccounts;
+    private $accounts;
 
-    private $bankAccountsFetched = false;
+    private $accountsFetched = false;
 
     /**
      * Get a listing of the resource.
@@ -23,7 +24,7 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        //
+        return Auth::user()->transactions()->get();
     }
 
     /**

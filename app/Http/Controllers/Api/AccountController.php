@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\api;
 
-use App\BankAccount;
+use App\Account;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BankAccountRequest;
+use App\Http\Requests\AccountRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class BankAccountController extends Controller
+class AccountController extends Controller
 {
     /**
      * Get a listing of the resource.
@@ -17,7 +17,7 @@ class BankAccountController extends Controller
      */
     public function index()
     {
-        return Auth::user()->bankAccounts;
+        return Auth::user()->accounts;
     }
 
     /**
@@ -26,31 +26,31 @@ class BankAccountController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(BankAccountRequest $request)
+    public function store(AccountRequest $request)
     {
-        Auth::user()->bankAccounts()->create($request->all());
+        Auth::user()->accounts()->create($request->all());
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\BankAccount  $bankAccount
+     * @param  \App\Account  $account
      * @return \Illuminate\Http\Response
      */
-    public function update(BankAccountRequest $request, BankAccount $bankAccount)
+    public function update(AccountRequest $request, Account $account)
     {
-        $bankAccount->update($request->all());
+        $account->update($request->all());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\BankAccount  $bankAccount
+     * @param  \App\Account  $account
      * @return \Illuminate\Http\Response
      */
-    public function destroy(BankAccount $bankAccount)
+    public function destroy(Account $account)
     {
-        $bankAccount->delete();
+        $account->delete();
     }
 }

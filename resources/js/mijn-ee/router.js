@@ -9,7 +9,8 @@ const Accounts = () => import('@/mijn-ee/views/Accounts')
 const Dashboard = () => import('@/mijn-ee/views/Dashboard')
 const Page404 = () => import('@/mijn-ee/views/Page404')
 const Profile = () => import('@/mijn-ee/views/Profile')
-const Transactions = () => import('@/mijn-ee/views/Transactions')
+const TransactionsAdd = () => import('@/mijn-ee/views/transactions/Add')
+const TransactionsIndex = () => import('@/mijn-ee/views/transactions/Index')
 
 Vue.use(Router)
 
@@ -31,8 +32,23 @@ export default new Router({
         },
         {
           path: 'transacties',
+          redirect: '/mijn-ee/transacties/overzicht',
           name: 'Transacties',
-          component: Transactions,
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'overzicht',
+              name: 'Overzicht',
+              component: TransactionsIndex,
+            },
+            {
+              path: 'toevoegen',
+              name: 'Toevoegen',
+              component: TransactionsAdd,
+            },
+          ]
         },
         {
           path: 'rekeningen',

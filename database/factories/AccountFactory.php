@@ -1,9 +1,9 @@
 <?php
 
-use App\BankAccount;
+use App\Account;
 use Faker\Generator as Faker;
 
-$factory->define(BankAccount::class, function (Faker $faker) {
+$factory->define(Account::class, function (Faker $faker) {
     return [
         'name' => $faker->firstname . ' rekening',
         'iban' => $faker->iban('nl'),

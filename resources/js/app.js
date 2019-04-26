@@ -19,20 +19,8 @@ import router from './mijn-ee/router'
 Vue.use(BootstrapVue)
 Vue.use(Vuelidate)
 
-Vue.mixin({
-  methods: {
-    ee_showAlert (...args) {
-      this.$root.$emit('show-alert', ...args);
-    },
-    ee_errorHandler (e) {
-      if (e.response.status == 422) {
-        this.ee_showAlert('defaultWrongInput', { body: _.find(e.response.data.errors)[0] });
-      } else {
-        this.ee_showAlert('defaultError');
-      }
-    }
-  }
-})
+require('./mijn-ee/globals/mixins')
+require('./mijn-ee/globals/filters')
 
 /* eslint-disable no-new */
 new Vue({

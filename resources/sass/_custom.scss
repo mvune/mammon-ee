@@ -126,9 +126,6 @@ body {
         th.hover-highlight:hover {
             background-color: darken($theme-quaternary, 5%);
         }
-
-        th:first-child { border-radius: .25rem 0 0 0; }
-        th:last-child { border-radius: 0 .25rem 0 0; }
     }
 
     td {
@@ -193,6 +190,10 @@ body {
     }
 }
 
+.app-body {
+    overflow-x: initial;
+}
+
 .app-footer {
     font-size: 0.8em;
     background-color: $body-bg;
@@ -206,6 +207,7 @@ body {
 .main {
     .main-inner {
         padding: 1.5rem;
+        padding-bottom: 0;
     }
 }
 

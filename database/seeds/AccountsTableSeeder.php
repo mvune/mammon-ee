@@ -1,9 +1,9 @@
 <?php
 
-use App\BankAccount;
+use App\Account;
 use Illuminate\Database\Seeder;
 
-class BankAccountsTableSeeder extends Seeder
+class AccountsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,6 +12,6 @@ class BankAccountsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(BankAccount::class, 8)->create();
+        factory(Account::class, 10)->create();
     }
 }

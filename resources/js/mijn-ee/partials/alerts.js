@@ -1,6 +1,6 @@
 export default {
 
-  bankAccountDeleted: {
+  accountDeleted: {
     variant: 'success',
     title: 'Gelukt',
     body: 'Rekening verwijderd.',

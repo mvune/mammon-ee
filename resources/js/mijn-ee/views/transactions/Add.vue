@@ -56,7 +56,7 @@ const maxFileSize = (value) => {
 };
 
 export default {
-  name: 'Transactions',
+  name: 'TransactionsAdd',
   components: { FormFieldError, LoadingSpinner, LoadingFaderer },
   data () {
     return {
@@ -70,7 +70,7 @@ export default {
   validations: {
     form: {
       bank: { required },
-      file: { required, isCsv, maxFileSize: maxFileSize(12000000) }, // Max = 12MB
+      file: { required, isCsv, maxFileSize: maxFileSize(9000000) }, // Max = 9MB
     }
   },
   computed: {
@@ -94,6 +94,7 @@ export default {
           }
         })
           .then(response => {
+            this.resetForm();
             this.ee_showAlert('defaultSuccess');
           })
           .catch(this.ee_errorHandler)

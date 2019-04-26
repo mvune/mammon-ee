@@ -2,13 +2,13 @@
 
 namespace App;
 
-use App\BankAccount;
+use App\Account;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
-    public function bankAccount()
+    public function account()
     {
-        return $this->belongsTo(BankAccount::class);
+        return $this->belongsTo(Account::class);
     }
 }

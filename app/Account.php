@@ -6,10 +6,8 @@ use App\User;
 use App\Transaction;
 use Illuminate\Database\Eloquent\Model;
 
-class BankAccount extends Model
+class Account extends Model
 {
-    protected $table = 'accounts';
-
     protected $fillable = ['name', 'iban'];
 
     public function setIbanAttribute($value)

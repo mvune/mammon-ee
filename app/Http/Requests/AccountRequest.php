@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class BankAccountRequest extends FormRequest
+class AccountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,9 +15,9 @@ class BankAccountRequest extends FormRequest
     public function authorize()
     {
         if ($this->isMethod('PUT')) {
-            $bankAccount = $this->route('account');
+            $account = $this->route('account');
 
-            return $bankAccount && $bankAccount->user_id === Auth::user()->id;
+            return $account && $account->user_id === Auth::user()->id;
         } else {
             return true;
         }

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserMaxTransactions implements Rule
 {
-    private $max = 60000;
+    private $max = 50000;
 
     /**
      * Determine if the validation rule passes.

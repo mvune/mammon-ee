@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\BankAccount;
+use App\Account;
 use App\Transaction;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -40,13 +40,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function bankAccounts()
+    public function accounts()
     {
-        return $this->hasMany(BankAccount::class);
+        return $this->hasMany(Account::class);
     }
 
     public function transactions()
     {
-        return $this->hasManyThrough(Transaction::class, BankAccount::class, null, 'account_id');
+        return $this->hasManyThrough(Transaction::class, Account::class, null, 'account_id');
     }
 }

@@ -118,7 +118,7 @@
     <p>Bekijk op Github</p>
     <ul class="list-inline list-social">
       <li class="list-inline-item social-github">
-        <a href="#top" class="js-scroll-trigger">
+        <a href="https://github.com/mvune/mammon-ee" target="_blank" rel="noopener noreferrer" class="js-scroll-trigger">
           <i class="fa fa-github"></i>
         </a>
       </li>

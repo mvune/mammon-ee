@@ -156,7 +156,10 @@ export default {
       this.isBusy = true;
 
       return axios.get('accounts')
-        .then(response => this.items = this.formatItems(response.data))
+        .then(response => {
+          this.items = response.data;
+          this.formatItems();
+        })
         .catch(this.ee_errorHandler)
         .then(() => this.isBusy = false);
     },
@@ -221,7 +224,7 @@ export default {
       axios.delete(`accounts/${row.item.id}`)
         .then(response => {
           this.items = this.items.filter(item => item.id !== row.item.id);
-          this.ee_showAlert('bankAccountDeleted');
+          this.ee_showAlert('accountDeleted');
         })
         .catch(this.ee_errorHandler)
         .then(() => this.isBusy = false);
@@ -255,14 +258,12 @@ export default {
         this.$nextTick(() => this.$el.querySelector('input').select());
       }
     },
-    formatItems (items) {
-      for (let item of items) {
+    formatItems () {
+      for (let item of this.items) {
         item.saldo = '€ 0,00';
         item.isEditing = false;
         item.showDeleteModal = false;
       }
-
-      return items;
     },
     formatIban () {
       this.form.iban = this.form.iban.replace(/\s/g, '').toUpperCase();
