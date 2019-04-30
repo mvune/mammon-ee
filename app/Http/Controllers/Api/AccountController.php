@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Account;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AccountRequest;
+use App\Http\Resources\Account as AccountResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +18,7 @@ class AccountController extends Controller
      */
     public function index()
     {
-        return Auth::user()->accounts;
+        return AccountResource::collection(Auth::user()->accounts);
     }
 
     /**

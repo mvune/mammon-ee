@@ -6,6 +6,7 @@ $theme-quaternary: #7e6629; // brown
 
 $body-bg:          $theme-primary;
 $primary:          $theme-secondary;
+$success:          #64b72d;
 $danger:           $theme-tertiary;
 
 $white:            #fff;
@@ -18,5 +19,8 @@ $gray-lighter:     lighten($gray-base, 93.5%); // #eee
 
 $light:            #feecc0;
 $dark:             #515052;
+$text-muted:       $gray-light;
 $extra-dark:       #2f353a;
 $danger-light:     #fb503b;
+
+$theme-tertiary-shade: darken($theme-tertiary, 15%);

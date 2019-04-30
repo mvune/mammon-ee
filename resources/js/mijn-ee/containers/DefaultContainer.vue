@@ -51,7 +51,7 @@
 <script>
 import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFooter, SidebarForm, SidebarHeader, SidebarMinimizer, SidebarNav, Footer as TheFooter, Breadcrumb } from '@coreui/vue'
 import nav from './nav'
-import AccountDropdown from '@/mijn-ee/partials/AccountDropdown'
+import AccountDropdown from './partials/AccountDropdown'
 import AlertBox from '@/mijn-ee/partials/AlertBox'
 
 export default {

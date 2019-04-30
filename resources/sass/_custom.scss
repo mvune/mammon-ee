@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 .alt-bg {
     background-color: $dark;
 }
@@ -33,6 +37,11 @@ a.prim-link {
     &.active {
         color: $primary;
     }
+}
+
+.prim-head-sm {
+    color: $primary;
+    font-size: 1rem;
 }
 
 .dropdown-item.active {
@@ -101,6 +110,10 @@ i[class^="icon-"] {
     text-transform: uppercase;
 }
 
+.custom-checkbox {
+    margin-bottom: 0.5rem;
+}
+
 /**** Modal open body jumps fix ****/
 .modal-open {
     overflow: initial;
@@ -145,12 +158,20 @@ body {
             min-width: 5.8rem;
         }
 
+        &.amount-column {
+            height: 3rem;
+        }
+
         .form-control {
             height: calc(1.5em + 0.75rem);
             padding: 0.375rem 0.4rem;
             border: 1px solid $theme-secondary;
         }
     }
+}
+
+.b-table-details > td {
+    width: 100%;
 }
 
 .ee-spinner-container {
@@ -160,8 +181,8 @@ body {
 
 .ee-spinner {
     position: absolute;
-    top: 46%;
-    left: 46%;
+    top: calc(50% - 0.5rem);
+    left: calc(50% - 0.5rem);
     z-index: 101;
 }
 

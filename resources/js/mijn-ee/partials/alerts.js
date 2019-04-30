@@ -5,6 +5,11 @@ export default {
     title: 'Gelukt',
     body: 'Rekening verwijderd.',
   },
+  unauthenticated: {
+    variant: 'danger',
+    title: 'Geen toegang',
+    body: 'Log opnieuw in.',
+  },
   defaultWrongInput: {
     variant: 'danger',
     title: 'Ongeldige invoer',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Transaction;
 use App\Rules\UserMaxTransactions;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
@@ -89,12 +90,11 @@ class PostTransactionsRequest extends FormRequest
                 $this->formatFields($transaction);
                 $this->linkToAccount($transaction);
 
-                $unique = Rule::unique('transactions')->where(function ($query) use ($transaction) {
-                    return $query->where('account_id', $transaction['account_id']);
-                });
-                
                 // Skip duplicate transactions.
-                if (Validator::make($transaction, ['serial_number' => $unique])->fails()) {
+                if (Transaction::where('account_id', $transaction['account_id'])
+                        ->where('serial_number', $transaction['serial_number'])
+                        ->count()
+                ) {
                     continue;
                 }
 

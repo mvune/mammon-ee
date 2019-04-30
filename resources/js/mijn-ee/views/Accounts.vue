@@ -46,7 +46,7 @@
               </template>
 
               <template v-if="!row.item.isEditing">
-                {{ row.value }}
+                {{ row.value | ee_iban }}
               </template>
 
             </template>
@@ -66,25 +66,25 @@
 
             <template slot="edit" slot-scope="row">
               <template v-if="row.item.isEditing">
-                <button type="button" aria-label="Opslaan" @click="onUpdate(row)" class="action-button">
+                <button type="button" title="Opslaan" @click="onUpdate(row)" class="action-button">
                   <i aria-hidden="true" class="icon-check text-primary"></i>
                 </button>
-                <button type="button" aria-label="Annuleren" @click="toggleForm(row)" class="action-button">
+                <button type="button" title="Annuleren" @click="toggleForm(row)" class="action-button">
                   <i aria-hidden="true" class="icon-close text-danger"></i>
                 </button>
               </template>
 
               <template v-if="!row.item.isEditing">
-                <button type="button" aria-label="Verwijderen" @click="row.item.showDeleteModal = true" class="action-button">
+                <button type="button" title="Verwijderen" v-b-modal="'modal' + row.item.id" class="action-button">
                   <i aria-hidden="true" class="icon-trash text-danger"></i>
                 </button>
-                <button type="button" aria-label="Wijzigen" @click="toggleForm(row)" class="action-button">
+                <button type="button" title="Wijzigen" @click="toggleForm(row)" class="action-button">
                   <i aria-hidden="true" class="icon-pencil text-primary"></i>
                 </button>
 
                 <b-modal
                   @ok="onDelete(row)"
-                  v-model="row.item.showDeleteModal"
+                  :id="'modal' + row.item.id"
                   title="Rekening verwijderen"
                   cancel-title="Annuleer"
                   ok-title="Verwijder"
@@ -92,7 +92,10 @@
                   centered lazy
                 >
                   <p>
-                    Weet u zeker dat u rekening <strong>{{ row.item.iban }} ({{ row.item.name }})</strong> wilt verwijderen?
+                    Weet u zeker dat u rekening
+                    <strong v-if="row.item.name">{{ row.item.name }} ({{ row.item.iban | ee_iban }})</strong>
+                    <strong v-if="!row.item.name">{{ row.item.iban | ee_iban }}</strong>
+                    wilt verwijderen?
                   </p>
                 </b-modal>
               </template>
@@ -133,7 +136,7 @@ export default {
         { key: 'saldo', label: 'Saldo', sortable: true, thClass: 'hover-highlight' },
         { key: 'edit', label: '', tdClass: 'action-buttons-column' },
       ],
-      items: [],
+      items: [], // Accounts
       form: {
         name: '',
         iban: '',
@@ -262,7 +265,6 @@ export default {
       for (let item of this.items) {
         item.saldo = '€ 0,00';
         item.isEditing = false;
-        item.showDeleteModal = false;
       }
     },
     formatIban () {

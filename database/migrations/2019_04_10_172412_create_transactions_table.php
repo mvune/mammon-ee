@@ -18,7 +18,7 @@ class CreateTransactionsTable extends Migration
             $table->integer('account_id')->unsigned();
             $table->string('currency', 4);
             $table->string('bic', 11);
-            $table->string('serial_number', 18);
+            $table->integer('serial_number', 18)->unsigned();
             $table->date('date');
             $table->date('value_date');
             $table->float('amount', 18, 2);

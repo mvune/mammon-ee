@@ -16,6 +16,7 @@
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
+
 export default {
   name: 'AccountDropdown',
   components: {

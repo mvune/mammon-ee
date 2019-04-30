@@ -34,7 +34,7 @@
     }
 
     .nav-link.active {
-      background: darken($theme-tertiary, 17.5%);
+      background: $theme-tertiary-shade;
     }
 
     .nav-dropdown.open {
@@ -194,7 +194,7 @@
     }
 
     .sidebar-minimized .sidebar .nav-link.active:hover {
-      background: darken($theme-tertiary, 17.5%);
+      background: $theme-tertiary-shade;
     }
   
     .sidebar-minimized .sidebar .nav-link:hover .badge {

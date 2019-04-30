@@ -11,13 +11,16 @@ import 'core-js/es6/string'
 import 'core-js/es7/array'
 
 import Vue from 'vue'
+import VueRx from 'vue-rx'
 import BootstrapVue from 'bootstrap-vue'
 import Vuelidate from 'vuelidate'
+
 import App from './mijn-ee/App'
 import router from './mijn-ee/router'
 
 Vue.use(BootstrapVue)
 Vue.use(Vuelidate)
+Vue.use(VueRx)
 
 require('./mijn-ee/globals/mixins')
 require('./mijn-ee/globals/filters')
