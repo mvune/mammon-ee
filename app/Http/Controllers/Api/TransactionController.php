@@ -28,8 +28,8 @@ class TransactionController extends Controller
     {
         return TransactionResource::collection(
             Auth::user()->transactions()
-                ->when($request->get('accounts'), function ($query, $accounts) {
-                    return $query->whereIn('account_id', explode(',', $accounts));
+                ->when($request->has('accounts'), function ($query) use ($request) {
+                    return $query->whereIn('account_id', explode(',', $request->get('accounts')));
                 })
                 ->orderBy('serial_number', 'desc')
                 ->paginate(50)

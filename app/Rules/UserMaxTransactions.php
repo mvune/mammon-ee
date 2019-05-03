@@ -28,6 +28,6 @@ class UserMaxTransactions implements Rule
      */
     public function message()
     {
-        return trans('validation.user_max_transactions', ['max' => $this->max]);
+        return __('validation.user_max_transactions', ['max' => $this->max]);
     }
 }

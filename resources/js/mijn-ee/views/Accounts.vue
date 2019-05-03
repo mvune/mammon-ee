@@ -124,6 +124,7 @@
 import { required, maxLength } from 'vuelidate/lib/validators'
 import FormFieldError from '@/mijn-ee/partials/FormFieldError'
 import LoadingSpinner from '@/mijn-ee/partials/LoadingSpinner'
+import * as AccountService from '@/mijn-ee/services/AccountService'
 
 export default {
   name: 'Accounts',
@@ -158,13 +159,15 @@ export default {
     getItems () {
       this.isBusy = true;
 
-      return axios.get('accounts')
-        .then(response => {
-          this.items = response.data;
+      this.$subscribeTo(
+        AccountService.getAccounts(),
+        data => {
+          this.items = data;
           this.formatItems();
-        })
-        .catch(this.ee_errorHandler)
-        .then(() => this.isBusy = false);
+        },
+        this.ee_errorHandler,
+        () => this.isBusy = false
+      );
     },
     onAdd (e) {
       e.preventDefault();
@@ -178,18 +181,15 @@ export default {
       this.isBusy = true;
       this.$nextTick(() => this.$refs.addModal.hide());
 
-      axios.post('accounts', this.form)
-        .then(response => {
-          this.getItems().then(() => {
-            this.ee_showAlert('defaultSuccess');
-          });
-        })
-        .catch(e => {
-          this.ee_errorHandler(e);
-          this.isBusy = false;
-        })
-        .then(() => {
+      AccountService.createAccount(this.form)
+        .subscribe((response) => {
+          this.items.push(this.formatItem(response.data));
+          this.ee_showAlert('defaultSuccess');
+        },
+        this.ee_errorHandler,
+        () => {
           this.resetForm();
+          this.isBusy = false;
         });
     },
     onUpdate (row, event) {
@@ -209,28 +209,28 @@ export default {
           iban: this.form.iban,
         };
 
-        axios.put(`accounts/${row.item.id}`, data)
-          .then(response => {
+        AccountService.updateAccount(row.item.id, data)
+          .subscribe(() => {
             this.formatIban();
             row.item.name = this.form.name;
             row.item.iban = this.form.iban;
             this.toggleForm(row);
             this.ee_showAlert('defaultSuccess');
-          })
-          .catch(this.ee_errorHandler)
-          .then(() => this.isBusy = false);
+          },
+          this.ee_errorHandler,
+          () => this.isBusy = false);
       }
     },
     onDelete (row) {
       this.isBusy = true;
 
-      axios.delete(`accounts/${row.item.id}`)
-        .then(response => {
+      AccountService.deleteAccount(row.item.id)
+        .subscribe(() => {
           this.items = this.items.filter(item => item.id !== row.item.id);
           this.ee_showAlert('accountDeleted');
-        })
-        .catch(this.ee_errorHandler)
-        .then(() => this.isBusy = false);
+        },
+        this.ee_errorHandler,
+        () => this.isBusy = false);
     },
     toggleForm (row) {
       this.toggleIsEditing(row);
@@ -263,9 +263,13 @@ export default {
     },
     formatItems () {
       for (let item of this.items) {
-        item.saldo = '€ 0,00';
-        item.isEditing = false;
+        this.formatItem(item);
       }
+    },
+    formatItem (item) {
+      item.saldo = '€ 0,00';
+      item.isEditing = false;
+      return item;
     },
     formatIban () {
       this.form.iban = this.form.iban.replace(/\s/g, '').toUpperCase();

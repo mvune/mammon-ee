@@ -18,7 +18,7 @@
     </tr>
     <tr>
       <td>Soort:</td>
-      <td>{{ transaction.code }}</td>
+      <td>{{ transaction.code.label }}</td>
     </tr>
     <tr v-if="transaction.reference">
       <td>Transactiereferentie:</td>

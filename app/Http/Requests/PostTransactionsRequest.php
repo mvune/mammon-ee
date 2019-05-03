@@ -82,7 +82,7 @@ class PostTransactionsRequest extends FormRequest
 
                 // Validate line.
                 if ($transaction === null || Validator::make($transaction, (new CreateTransactionRequest)->rules())->fails()) {
-                    $validator->errors()->add('csv_file', trans('validation.csv_invalid_format'));
+                    $validator->errors()->add('csv_file', __('validation.csv_invalid_format'));
                     break;
                 }
 
@@ -101,7 +101,7 @@ class PostTransactionsRequest extends FormRequest
                 $transactions[] = $transaction;
             }
         } else {
-            $validator->errors()->add('csv_file', trans('validation.csv_unreadable'));
+            $validator->errors()->add('csv_file', __('validation.csv_unreadable'));
         }
 
         fclose($handle);

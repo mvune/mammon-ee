@@ -24,7 +24,10 @@ class Transaction extends JsonResource
             'balance_after_transaction' => $this->balance_after_transaction,
             'counterparty_iban' => $this->counterparty_iban,
             'counterparty_name' => $this->counterparty_name,
-            'code' => $this->code,
+            'code' => [
+                'value' => $this->code,
+                'label' => __('banks.' . $this->bic . '.transaction_types.' . $this->code),
+            ],
             'reference' => $this->reference,
             'payment_code' => $this->payment_code,
             'description_1' => $this->description_1,

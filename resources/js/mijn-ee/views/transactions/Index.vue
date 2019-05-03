@@ -2,7 +2,7 @@
   <div class="animated fadeIn">
     <b-row>
       <b-col md="10" lg="8">
-        <AccountSelect v-on:update:selected="getItems(currentPage, $event)" />
+        <AccountSelect v-stream:update:selected="accounts$" />
 
         <div class="ee-spinner-container">
           <b-table
@@ -55,6 +55,7 @@
 
         <b-pagination
           v-model="currentPage"
+          v-stream:change="currentPage$"
           :total-rows="totalRows"
           :per-page="perPage"
           align="center"
@@ -76,6 +77,9 @@
 import Details from './partials/Details'
 import AccountSelect from './partials/AccountSelect'
 import LoadingSpinner from '@/mijn-ee/partials/LoadingSpinner'
+import * as TransactionService from '@/mijn-ee/services/TransactionService'
+import { combineLatest } from 'rxjs'
+import { map, pluck, switchMap, tap, startWith, skip } from 'rxjs/operators'
 
 export default {
   name: 'TransactionsIndex',
@@ -92,44 +96,59 @@ export default {
       totalRows: 0,
       perPage: 0,
       currentPage: 1,
+      currentPageCached: 1,
     }
   },
-  mounted () {
-    this.getItems();
+  domStreams: ['accounts$', 'currentPage$'],
+  subscriptions () {
+    const items$ = combineLatest(
+      this.accounts$.pipe(skip(1), pluck('event', 'msg'), startWith(undefined)),
+      this.currentPage$.pipe(pluck('event', 'msg'), startWith(undefined)),
+    ).pipe(
+      tap(() => this.isBusy = true),
+      switchMap(([accounts, page]) => {
+        const nextPage = this.pageIsChanging(page) ? page : undefined;
+        return TransactionService.getTransactions(nextPage, accounts);
+      }),
+      map(this.formatItems),
+      tap(() => this.isBusy = false),
+    );
+
+    items$.subscribe(
+      this.handleResponse,
+      this.ee_errorHandler,
+    );
   },
   methods: {
-    getItems (page, accounts) {
-      if (_.isArray(accounts) && accounts.length == 0) {
-        this.clearItems();
-        return;
+    formatItems (res) {
+      if (res.data) {
+        for (let item of res.data.data) {
+          item._showDetails = false;
+        }
       }
-      this.isBusy = true;
-      page = page || this.currentPage;
-      const params = new URLSearchParams;
-      params.append('page', page);
-      if (accounts) params.append('accounts', accounts);
-
-      return axios.get('transactions?' + params.toString())
-        .then(response => {
-          this.items = response.data.data;
-          this.formatItems();
-          this.totalRows = response.data.meta.total;
-          this.perPage = response.data.meta.per_page;
-          this.currentPage = response.data.meta.current_page;
-        })
-        .catch(this.ee_errorHandler)
-        .then(() => this.isBusy = false);
+      return res;
     },
-    formatItems () {
-      for (let item of this.items) {
-        item._showDetails = false;
+    handleResponse (res) {
+      if (res.data) {
+        this.items = res.data.data;
+        this.totalRows = res.data.meta.total;
+        this.perPage = res.data.meta.per_page;
+        this.currentPage = res.data.meta.current_page;
+      } else {
+        this.items = [];
+        this.totalRows = 0;
+        this.perPage = 0;
+        this.currentPage = 1;
       }
+      window.scrollTo(0, 0);
     },
-    clearItems () {
-      this.items = [];
-      this.totalRows = 0;
-      this.perPage = 0;
-      this.currentPage = 1;
+    pageIsChanging (page) {
+      if (typeof page === 'undefined') return undefined;
+      if (page !== this.currentPageCached) {
+        this.currentPageCached = page;
+        return true;
+      }
+      return false;
     },
     rowClicked (row) {
       this.toggleDetails(row);
@@ -145,10 +164,5 @@ export default {
       }
     },
   },
-  watch: {
-    currentPage: function (newVal, oldVal) {
-      this.getItems(newVal).then(() => window.scrollTo(0, 0));
-    }
-  }
 }
 </script>
