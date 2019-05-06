@@ -1,9 +1,11 @@
 <template>
   <div class="animated fadeIn">
     <b-row>
-      <b-col md="10" lg="8">
+      <b-col md="10" lg="4">
         <AccountSelect v-stream:update:selected="accounts$" />
+      </b-col>
 
+      <b-col md="10" lg="8">
         <div class="ee-spinner-container">
           <b-table
             id="transactions-table"
@@ -76,7 +78,7 @@
 <script>
 import Details from './partials/Details'
 import AccountSelect from './partials/AccountSelect'
-import LoadingSpinner from '@/mijn-ee/partials/LoadingSpinner'
+import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
 import * as TransactionService from '@/mijn-ee/services/TransactionService'
 import { combineLatest } from 'rxjs'
 import { map, pluck, switchMap, tap, startWith, skip } from 'rxjs/operators'

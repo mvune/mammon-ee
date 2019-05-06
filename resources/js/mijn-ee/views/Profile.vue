@@ -94,8 +94,8 @@ label { margin-bottom: 0.25rem; }
 <script>
 import { required, requiredIf, email, minLength, sameAs } from 'vuelidate/lib/validators'
 import FormFieldError from '@/mijn-ee/partials/FormFieldError'
-import LoadingSpinner from '@/mijn-ee/partials/LoadingSpinner'
-import LoadingFaderer from '@/mijn-ee/partials/LoadingFaderer'
+import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
+import LoadingFaderer from '@/mijn-ee/partials/loading/Faderer'
 
 export default {
   name: 'profile',

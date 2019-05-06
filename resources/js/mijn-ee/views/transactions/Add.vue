@@ -44,8 +44,8 @@
 <script>
 import { required, helpers } from 'vuelidate/lib/validators'
 import FormFieldError from '@/mijn-ee/partials/FormFieldError'
-import LoadingSpinner from '@/mijn-ee/partials/LoadingSpinner'
-import LoadingFaderer from '@/mijn-ee/partials/LoadingFaderer'
+import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
+import LoadingFaderer from '@/mijn-ee/partials/loading/Faderer'
 
 const isCsv = (file) => file && file.name ? file.name.endsWith('.csv') : false;
 const maxFileSize = (value) => {

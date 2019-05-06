@@ -1,49 +1,49 @@
 <template>
 
-  <b-form-group class="ee-spinner-container">
-    <label class="prim-head-sm">Accounts</label>
-    <b-form-checkbox
-      v-model="allSelected"
-      :indeterminate="indeterminate"
-      aria-describedby="accounts"
-      aria-controls="accounts"
-      @change="toggleAll"
-    >
-      Alle
-    </b-form-checkbox>
-
-    <b-form-checkbox-group
-      id="checkbox-group-accounts"
-      v-model="selected"
-      name="accounts"
-      class="ml-4"
-      aria-label="Individuele accounts"
-      stacked
-    >
-      <b-form-checkbox v-for="ac of accounts" :key="ac.id" :value="ac.id">
-        <template v-if="ac.name">
-          {{ ac.name }} <span class="text-muted ml-2">{{ ac.iban | ee_iban }}</span>
-        </template>
-
-        <template v-if="!ac.name">
-          <span class="text-muted">{{ ac.iban | ee_iban }}</span>
-        </template>
+  <LoadingContainer :loading="isBusy">
+    <b-form-group>
+      <label class="prim-head-sm">Accounts</label>
+      <b-form-checkbox
+        v-model="allSelected"
+        :indeterminate="indeterminate"
+        aria-describedby="accounts"
+        aria-controls="accounts"
+        @change="toggleAll"
+      >
+        Alle
       </b-form-checkbox>
-    </b-form-checkbox-group>
 
-    <LoadingSpinner :loading="isBusy" />
-    <LoadingFaderer :loading="isBusy" />
-  </b-form-group>
+      <b-form-checkbox-group
+        id="checkbox-group-accounts"
+        v-model="selected"
+        name="accounts"
+        class="ml-4"
+        aria-label="Individuele accounts"
+        stacked
+      >
+        <b-form-checkbox v-for="ac of accounts" :key="ac.id" :value="ac.id">
+          <template v-if="ac.name">
+            {{ ac.name }}
+            <br />
+            <span class="text-muted under-checkbox">{{ ac.iban | ee_iban }}</span>
+          </template>
+
+          <template v-if="!ac.name">
+            <span class="text-muted">{{ ac.iban | ee_iban }}</span>
+          </template>
+        </b-form-checkbox>
+      </b-form-checkbox-group>
+    </b-form-group>
+  </LoadingContainer>
 
 </template>
 
 <script>
-import LoadingSpinner from '@/mijn-ee/partials/LoadingSpinner'
-import LoadingFaderer from '@/mijn-ee/partials/LoadingFaderer'
+import LoadingContainer from '@/mijn-ee/partials/loading/Container'
 
 export default {
   name: 'AccountSelect',
-  components: { LoadingSpinner, LoadingFaderer },
+  components: { LoadingContainer },
   data () {
     return {
       isBusy: false,

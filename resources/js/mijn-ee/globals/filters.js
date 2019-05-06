@@ -1,10 +1,10 @@
-const eurFormatter = new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' })
+const eurFormatter = new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' });
+const nbsp = String.fromCharCode(160);
 
 Vue.filter('ee_valuta', function (value) {
   let output = eurFormatter.format(value);
 
   if (value > 0) {
-    let nbsp = String.fromCharCode(160);
     output = output.replace(nbsp, nbsp + '+');
   }
 
@@ -16,5 +16,5 @@ Vue.filter('ee_date', function (value) {
 })
 
 Vue.filter('ee_iban', function (value) {
-  return value ? value.match(/.{1,4}/g).join(' ') : value;
+  return value ? value.match(/.{1,4}/g).join(nbsp) : value;
 })

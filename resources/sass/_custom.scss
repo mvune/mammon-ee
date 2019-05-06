@@ -114,6 +114,10 @@ i[class^="icon-"] {
     margin-bottom: 0.5rem;
 }
 
+.under-checkbox {
+    margin-left: -1.5rem;
+}
+
 /**** Modal open body jumps fix ****/
 .modal-open {
     overflow: initial;
@@ -172,24 +176,6 @@ body {
 
 .b-table-details > td {
     width: 100%;
-}
-
-.ee-spinner-container {
-    position: relative;
-    width: 100%;
-}
-
-.ee-spinner {
-    position: absolute;
-    top: calc(50% - 0.5rem);
-    left: calc(50% - 0.5rem);
-    z-index: 101;
-}
-
-.ee-fade {
-    @include overlay;
-    background-color: $theme-primary;
-    opacity: 0.5;
 }
 
 // Dashboard

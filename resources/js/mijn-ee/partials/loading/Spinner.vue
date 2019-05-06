@@ -5,10 +5,21 @@
     small
     variant="primary"
     label="Laden..."
-    class="ee-spinner"
+    class="loading-spinner"
   ></b-spinner>
 
 </template>
+
+<style lang="scss" scoped>
+
+.loading-spinner {
+  position: absolute;
+  top: calc(50% - 0.5rem);
+  left: calc(50% - 0.5rem);
+  z-index: 101;
+}
+
+</style>
 
 <script>
 export default {

@@ -123,7 +123,7 @@
 <script>
 import { required, maxLength } from 'vuelidate/lib/validators'
 import FormFieldError from '@/mijn-ee/partials/FormFieldError'
-import LoadingSpinner from '@/mijn-ee/partials/LoadingSpinner'
+import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
 import * as AccountService from '@/mijn-ee/services/AccountService'
 
 export default {

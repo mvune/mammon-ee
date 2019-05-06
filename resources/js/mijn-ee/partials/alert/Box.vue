@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import alerts from './alerts'
+import messages from './messages'
 
 export default {
   name: 'AlertBox',
@@ -35,11 +35,11 @@ export default {
       this.countDown = countDown;
     },
     showAlert (alertKey, customAlert = { }) {
-      const defaultAlert = alerts[alertKey] || { };
+      const defaultAlert = messages[alertKey] || { };
       this.alert = { ...defaultAlert, ...customAlert };
       this.countDown = this.showTime;
 
-      if (!alerts[alertKey]) {
+      if (!messages[alertKey]) {
         console.error(`Alert "${alertKey}" doesn't exist.`);
       }
     },
