@@ -19,7 +19,6 @@
         name="accounts"
         class="ml-4"
         aria-label="Individuele accounts"
-        stacked
       >
         <b-form-checkbox v-for="ac of accounts" :key="ac.id" :value="ac.id">
           <template v-if="ac.name">
@@ -90,7 +89,7 @@ export default {
         this.allSelected = false
       }
 
-      this.$emit('update:selected', this.selected);
+      this.$emit('selected', this.selected);
     }
   }
 }

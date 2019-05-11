@@ -26,6 +26,10 @@ html {
         color: inherit;
         background-color: $theme-primary;
     }
+
+    .card-body {
+        background-color: $light;
+    }
 }
 
 a.prim-link {
@@ -112,6 +116,7 @@ i[class^="icon-"] {
 
 .custom-checkbox {
     margin-bottom: 0.5rem;
+    width: 45%;
 }
 
 .under-checkbox {

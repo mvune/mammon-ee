@@ -17,7 +17,7 @@
             form="transactions-form"
             accept="text/csv"
             :state="formFileState"
-            placeholder="Kies een .csv-bestand..."
+            placeholder=".csv-bestand importeren..."
             drop-placeholder="Drop .csv-bestand hier..."
             browse-text="Bladeren..."
           ></b-form-file>

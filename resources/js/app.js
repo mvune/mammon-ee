@@ -14,9 +14,11 @@ import Vue from 'vue'
 import VueRx from 'vue-rx'
 import BootstrapVue from 'bootstrap-vue'
 import Vuelidate from 'vuelidate'
+import Chart from 'chart.js'
 
 import App from './mijn-ee/App'
 import router from './mijn-ee/router'
+import styles from '../sass/custom/_variables.scss'
 
 Vue.use(BootstrapVue)
 Vue.use(Vuelidate)
@@ -24,6 +26,13 @@ Vue.use(VueRx)
 
 require('./mijn-ee/globals/mixins')
 require('./mijn-ee/globals/filters')
+
+Chart.defaults.global.defaultFontColor = styles.dark;
+Chart.defaults.global.defaultFontFamily = styles.fontFamilyBody;
+Chart.defaults.global.elements.line.borderColor = styles.primary;
+Chart.defaults.global.elements.line.borderWidth = 1;
+Chart.defaults.global.tooltips.xPadding = 8;
+Chart.defaults.global.tooltips.yPadding = 8;
 
 /* eslint-disable no-new */
 new Vue({

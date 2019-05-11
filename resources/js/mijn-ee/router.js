@@ -6,7 +6,7 @@ const DefaultContainer = () => import('@/mijn-ee/containers/DefaultContainer')
 
 // Views
 const Accounts = () => import('@/mijn-ee/views/Accounts')
-const Dashboard = () => import('@/mijn-ee/views/Dashboard')
+const Dashboard = () => import('@/mijn-ee/views/dashboard/Index')
 const Page404 = () => import('@/mijn-ee/views/Page404')
 const Profile = () => import('@/mijn-ee/views/Profile')
 const TransactionsAdd = () => import('@/mijn-ee/views/transactions/Add')

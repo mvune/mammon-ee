@@ -2,7 +2,7 @@
   <div class="animated fadeIn">
     <b-row>
       <b-col md="10" lg="4">
-        <AccountSelect v-stream:update:selected="accounts$" />
+        <AccountSelect v-stream:selected="accounts$" />
       </b-col>
 
       <b-col md="10" lg="8">

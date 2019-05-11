@@ -24,3 +24,11 @@ $extra-dark:       #2f353a;
 $danger-light:     #fb503b;
 
 $theme-tertiary-shade: darken($theme-tertiary, 15%);
+
+$font-family-body: 'Muli';
+
+:export {
+  dark:            $dark;
+  fontFamilyBody:  $font-family-body;
+  primary:         $primary;
+}
