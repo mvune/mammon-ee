@@ -27,7 +27,7 @@
         </b-button-toolbar>
       </b-col>
     </b-row>
-    <LineChart v-on:clicked="onChartClick" height="180" :data="balances" :month="month" :year="year" :scope="scope" />
+    <SaldoChart v-on:clicked="onChartClick" height="180" :data="balances" :month="month" :year="year" :scope="scope" />
   </b-card>
 
 </template>
@@ -39,12 +39,12 @@
 </style>
 
 <script>
-import LineChart from '../charts/Line'
+import SaldoChart from '../charts/Saldo'
 import { SCOPES } from '../filters.js'
 
 export default {
   name: 'SaldoCard',
-  components: { LineChart },
+  components: { SaldoChart },
   data () {
     return {
       balances: [],

@@ -1,10 +1,10 @@
 <script>
-import { Line } from 'vue-chartjs'
+import { Bar } from 'vue-chartjs'
 import { SCOPES } from '../filters.js'
 
 export default {
-  name: 'LineChart',
-  extends: Line,
+  name: 'SaldoChart',
+  extends: Bar,
   props: ['height', 'data', 'month', 'year', 'scope'],
   data () {
     return {
@@ -13,6 +13,7 @@ export default {
         datasets: [
           {
             label: 'Totaal',
+            backgroundColor: 'green',
             data: [],
           }
         ]
@@ -33,7 +34,8 @@ export default {
         scales: {
           xAxes: [{
             display: false,
-            ticks: {},
+            barPercentage: 0.3,
+            categoryPercentage: 0.1,
             type: 'time',
             time: {
               unit: 'month',
@@ -73,34 +75,67 @@ export default {
     setXAxisTimeUnit () {
       if (this.scope === SCOPES.YEAR) {
         this.options.scales.xAxes[0].time.unit = 'month';
+        this.options.scales.xAxes[0].barPercentage = 0.11;
       }
       
       if (this.scope === SCOPES.MONTH) {
         this.options.scales.xAxes[0].time.unit = 'day';
+        this.options.scales.xAxes[0].barPercentage = 0.3;
       }
-    },
-    setXAxisMinMax () {
-      const [fromDate, toDate] = this.getBoundaryDates();
-
-      this.options.scales.xAxes[0].ticks.min = fromDate.toString();
-      this.options.scales.xAxes[0].ticks.max = toDate.toString();
     },
     scopeChartData () {
       const [fromDate, toDate] = this.getBoundaryDates();
+      const fromDateExcl = new Date(fromDate);
+      const toDateExcl = new Date(toDate);
+      fromDateExcl.setDate(fromDateExcl.getDate() - 1);
+      toDateExcl.setDate(toDateExcl.getDate() + 1);
 
       this.renderData.datasets[0].data = this.chartData.filter(item => {
         const d = new Date(item.x);
-
-        return d >= fromDate && d <= toDate;
+        d.setHours(6);
+        
+        return d > fromDateExcl && d < toDateExcl;
       });
 
-      // Add empty items with `from-` and `toDate` to stretch scope to full period.
-      this.renderData.datasets[0].data.unshift({x: fromDate, y: undefined});
-      this.renderData.datasets[0].data.push({x: toDate, y: undefined});
+      const renderData = this.renderData.datasets[0].data;
+      const cursor = new Date(fromDate);
+      const betweens = [];
+      const lastDate = new Date(this.chartData[this.chartData.length - 1].x);
+      let previousBalance;
+
+      const firstItemIndex = this.chartData.findIndex(item => {
+        return renderData[0] ? item.x === renderData[0].x : false;
+      });
+      
+      if (firstItemIndex > 0) {
+        previousBalance = this.chartData[firstItemIndex - 1].y;
+      }
+
+      while (cursor < toDateExcl) {
+        let rememberItem = renderData.filter(item => {
+          return (new Date(item.x)).toISOString().substring(0, 10) === cursor.toISOString().substring(0, 10);
+        });
+
+        if (rememberItem.length > 0) {
+          previousBalance = rememberItem[0].y;
+        } else {
+          if (cursor > lastDate) {
+            betweens.push({x: cursor.toISOString().substring(0, 10), y: undefined});
+          } else {
+            betweens.push({x: cursor.toISOString().substring(0, 10), y: previousBalance});
+          }
+        }
+
+        cursor.setDate(cursor.getDate() + 1);
+      }
+
+      renderData.push(...betweens);
     },
     getBoundaryDates () {
       const fromDate = new Date(this.year.toString());
       const toDate = new Date(this.year.toString());
+      fromDate.setHours(6);
+      toDate.setHours(6);
 
       if (this.scope === SCOPES.YEAR) {
         toDate.setFullYear(this.year + 1);
@@ -115,13 +150,22 @@ export default {
 
       return [fromDate, toDate];
     },
+    sortByDate (renderData) {
+      return renderData.sort((first, second) => {
+        const fd = new Date(first.x);
+        const sd = new Date(second.x);
+
+        if (fd < sd) return -1;
+        if (fd > sd) return 1;
+        if (fd.getTime() === sd.getTime()) return 0;
+      });
+    },
     render () {
       this.renderChart(this.renderData, this.options);
     },
     scopeAndRender () {
       this.scopeChartData();
       this.setXAxisTimeUnit();
-      this.setXAxisMinMax();
       this.render();
     },
   },
