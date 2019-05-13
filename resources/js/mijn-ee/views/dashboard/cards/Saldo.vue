@@ -27,7 +27,17 @@
         </b-button-toolbar>
       </b-col>
     </b-row>
-    <SaldoChart v-on:clicked="onChartClick" height="180" :data="balances" :month="month" :year="year" :scope="scope" />
+
+    <div class="loading-container">
+      <SaldoChart v-on:clicked="onChartClick"
+        height="180"
+        :data="balances"
+        :month="month"
+        :year="year"
+        :scope="scope"
+      />
+      <LoadingSpinner :loading="isBusy" />
+    </div>
   </b-card>
 
 </template>
@@ -39,12 +49,13 @@
 </style>
 
 <script>
+import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
 import SaldoChart from '../charts/Saldo'
 import { SCOPES } from '../filters.js'
 
 export default {
   name: 'SaldoCard',
-  components: { SaldoChart },
+  components: { LoadingSpinner, SaldoChart },
   data () {
     return {
       balances: [],
@@ -69,6 +80,7 @@ export default {
         { value: (new Date).getFullYear(), text: (new Date).getFullYear() },
       ],
       scopes: {},
+      isBusy: false,
     }
   },
   created () {
@@ -77,6 +89,8 @@ export default {
   },
   methods: {
     getBalances () {
+      this.isBusy = true;
+
       axios.get('charts/balances')
         .then(response => {
           this.balances = response.data;
@@ -86,7 +100,8 @@ export default {
           const toYear = lastItem ? (new Date(lastItem.date)).getFullYear() : null;
           this.populateYearSelect(fromYear, toYear);
         })
-        .catch(this.ee_errorHandler);
+        .catch(this.ee_errorHandler)
+        .then(() => this.isBusy = false);
     },
     populateYearSelect (fromYear, toYear) {
       if (fromYear > toYear) {
