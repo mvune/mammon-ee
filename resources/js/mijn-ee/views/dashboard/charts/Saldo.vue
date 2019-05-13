@@ -1,6 +1,7 @@
 <script>
 import { Bar } from 'vue-chartjs'
 import { SCOPES } from '../filters.js'
+import styles from '@/mijn-ee/variables.scss'
 
 export default {
   name: 'SaldoChart',
@@ -13,7 +14,7 @@ export default {
         datasets: [
           {
             label: 'Totaal',
-            backgroundColor: 'green',
+            backgroundColor: styles.primary,
             data: [],
           }
         ]
@@ -34,8 +35,8 @@ export default {
         scales: {
           xAxes: [{
             display: false,
-            barPercentage: 0.3,
-            categoryPercentage: 0.1,
+            barPercentage: 0.95,
+            categoryPercentage: 0.85,
             type: 'time',
             time: {
               unit: 'month',
@@ -75,12 +76,10 @@ export default {
     setXAxisTimeUnit () {
       if (this.scope === SCOPES.YEAR) {
         this.options.scales.xAxes[0].time.unit = 'month';
-        this.options.scales.xAxes[0].barPercentage = 0.11;
       }
       
       if (this.scope === SCOPES.MONTH) {
         this.options.scales.xAxes[0].time.unit = 'day';
-        this.options.scales.xAxes[0].barPercentage = 0.3;
       }
     },
     scopeChartData () {
@@ -90,14 +89,13 @@ export default {
       fromDateExcl.setDate(fromDateExcl.getDate() - 1);
       toDateExcl.setDate(toDateExcl.getDate() + 1);
 
-      this.renderData.datasets[0].data = this.chartData.filter(item => {
+      let renderData = this.chartData.filter(item => {
         const d = new Date(item.x);
         d.setHours(6);
         
         return d > fromDateExcl && d < toDateExcl;
       });
 
-      const renderData = this.renderData.datasets[0].data;
       const cursor = new Date(fromDate);
       const betweens = [];
       const lastDate = new Date(this.chartData[this.chartData.length - 1].x);
@@ -119,10 +117,10 @@ export default {
         if (rememberItem.length > 0) {
           previousBalance = rememberItem[0].y;
         } else {
-          if (cursor > lastDate) {
-            betweens.push({x: cursor.toISOString().substring(0, 10), y: undefined});
-          } else {
+          if (cursor < lastDate) {
             betweens.push({x: cursor.toISOString().substring(0, 10), y: previousBalance});
+          } else {
+            betweens.push({x: cursor.toISOString().substring(0, 10), y: undefined});
           }
         }
 
@@ -130,6 +128,8 @@ export default {
       }
 
       renderData.push(...betweens);
+      renderData = this.sortByDate(renderData);
+      this.renderData.datasets[0].data = renderData;
     },
     getBoundaryDates () {
       const fromDate = new Date(this.year.toString());
