@@ -34,7 +34,7 @@ export default {
         scales: {
           xAxes: [{
             display: false,
-            barPercentage: 0.95,
+            barPercentage: 1,
             categoryPercentage: 0.85,
             type: 'time',
             time: {

@@ -34,7 +34,7 @@
         </b-modal>
       </b-col>
 
-      <b-col md="10" class="ee-spinner-container">
+      <b-col md="9" class="ee-spinner-container">
         <fieldset :disabled="isBusy">
           <b-table :items="items" :fields="fields" :busy.sync="isBusy" show-empty>
 

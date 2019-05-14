@@ -30,7 +30,7 @@
 
     <div class="loading-container">
       <SaldoChart v-on:clicked="onChartClick"
-        height="180"
+        height="160"
         :data="scopedData"
         :month="month"
         :year="year"
@@ -44,6 +44,7 @@
 
 <style lang="scss" scoped>
 .time-select {
+  font-size: 0.875rem;
   width: 48%;
 }
 </style>

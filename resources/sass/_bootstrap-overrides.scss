@@ -1,6 +1,7 @@
 .card {
+    border: 1px solid $extra-dark;
+
     .card-header {
-        border-bottom: none;
         color: white;
         background-color: $theme-quaternary;
 

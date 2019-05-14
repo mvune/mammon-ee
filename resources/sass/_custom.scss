@@ -142,11 +142,12 @@ body {
 
 // Tables
 .table {
+    border: 1px solid $extra-dark;
+
     thead {
         th {
             background-color: $theme-quaternary;
-            border-color: $theme-quaternary;
-            border-top: 0;
+            border-color: $extra-dark;
             color: $white;
         }
 
@@ -196,6 +197,8 @@ body {
 
 .app-header {
     position: fixed;
+    background-color: $extra-dark;
+    border-bottom: 0;
     padding: 0;
 
     .navbar-brand {
@@ -209,6 +212,11 @@ body {
 
 .app-body {
     overflow-x: initial;
+
+    .main {
+        border-top: 2px solid $white;
+        border-left: 2px solid $white;
+    }
 }
 
 .app-footer {
@@ -229,6 +237,24 @@ body {
 }
 
 .breadcrumb {
+    background-color: initial;
+    color: $white;
     border-bottom: 0;
     margin-bottom: 0;
+}
+
+.navbar-nav .nav-link {
+    color: $gray-lighter;
+}
+
+.navbar-nav .nav-link:hover, .navbar-nav .nav-link:focus {
+    color: $white;
+}
+
+.app-header .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23cccccc' stroke-width='2.25' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.app-header .navbar-toggler:hover .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23ffffff' stroke-width='2.25' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
