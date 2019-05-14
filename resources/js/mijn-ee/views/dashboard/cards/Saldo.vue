@@ -31,7 +31,7 @@
     <div class="loading-container">
       <SaldoChart v-on:clicked="onChartClick"
         height="180"
-        :data="balances"
+        :data="scopedData"
         :month="month"
         :year="year"
         :scope="scope"
@@ -51,31 +51,23 @@
 <script>
 import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
 import SaldoChart from '../charts/Saldo'
-import { SCOPES } from '../filters.js'
+import { MONTHS, SCOPES } from '../filters.js'
 
 export default {
   name: 'SaldoCard',
   components: { LoadingSpinner, SaldoChart },
   data () {
     return {
-      balances: [],
-      month: 1,
+      chartData: [],
+      scopedData: [],
+      firstYear: null,
+      lastYear: null,
+      firstMonth: null,
+      lastMonth: null,
+      month: null,
       year: (new Date).getFullYear(),
       scope: SCOPES.YEAR,
-      months: [
-        { value: '1', text: 'januari' },
-        { value: '2', text: 'februari' },
-        { value: '3', text: 'maart' },
-        { value: '4', text: 'april' },
-        { value: '5', text: 'mei' },
-        { value: '6', text: 'juni' },
-        { value: '7', text: 'juli' },
-        { value: '8', text: 'augustus' },
-        { value: '9', text: 'september' },
-        { value: '10', text: 'oktober' },
-        { value: '11', text: 'november' },
-        { value: '12', text: 'december' },
-      ],
+      months: [],
       years: [
         { value: (new Date).getFullYear(), text: (new Date).getFullYear() },
       ],
@@ -93,24 +85,113 @@ export default {
 
       axios.get('charts/balances')
         .then(response => {
-          this.balances = response.data;
+          this.chartData = this.dataToChartData(response.data);
+          this.scopeChartData();
           const firstItem = response.data[0];
           const lastItem = response.data[response.data.length - 1];
-          const fromYear = firstItem ? (new Date(firstItem.date)).getFullYear() : null;
-          const toYear = lastItem ? (new Date(lastItem.date)).getFullYear() : null;
-          this.populateYearSelect(fromYear, toYear);
+          this.firstYear = firstItem ? (new Date(firstItem.date).getFullYear()) : null;
+          this.lastYear = lastItem ? (new Date(lastItem.date).getFullYear()) : null;
+          this.firstMonth = firstItem ? (new Date(firstItem.date).getMonth()) : null;
+          this.lastMonth = lastItem ? (new Date(lastItem.date).getMonth()) : null;
+          this.populateYearSelect();
         })
         .catch(this.ee_errorHandler)
         .then(() => this.isBusy = false);
     },
-    populateYearSelect (fromYear, toYear) {
-      if (fromYear > toYear) {
-        [fromYear, toYear] = [toYear, fromYear];
+    dataToChartData (data) {
+      const chartData = [];
+
+      for (let item of data) {
+        chartData.push({
+          x: item.date,
+          y: item.balance,
+        });
       }
 
+      return chartData;
+    },
+    scopeChartData () {
+      const [fromDate, toDate] = this.getBoundaryDates();
+      const fromDateExcl = new Date(fromDate);
+      const toDateExcl = new Date(toDate);
+      fromDateExcl.setDate(fromDateExcl.getDate() - 1);
+      toDateExcl.setDate(toDateExcl.getDate() + 1);
+
+      let scopedData = this.chartData.filter(item => {
+        const d = new Date(item.x);
+        d.setHours(6);
+        
+        return d > fromDateExcl && d < toDateExcl;
+      });
+
+      const cursor = new Date(fromDate);
+      const betweens = [];
+      const lastDate = new Date(this.chartData[this.chartData.length - 1].x);
+      let previousBalance;
+
+      const firstItemIndex = this.chartData.findIndex(item => {
+        return scopedData[0] ? item.x === scopedData[0].x : false;
+      });
+      
+      if (firstItemIndex > 0) {
+        previousBalance = this.chartData[firstItemIndex - 1].y;
+      }
+
+      while (cursor < toDateExcl) {
+        let rememberItem = scopedData.filter(item => {
+          return (new Date(item.x)).toISOString().substring(0, 10) === cursor.toISOString().substring(0, 10);
+        });
+
+        if (rememberItem.length > 0) {
+          previousBalance = rememberItem[0].y;
+        } else {
+          if (cursor < lastDate) {
+            betweens.push({x: cursor.toISOString().substring(0, 10), y: previousBalance});
+          } else {
+            betweens.push({x: cursor.toISOString().substring(0, 10), y: undefined});
+          }
+        }
+
+        cursor.setDate(cursor.getDate() + 1);
+      }
+
+      scopedData.push(...betweens);
+      scopedData = this.sortByDate(scopedData);
+      this.scopedData = scopedData;
+    },
+    getBoundaryDates () {
+      const fromDate = new Date(this.year.toString());
+      const toDate = new Date(this.year.toString());
+      fromDate.setHours(6);
+      toDate.setHours(6);
+
+      if (this.scope === SCOPES.YEAR) {
+        toDate.setFullYear(this.year + 1);
+        toDate.setDate(0); // Set to last day of previous month.
+      }
+      
+      if (this.scope === SCOPES.MONTH) {
+        fromDate.setMonth(this.month - 1);
+        toDate.setMonth(this.month);
+        toDate.setDate(0); // Set to last day of previous month.
+      }
+
+      return [fromDate, toDate];
+    },
+    sortByDate (scopedData) {
+      return scopedData.sort((first, second) => {
+        const fd = new Date(first.x);
+        const sd = new Date(second.x);
+
+        if (fd < sd) return -1;
+        if (fd > sd) return 1;
+        if (fd.getTime() === sd.getTime()) return 0;
+      });
+    },
+    populateYearSelect () {
       this.years = [];
 
-      for (let y = fromYear; y <= toYear; y++) {
+      for (let y = this.firstYear; y <= this.lastYear; y++) {
         this.years.push({ value: y, text: y });
       }
 
@@ -118,11 +199,41 @@ export default {
         this.year = this.years[this.years.length - 1].value;
       }
     },
-    onChartClick (elements) {
-      if (elements.length > 0 && this.scope === this.scopes.YEAR) {
-        this.month = (new Date(elements[0]._chart.data.datasets[0].data[elements[0]._index].x)).getMonth() + 1;
-        this.scope = this.scopes.MONTH;
+    populateMonthSelect () {
+      if (this.scope === SCOPES.MONTH) {
+        const fromMonth = (this.year === this.firstYear) ? this.firstMonth : undefined;
+        const toMonth = (this.year === this.lastYear) ? this.lastMonth + 1 : undefined;
+
+        this.months = MONTHS.slice(fromMonth, toMonth);
+
+        if (fromMonth && (!this.month || fromMonth > this.month)) {
+          this.month = fromMonth + 1;
+        }
+        if (toMonth && (!this.month || toMonth < this.month)) {
+          this.month = toMonth;
+        }
+      } else {
+        this.months = [];
       }
+    },
+    onChartClick (elements) {
+      if (elements.length > 0 && this.scope === SCOPES.YEAR) {
+        this.month = (new Date(elements[0]._chart.data.datasets[0].data[elements[0]._index].x)).getMonth() + 1;
+        this.scope = SCOPES.MONTH;
+      }
+    },
+  },
+  watch: {
+    month: function () {
+      this.scopeChartData();
+    },
+    year: function () {
+      this.populateMonthSelect();
+      this.scopeChartData();
+    },
+    scope: function () {
+      this.populateMonthSelect();
+      this.scopeChartData();
     },
   },
 }
