@@ -110,7 +110,7 @@ class PostTransactionsRequest extends FormRequest
             return false;
         }
 
-        // Add formatted csv to request.
+        // Add transactions array to request.
         $this->request->add(['transactions' => $transactions]);
 
         return true;
@@ -129,6 +129,13 @@ class PostTransactionsRequest extends FormRequest
         $trn['updated_at'] = Carbon::now();
     }
 
+    /**
+     * Links a transaction to an account through the transactions's `iban`.
+     * Creates the account if it doesn't yet exist.
+     *
+     * @param array $trn
+     * @return void
+     */
     private function linkToAccount(&$trn)
     {
         $account = $this->getUserAccounts()->first(function ($account) use ($trn) {

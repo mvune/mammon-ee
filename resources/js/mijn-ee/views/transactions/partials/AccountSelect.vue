@@ -3,7 +3,7 @@
   <LoadingContainer :loading="isBusy">
     <b-form-group>
       <label class="prim-head-sm">Accounts</label>
-      <b-form-checkbox
+      <!-- <b-form-checkbox
         v-model="allSelected"
         :indeterminate="indeterminate"
         aria-describedby="accounts"
@@ -11,13 +11,12 @@
         @change="toggleAll"
       >
         Alle
-      </b-form-checkbox>
+      </b-form-checkbox> -->
 
       <b-form-checkbox-group
         id="checkbox-group-accounts"
         v-model="selected"
         name="accounts"
-        class="ml-4"
         aria-label="Individuele accounts"
       >
         <b-form-checkbox v-for="ac of accounts" :key="ac.id" :value="ac.id">

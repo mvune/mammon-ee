@@ -24,4 +24,13 @@ class Account extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function setBalanceToLast()
+    {
+        if ($lastTransaction = $this->transactions()->latest('serial_number')->first()) {
+            $this->balance = $lastTransaction->balance_after_transaction;
+            $this->balance_date = $lastTransaction->date;
+            $this->save();
+        }
+    }
 }

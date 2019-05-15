@@ -24,15 +24,15 @@
 
             <template slot="amount" slot-scope="row">
               <template v-if="row.value > 0">
-                <span class="text-success amount-positive">{{ row.value | ee_valuta }}</span>
+                <span class="text-success amount-positive">{{ row.value | ee_valuta(true) }}</span>
               </template>
 
               <template v-else-if="row.value < 0">
-                <span class="text-primary">{{ row.value | ee_valuta }}</span>
+                <span class="text-primary">{{ row.value | ee_valuta(true) }}</span>
               </template>
 
               <template v-else>
-                <span>{{ row.value | ee_valuta }}</span>
+                <span>{{ row.value | ee_valuta(true) }}</span>
               </template>
             </template>
 

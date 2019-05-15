@@ -18,6 +18,8 @@ class Account extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'iban' => $this->iban,
+            'balance' => $this->balance,
+            'balance_date' => $this->balance_date,
         ];
     }
 }

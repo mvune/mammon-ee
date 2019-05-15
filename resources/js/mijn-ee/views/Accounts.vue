@@ -64,6 +64,13 @@
 
             </template>
 
+            <template slot="balance" slot-scope="row">
+              <span v-if="row.item.balance === null">-</span>
+              <span v-else v-b-tooltip.hover :title="$options.filters.ee_date(row.item.balance_date)">
+                {{ row.value | ee_valuta }}
+              </span>
+            </template>
+
             <template slot="edit" slot-scope="row">
               <template v-if="row.item.isEditing">
                 <button type="button" title="Opslaan" @click="onUpdate(row)" class="action-button">
@@ -134,7 +141,7 @@ export default {
       fields: [
         { key: 'iban', label: 'Rekening', sortable: true, thClass: 'hover-highlight', tdClass: this.getTdClass },
         { key: 'name', label: 'Alias', sortable: true, thClass: 'hover-highlight', tdClass: this.getTdClass },
-        { key: 'saldo', label: 'Saldo', sortable: true, thClass: 'hover-highlight' },
+        { key: 'balance', label: 'Saldo', sortable: true, thClass: 'hover-highlight' },
         { key: 'edit', label: '', tdClass: 'action-buttons-column' },
       ],
       items: [], // Accounts
@@ -267,7 +274,6 @@ export default {
       }
     },
     formatItem (item) {
-      item.saldo = '€ 0,00';
       item.isEditing = false;
       return item;
     },

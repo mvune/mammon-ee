@@ -1,10 +1,10 @@
 const eurFormatter = new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' });
 const nbsp = String.fromCharCode(160);
 
-Vue.filter('ee_valuta', function (value) {
+Vue.filter('ee_valuta', function (value, plusSign = false) {
   let output = eurFormatter.format(value);
 
-  if (value > 0) {
+  if (plusSign && value > 0) {
     output = output.replace(nbsp, nbsp + '+');
   }
 

@@ -45,5 +45,9 @@ class TransactionController extends Controller
     public function store(PostTransactionsRequest $request)
     {
         Transaction::insert($request->input('transactions'));
+
+        foreach (Auth::user()->accounts as $account) {
+            $account->setBalanceToLast();
+        }
     }
 }

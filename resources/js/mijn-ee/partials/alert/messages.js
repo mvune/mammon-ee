@@ -8,7 +8,7 @@ export default {
   unauthenticated: {
     variant: 'danger',
     title: 'Geen toegang',
-    body: 'Log opnieuw in.',
+    body: 'U wordt omgeleid naar de inlogpagina.',
   },
   defaultWrongInput: {
     variant: 'danger',

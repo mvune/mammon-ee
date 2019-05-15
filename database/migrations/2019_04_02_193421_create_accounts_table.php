@@ -18,6 +18,8 @@ class CreateAccountsTable extends Migration
             $table->string('name', 100)->nullable();
             $table->string('iban', 34);
             $table->integer('user_id')->unsigned();
+            $table->float('balance', 18, 2)->nullable();
+            $table->date('balance_date')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')
