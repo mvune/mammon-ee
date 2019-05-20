@@ -1,5 +1,6 @@
 .card {
     border: 1px solid $extra-dark;
+    background-color: $white;
 
     .card-header {
         color: white;
@@ -10,14 +11,14 @@
             margin-bottom: 0.25rem;
         }
     }
-
-    .card-body {
-        background-color: $white;
-    }
 }
 
 .btn-outline-primary:focus, .btn-outline-primary.focus {
   box-shadow: 0 0 0 0.1rem rgba($primary, 0.5);
+}
+
+.form-group {
+  margin-bottom: 0.75rem;
 }
 
 .modal-header,
@@ -33,6 +34,10 @@
 }
 
 // CoreUI overrides
+.list-group-item-action:hover, .list-group-item-action:focus {
+  background-color: $white;
+}
+
 .sidebar {
     .nav-link.active:hover .nav-icon {
         color: $theme-primary;

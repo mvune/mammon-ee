@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\TransactionFilterResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class User extends JsonResource
+class CategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,9 +18,9 @@ class User extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'email' => $this->email,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'side' => $this->side,
+            'sequence' => $this->sequence,
+            'rules' => TransactionFilterResource::collection($this->transactionFilters),
         ];
     }
 }

@@ -2,10 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Category;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-class AccountRequest extends FormRequest
+class CategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,13 +15,7 @@ class AccountRequest extends FormRequest
      */
     public function authorize()
     {
-        if ($this->isMethod('PUT')) {
-            $account = $this->route('account');
-
-            return $account && $account->user->is(Auth::user());
-        } else {
-            return true;
-        }
+        return true;
     }
 
     /**
@@ -31,8 +26,10 @@ class AccountRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'max:100',
-            'iban' => 'required|max:34',
+            'name' => 'required|string|max:100',
+            'side' => ['required', Rule::in(Category::SIDES)],
+            'rules.*.target_id' => 'required|exists:transaction_filter_targets,id',
+            'rules.*.expression' => 'required|string',
         ];
     }
 }

@@ -23,6 +23,11 @@ export default {
       ]
     },
     {
+      name: 'Categorieën',
+      url: '/mijn-ee/categorieen',
+      icon: 'icon-tag',
+    },
+    {
       name: 'Rekeningen',
       url: '/mijn-ee/rekeningen',
       icon: 'icon-star',

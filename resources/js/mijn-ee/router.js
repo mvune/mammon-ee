@@ -6,6 +6,7 @@ const DefaultContainer = () => import('@/mijn-ee/containers/DefaultContainer')
 
 // Views
 const Accounts = () => import('@/mijn-ee/views/Accounts')
+const Categories = () => import('@/mijn-ee/views/categories/Index')
 const Dashboard = () => import('@/mijn-ee/views/dashboard/Index')
 const Page404 = () => import('@/mijn-ee/views/Page404')
 const Profile = () => import('@/mijn-ee/views/Profile')
@@ -49,6 +50,11 @@ export default new Router({
               component: TransactionsAdd,
             },
           ]
+        },
+        {
+          path: 'categorieen',
+          name: 'Categorieën',
+          component: Categories,
         },
         {
           path: 'rekeningen',

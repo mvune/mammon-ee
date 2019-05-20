@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Account;
+use App\Category;
 use App\Transaction;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -43,6 +44,11 @@ class User extends Authenticatable
     public function accounts()
     {
         return $this->hasMany(Account::class);
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
     }
 
     public function transactions()

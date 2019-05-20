@@ -88,7 +88,6 @@
 <style scoped>
 form { margin-bottom: 1rem; }
 label { margin-bottom: 0.25rem; }
-.form-group { margin-bottom: 0.75rem; }
 </style>
 
 <script>

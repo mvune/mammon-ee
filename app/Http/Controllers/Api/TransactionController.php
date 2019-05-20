@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Transaction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostTransactionsRequest;
-use App\Http\Resources\Transaction as TransactionResource;
+use App\Http\Resources\TransactionResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

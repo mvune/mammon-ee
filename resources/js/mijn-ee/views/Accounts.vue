@@ -8,7 +8,7 @@
         </b-button>
 
         <b-modal
-          @ok="onAdd"
+          @ok.prevent="onAdd"
           @shown="onAddModalShown"
           v-model="showAddModal"
           title="Rekening toevoegen"
@@ -18,7 +18,7 @@
           size="sm"
           ref="addModal"
         >
-          <b-form @submit.prevent="onAdd($event)" novalidate>
+          <b-form @submit.prevent="onAdd" novalidate>
             <b-form-group>
               <b-form-input v-model.trim="form.name" type="text" placeholder="Kies een naam" />
               <FormFieldError :form="$v.form" :field="'name'" />
@@ -102,7 +102,7 @@
                     Weet u zeker dat u rekening
                     <strong v-if="row.item.name">{{ row.item.name }} ({{ row.item.iban | ee_iban }})</strong>
                     <strong v-if="!row.item.name">{{ row.item.iban | ee_iban }}</strong>
-                    wilt verwijderen?
+                    en alle transacties wilt verwijderen?
                   </p>
                 </b-modal>
               </template>
@@ -176,8 +176,7 @@ export default {
         () => this.isBusy = false
       );
     },
-    onAdd (e) {
-      e.preventDefault();
+    onAdd () {
       this.$v.form.$touch();
 
       if (!this.$v.form.$invalid) {

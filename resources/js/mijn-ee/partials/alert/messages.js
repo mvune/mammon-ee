@@ -5,6 +5,11 @@ export default {
     title: 'Gelukt',
     body: 'Rekening verwijderd.',
   },
+  categoryDeleted: {
+    variant: 'success',
+    title: 'Gelukt',
+    body: 'Categorie verwijderd.',
+  },
   unauthenticated: {
     variant: 'danger',
     title: 'Geen toegang',

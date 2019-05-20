@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Transaction extends JsonResource
+class TransactionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -26,7 +26,7 @@ class Transaction extends JsonResource
             'counterparty_name' => $this->counterparty_name,
             'code' => [
                 'value' => $this->code,
-                'label' => __('banks.' . $this->bic . '.transaction_types.' . $this->code),
+                'label' => __("banks.{$this->bic}.transaction_types.{$this->code}"),
             ],
             'reference' => $this->reference,
             'payment_code' => $this->payment_code,

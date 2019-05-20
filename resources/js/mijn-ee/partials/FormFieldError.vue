@@ -12,6 +12,10 @@
         Moet minimaal {{ form[field].$params.minLength.min }} tekens lang zijn
       </span>
 
+      <span v-else-if="form[field].maxLength === false">
+        Mag niet langer zijn dan {{ form[field].$params.maxLength.max }} tekens
+      </span>
+
       <template v-else-if="field === 'passwordRepeat'">
         <span v-if="form[field].required && !form[field].sameAs">
           Dit veld komt niet overeen met het nieuwe wachtwoord

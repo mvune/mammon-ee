@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Lang;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\User as UserResource;
+use App\Http\Resources\UserResource;
 
 class UserAccountController extends Controller
 {

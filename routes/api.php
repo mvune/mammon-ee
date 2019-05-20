@@ -21,7 +21,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/charts/amounts', 'Api\ChartDataController@getAmounts');
     Route::get('/charts/balances', 'Api\ChartDataController@getBalances');
 
+    Route::get('/transaction-filter-targets', 'Api\TransactionFilterTargetController@index');
+
     Route::apiResource('accounts', 'Api\AccountController')->except(['show']);
+
+    Route::apiResource('categories', 'Api\CategoryController')->except(['show']);
 
     Route::apiResource('transactions', 'Api\TransactionController')->only(['index', 'store']);
 
