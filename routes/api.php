@@ -25,6 +25,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::apiResource('accounts', 'Api\AccountController')->except(['show']);
 
+    Route::patch('categories/order', 'Api\CategoryController@order')->name('categories.order');
     Route::apiResource('categories', 'Api\CategoryController')->except(['show']);
 
     Route::apiResource('transactions', 'Api\TransactionController')->only(['index', 'store']);

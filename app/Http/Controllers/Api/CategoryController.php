@@ -18,7 +18,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return CategoryResource::collection(Auth::user()->categories);
+        return CategoryResource::collection(Auth::user()->categories->sortByDesc('priority'));
     }
 
     /**
@@ -60,5 +60,31 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $category->delete();
+    }
+
+    /**
+     * Change order/priority of categories.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function order(Request $request)
+    {
+        $request->validate([
+            '*.id' => 'required',
+            '*.priority' => 'required|integer|max:32767',
+        ]);
+
+        $categories = Auth::user()->categories;
+        $ids = $categories->pluck('id')->toArray();
+
+        foreach ($request->all() as $category) {
+            if (in_array($category['id'], $ids)) {
+                $categories
+                    ->where('id', $category['id'])
+                    ->first()
+                    ->update(['priority' => $category['priority']]);
+            }
+        }
     }
 }

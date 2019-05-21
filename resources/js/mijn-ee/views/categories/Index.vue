@@ -2,11 +2,12 @@
   <div class="animated fadeIn">
     <b-row>
       <b-col sm="8" md="6" lg="5">
-        <LoadingContainer :loading="isBusy && isDebet()">
+        <LoadingContainer :loading="isBusy('debet')">
           <ListGroup
             :categories="categories"
             :isBusy="isBusy"
             side="debet"
+            @order="onOrder"
             @delete="onDelete"
             @edit="onEdit"
             @new="onNew" />
@@ -14,11 +15,12 @@
       </b-col>
 
       <b-col sm="8" md="6" lg="5">
-        <LoadingContainer :loading="isBusy && isCredit()">
+        <LoadingContainer :loading="isBusy('credit')">
           <ListGroup
             :categories="categories"
             :isBusy="isBusy"
             side="credit"
+            @order="onOrder"
             @delete="onDelete"
             @edit="onEdit"
             @new="onNew" />
@@ -56,15 +58,16 @@ export default {
       activeSide: '', // 'debet' || 'credit'
       showEditModal: false,
       showDeleteModal: false,
-      isBusy: false,
+      isBusyDebet: false,
+      isBusyCredit: false,
     }
   },
   created () {
     this.getCategories();
   },
   methods: {
-    onNew (side) {
-      this.activeSide = side;
+    onNew (newSide) {
+      this.activeSide = newSide;
       this.category = null;
       this.showEditModal = true;
     },
@@ -74,9 +77,13 @@ export default {
       this.showEditModal = true;
     },
     onDelete (category) {
-      this.activeSide = category.side;
       this.category = category;
       this.showDeleteModal = true;
+    },
+    onOrder (event) {
+      if (event && event.moved && event.moved.element) {
+        this.orderCategories(event.moved.element.side);
+      }
     },
     save (category) {
       if (category.id) {
@@ -86,20 +93,33 @@ export default {
       }
     },
     remove (category) {
-      this.deleteCategory(category.id);
+      this.deleteCategory(category);
     },
     getCategories () {
-      this.isBusy = true;
+      this.isBusy('both', true);
 
       this.$subscribeTo(
         CategoryService.getCategories(),
         data => this.categories = data,
         this.ee_errorHandler,
-        () => this.isBusy = false
+        () => this.isBusy('both', false)
+      );
+    },
+    orderCategories (side) {
+      this.isBusy(side, true);
+      const categories = this.categories.filter(category => category.side === side);
+
+      this.$subscribeTo(
+        CategoryService.orderCategories(categories),
+        () => {
+          this.ee_showAlert('defaultSuccess');
+        },
+        this.ee_errorHandler,
+        () => this.isBusy(side, false)
       );
     },
     updateCategory (category) {
-      this.isBusy = true;
+      this.isBusy(category.side, true);
 
       this.$subscribeTo(
         CategoryService.updateCategory(category.id, category),
@@ -113,11 +133,11 @@ export default {
           this.ee_showAlert('defaultSuccess');
         },
         this.ee_errorHandler,
-        () => this.isBusy = false
+        () => this.isBusy(category.side, false)
       );
     },
     createCategory (category) {
-      this.isBusy = true;
+      this.isBusy(category.side, true);
 
       this.$subscribeTo(
         CategoryService.createCategory(category),
@@ -126,27 +146,35 @@ export default {
           this.ee_showAlert('defaultSuccess');
         },
         this.ee_errorHandler,
-        () => this.isBusy = false
+        () => this.isBusy(category.side, false)
       );
     },
-    deleteCategory (id) {
-      this.isBusy = true;
+    deleteCategory (category) {
+      this.isBusy(category.side, true);
 
       this.$subscribeTo(
-        CategoryService.deleteCategory(id),
+        CategoryService.deleteCategory(category.id),
         () => {
-          this.categories = this.categories.filter(item => item.id !== id);
+          this.categories = this.categories.filter(item => item.id !== category.id);
           this.ee_showAlert('categoryDeleted');
         },
         this.ee_errorHandler,
-        () => this.isBusy = false
+        () => this.isBusy(category.side, false)
       )
     },
-    isDebet () {
-      return !this.activeSide || this.activeSide === 'debet';
-    },
-    isCredit () {
-      return !this.activeSide || this.activeSide === 'credit';
+    isBusy (side, value) {
+      if (typeof value !== 'undefined') {
+        // Setter
+        value = Boolean(value);
+        if (side === 'debet') this.isBusyDebet = value;
+        if (side === 'credit') this.isBusyCredit = value;
+        if (side === 'both') this.isBusyDebet = this.isBusyCredit = value;
+        return value;
+      } else {
+        // Getter
+        if (side === 'debet') return this.isBusyDebet;
+        if (side === 'credit') return this.isBusyCredit;
+      }
     },
   },
 }

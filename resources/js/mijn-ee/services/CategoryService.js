@@ -8,6 +8,11 @@ export function getCategories() {
     );
 }
 
+export function orderCategories(data) {
+  data = data.map((item, index) => ({ id: item.id, priority: (data.length - index) * 10 }));
+  return from(axios.patch('categories/order', data));
+}
+
 export function createCategory(data) {
   return from(axios.post('categories', data));
 }

@@ -13,27 +13,40 @@
       </b-list-group-item>
 
       <!-- Items -->
-      <template v-for="category in categories">
-        <b-list-group-item
-          v-if="category.side === side"
-          v-b-modal="'edit-modal-' + category.id"
-          :key="category.id"
-          @click="$emit('edit', category)"
-          button
-        >
-          {{ category.name }}
-          <!-- Delete button -->
-          <button
-            type="button"
-            v-b-modal="'delete-modal-' + category.id"
-            title="Verwijderen"
-            class="action-button delete-button float-right"
-            @click="$emit('delete', category) && $event.stopPropagation()"
+      <draggable :list="categories" handle=".handle" @change="$emit('order', $event)">
+        <template v-for="category in categories">
+          <b-list-group-item
+            v-if="category.side === side"
+            v-b-modal="'edit-modal-' + category.id"
+            :key="category.id"
+            @click="$emit('edit', category)"
+            button
           >
-            <i aria-hidden="true" class="icon-trash text-danger"></i>
-          </button>
-        </b-list-group-item>
-      </template>
+            {{ category.name }}
+            <div class="btn-container float-right">
+              <!-- Move button -->
+              <button
+                type="button"
+                title="Rangschikken"
+                class="action-button move-button handle"
+                @click.prevent="$event.stopPropagation()"
+              >
+                <i aria-hidden="true" class="icon-menu text-primary"></i>
+              </button>
+              <!-- Delete button -->
+              <button
+                type="button"
+                title="Verwijderen"
+                class="action-button delete-button"
+                v-b-modal="'delete-modal-' + category.id"
+                @click="$emit('delete', category) && $event.stopPropagation()"
+              >
+                <i aria-hidden="true" class="icon-trash text-danger"></i>
+              </button>
+            </div>
+          </b-list-group-item>
+        </template>
+      </draggable>
 
       <!-- New button -->
       <b-list-group-item>
@@ -47,14 +60,21 @@
 </template>
 
 <style lang="scss" scoped>
-.delete-button {
+.btn-container {
   margin-right: -0.75rem;
+}
+
+.move-button {
+  cursor: move;
 }
 </style>
 
 <script>
+import draggable from 'vuedraggable'
+
 export default {
   name: 'CategoriesListGroup',
+  components: { draggable },
   props: {
     categories: Array,
     side: String,

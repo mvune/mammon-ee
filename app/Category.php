@@ -11,7 +11,7 @@ class Category extends Model
     const SIDE_DEBET = 'debet';
     const SIDES = [self::SIDE_CREDIT, self::SIDE_DEBET];
 
-    protected $fillable = ['name', 'side', 'sequence'];
+    protected $fillable = ['name', 'side', 'priority'];
 
     public function transactionFilters()
     {

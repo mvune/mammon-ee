@@ -19,7 +19,7 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'side' => $this->side,
-            'sequence' => $this->sequence,
+            'priority' => $this->priority,
             'rules' => TransactionFilterResource::collection($this->transactionFilters),
         ];
     }

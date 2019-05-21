@@ -180,7 +180,7 @@ export default {
       category.name = this.form.name;
       category.rules = this.form.rules;
       category.side = category.side || this.side;
-      category.sequence = category.sequence || 99;
+      category.priority = category.priority;
       return category;
     },
     formDataFromCategory () {

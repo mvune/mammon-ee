@@ -33,6 +33,7 @@
         "vue-perfect-scrollbar": "^0.1.0",
         "vue-router": "^3.0.2",
         "vue-rx": "^6.1.0",
+        "vuedraggable": "^2.21.0",
         "vuelidate": "^0.7.4"
     },
     "devDependencies": {
