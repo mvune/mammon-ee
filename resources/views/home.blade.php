@@ -11,7 +11,7 @@
       <div class="col-md-7 my-auto">
         <div class="header-content mx-auto">
           <h1 class="mb-5">{{ __('home.header') }}</h1>
-          <a href="{{ route('register') }}" class="btn btn-outline btn-xl js-scroll-trigger">{{ __('home.header_button') }}</a>
+          <a href="{{ route('register') }}" class="btn btn-outline btn-xl">{{ __('home.header_button') }}</a>
         </div>
       </div>
       <div class="col-md-5 my-auto">
@@ -30,13 +30,13 @@
   </div>
 </header>
 
-<section class="download bg-primary text-center" id="wat">
+<section class="download bg-primary text-center" id="what">
   <div class="container">
     <div class="row">
       <div class="col-md-9 mx-auto">
         <h2 class="section-heading">{{ __('Uw financiën overzichtelijk verwerkt in hapklare grafiekjes en tabelletjes') }}</h2>
         <p>Wil je weten hoe het werkt? Maak dan nu gratis een account aan!</p>
-        <a class="btn btn-outline btn-xl js-scroll-trigger" href="{{ route('register') }}"><img src="images/mammon-ee-large.png" height="50" alt="Mammon-ee"></a>
+        <a class="btn btn-outline btn-primary btn-xl" href="{{ route('register') }}"><img src="images/mammon-ee-large.png" height="50" alt="Mammon-ee"></a>
       </div>
     </div>
   </div>
@@ -102,33 +102,20 @@
   </div>
 </section>
 
-<section class="cta">
+<section class="cta" id="cta">
   <div class="cta-content">
     <div class="container">
       <h2>Gewoon eens proberen?<br>Begin met registreren.</h2>
-      <a href="{{ route('register') }}" class="btn btn-outline btn-xl js-scroll-trigger">Laten we beginnen!</a>
+      <a href="{{ route('register') }}" class="btn btn-outline btn-xl btn-start">Laten we beginnen!</a>
     </div>
   </div>
   <div class="overlay"></div>
 </section>
 
-<section class="contact bg-primary" id="code">
-  <div class="container">
-    <h2>W<span><img src="favicon.png" height="64" class="inline-ee" alt=""></span>ten hoe het gemaakt is?</h2>
-    <p>Bekijk op Github</p>
-    <ul class="list-inline list-social">
-      <li class="list-inline-item social-github">
-        <a href="https://github.com/mvune/mammon-ee" target="_blank" rel="noopener noreferrer" class="js-scroll-trigger">
-          <i class="fa fa-github"></i>
-        </a>
-      </li>
-    </ul>
-  </div>
-</section>
-
 <footer class="home-footer">
   <div class="container">
     <p>&copy; Mammon-ee 2019</p>
+    
     <ul class="list-inline">
       <li class="list-inline-item">
         <a href="#">Privacy</a>
@@ -138,6 +125,14 @@
       </li>
       <li class="list-inline-item">
         <a href="#">FAQ</a>
+      </li>
+    </ul>
+
+    <ul class="list-inline list-social">
+      <li class="list-inline-item social-github">
+        <a href="https://github.com/mvune/mammon-ee" target="_blank" rel="noopener noreferrer" class="social-icon-link">
+          <i class="fa fa-github"></i>
+        </a>
       </li>
     </ul>
   </div>

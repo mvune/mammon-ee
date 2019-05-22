@@ -1,11 +1,11 @@
 <template>
   <div class="animated fadeIn">
     <b-row>
-      <b-col md="10" lg="4">
+      <b-col md="11" lg="3">
         <AccountSelect v-stream:selected="accounts$" />
       </b-col>
 
-      <b-col md="10" lg="8">
+      <b-col md="11" lg="8">
         <div class="ee-spinner-container">
           <b-table
             id="transactions-table"
