@@ -1,6 +1,5 @@
 <template>
   <div class="animated fadeIn">
-
     <b-row>
       <b-col xs="11" sm="9" md="7" lg="5" class="ee-spinner-container">
         <b-form-group>

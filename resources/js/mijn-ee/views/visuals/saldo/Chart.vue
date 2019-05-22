@@ -1,6 +1,6 @@
 <script>
 import { Bar } from 'vue-chartjs'
-import { SCOPES } from '../filters.js'
+import { SCOPES } from '@/mijn-ee/globals/constants.js'
 import styles from '@/mijn-ee/variables.scss'
 
 export default {

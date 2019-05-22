@@ -84,7 +84,7 @@ import { combineLatest } from 'rxjs'
 import { map, pluck, switchMap, tap, startWith, skip } from 'rxjs/operators'
 
 export default {
-  name: 'TransactionsIndex',
+  name: 'Transactions',
   components: { Details, AccountSelect, LoadingSpinner },
   data () {
     return {

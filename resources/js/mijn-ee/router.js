@@ -5,13 +5,14 @@ import Router from 'vue-router'
 const DefaultContainer = () => import('@/mijn-ee/containers/DefaultContainer')
 
 // Views
-const Accounts = () => import('@/mijn-ee/views/Accounts')
-const Categories = () => import('@/mijn-ee/views/categories/Index')
-const Dashboard = () => import('@/mijn-ee/views/dashboard/Index')
+const Accounts = () => import('@/mijn-ee/views/accounts/Accounts')
+const Categories = () => import('@/mijn-ee/views/categories/Categories')
+const Dashboard = () => import('@/mijn-ee/views/dashboard/Dashboard')
 const Page404 = () => import('@/mijn-ee/views/Page404')
 const Profile = () => import('@/mijn-ee/views/Profile')
-const TransactionsAdd = () => import('@/mijn-ee/views/transactions/Add')
-const TransactionsIndex = () => import('@/mijn-ee/views/transactions/Index')
+const TransactionsAdd = () => import('@/mijn-ee/views/transactions/TransactionsAdd')
+const Transactions = () => import('@/mijn-ee/views/transactions/Transactions')
+const Visuals = () => import('@/mijn-ee/views/visuals/Visuals')
 
 Vue.use(Router)
 
@@ -32,6 +33,11 @@ export default new Router({
           component: Dashboard,
         },
         {
+          path: 'visueel',
+          name: 'Visueel',
+          component: Visuals,
+        },
+        {
           path: 'transacties',
           redirect: '/mijn-ee/transacties/overzicht',
           name: 'Transacties',
@@ -42,7 +48,7 @@ export default new Router({
             {
               path: 'overzicht',
               name: 'Overzicht',
-              component: TransactionsIndex,
+              component: Transactions,
             },
             {
               path: 'toevoegen',

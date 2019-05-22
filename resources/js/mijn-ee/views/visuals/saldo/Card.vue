@@ -51,8 +51,8 @@
 
 <script>
 import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
-import SaldoChart from '../charts/Saldo'
-import { MONTHS, SCOPES } from '../filters.js'
+import { MONTHS, SCOPES } from '@/mijn-ee/globals/constants.js'
+import SaldoChart from './Chart'
 
 export default {
   name: 'SaldoCard',

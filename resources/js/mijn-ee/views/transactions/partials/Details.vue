@@ -40,7 +40,7 @@ td {
 
 <script>
 export default {
-  name: 'TransactionDetails',
+  name: 'TransactionsDetails',
   props: ['transaction'],
 }
 </script>

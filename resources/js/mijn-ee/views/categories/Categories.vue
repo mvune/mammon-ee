@@ -49,7 +49,7 @@ import LoadingContainer from '@/mijn-ee/partials/loading/Container'
 import * as CategoryService from '@/mijn-ee/services/CategoryService'
 
 export default {
-  name: 'CategoriesIndex',
+  name: 'Categories',
   components: { EditModal, DeleteModal, ListGroup, LoadingContainer },
   data () {
     return {

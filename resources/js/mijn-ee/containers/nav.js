@@ -6,6 +6,11 @@ export default {
       icon: 'icon-home',
     },
     {
+      name: 'Visueel',
+      url: '/mijn-ee/visueel',
+      icon: 'icon-eye',
+    },
+    {
       name: 'Transacties',
       url: '/mijn-ee/transacties',
       icon: 'icon-docs',
