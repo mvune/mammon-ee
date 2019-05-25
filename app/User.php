@@ -5,6 +5,7 @@ namespace App;
 use App\Account;
 use App\Category;
 use App\Transaction;
+use App\TransactionFilter;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -54,5 +55,11 @@ class User extends Authenticatable
     public function transactions()
     {
         return $this->hasManyThrough(Transaction::class, Account::class);
+    }
+
+    public function transactionFilters()
+    {
+        return $this->hasManyThrough(TransactionFilter::class, Category::class)
+                    ->orderByCategoryPriority('desc');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Category;
+use App\Jobs\AssignCategoriesToTransactions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
@@ -18,7 +19,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return CategoryResource::collection(Auth::user()->categories->sortByDesc('priority'));
+        return CategoryResource::collection(Auth::user()->categories()->with('transactionFilters')->get());
     }
 
     /**
@@ -31,6 +32,8 @@ class CategoryController extends Controller
     {
         $category = Auth::user()->categories()->create($request->except('rules'));
         $category->transactionFilters()->createMany($request->rules);
+
+        $this->assignCategoriesToTransactions();
         
         return new CategoryResource($category);
     }
@@ -47,6 +50,8 @@ class CategoryController extends Controller
         $category->update($request->except('rules'));
         $category->transactionFilters()->delete();
         $category->transactionFilters()->createMany($request->rules);
+
+        $this->assignCategoriesToTransactions();
         
         return new CategoryResource($category);
     }
@@ -60,6 +65,8 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $category->delete();
+
+        $this->assignCategoriesToTransactions();
     }
 
     /**
@@ -86,5 +93,12 @@ class CategoryController extends Controller
                     ->update(['priority' => $category['priority']]);
             }
         }
+
+        $this->assignCategoriesToTransactions();
+    }
+
+    private function assignCategoriesToTransactions()
+    {
+        AssignCategoriesToTransactions::dispatch(Auth::user());
     }
 }

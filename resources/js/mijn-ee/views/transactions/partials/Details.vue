@@ -28,13 +28,23 @@
       <td>Betalingskenmerk:</td>
       <td>{{ transaction.payment_code }}</td>
     </tr>
+    <tr v-if="transaction.category">
+      <td>Categorie:</td>
+      <td><i aria-hidden="true" class="icon-tag icons"></i> {{ transaction.category.name }}</td>
+    </tr>
   </table>
 </template>
 
 <style lang="scss" scoped>
+@import '../../../variables.scss';
+
 td {
   border: 0;
   padding: 0 0 0 1.5rem;
+}
+
+.icons {
+  color: $theme-tertiary;
 }
 </style>
 

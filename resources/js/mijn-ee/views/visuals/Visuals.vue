@@ -2,17 +2,24 @@
   <div class="animated fadeIn">
     <b-row>
       <b-col lg="11">
-        <SaldoCard />
+        <DailyBar />
+      </b-col>
+    </b-row>
+
+    <b-row>
+      <b-col>
+        <MonthlySheet />
       </b-col>
     </b-row>
   </div>
 </template>
 
 <script>
-import SaldoCard from './saldo/Card'
+import DailyBar from './daily/Bar'
+import MonthlySheet from './monthly/Sheet'
 
 export default {
   name: 'Visuals',
-  components: { SaldoCard },
+  components: { DailyBar, MonthlySheet },
 }
 </script>

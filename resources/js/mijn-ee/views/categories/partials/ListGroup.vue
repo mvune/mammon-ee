@@ -31,7 +31,7 @@
                 class="action-button move-button handle"
                 @click.prevent="$event.stopPropagation()"
               >
-                <i aria-hidden="true" class="icon-menu text-primary"></i>
+                <i aria-label="Rangschikken" class="icon-menu text-primary"></i>
               </button>
               <!-- Delete button -->
               <button
@@ -41,7 +41,7 @@
                 v-b-modal="'delete-modal-' + category.id"
                 @click="$emit('delete', category) && $event.stopPropagation()"
               >
-                <i aria-hidden="true" class="icon-trash text-danger"></i>
+                <i aria-label="Verwijderen" class="icon-trash text-danger"></i>
               </button>
             </div>
           </b-list-group-item>

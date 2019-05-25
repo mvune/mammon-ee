@@ -55,7 +55,7 @@ import { MONTHS, SCOPES } from '@/mijn-ee/globals/constants.js'
 import SaldoChart from './Chart'
 
 export default {
-  name: 'SaldoCard',
+  name: 'DailyBar',
   components: { LoadingSpinner, SaldoChart },
   data () {
     return {

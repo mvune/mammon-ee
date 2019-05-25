@@ -58,7 +58,10 @@
             :disabled="oneRuleLeft"
             @click="deleteRule(index)"
           >
-            <i aria-hidden="true" :class="[ oneRuleLeft ? 'disabled' : 'text-danger' ]" class="icon-trash"></i>
+            <i class="icon-trash"
+              :class="[ oneRuleLeft ? 'disabled' : 'text-danger' ]"
+              aria-label="Regel verwijderen"
+            ></i>
           </button>
         </b-col>
       </b-row>

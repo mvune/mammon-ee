@@ -31,6 +31,7 @@ class TransactionController extends Controller
                 ->when($request->has('accounts'), function ($query) use ($request) {
                     return $query->whereIn('account_id', explode(',', $request->get('accounts')));
                 })
+                ->with('category')
                 ->orderBy('serial_number', 'desc')
                 ->paginate(50)
         );

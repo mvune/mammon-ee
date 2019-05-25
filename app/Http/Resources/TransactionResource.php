@@ -31,6 +31,9 @@ class TransactionResource extends JsonResource
             'reference' => $this->reference,
             'payment_code' => $this->payment_code,
             'description_1' => $this->description_1,
+            'category' => $this->category ? [
+                'name' => $this->category->name,
+            ] : null,
         ];
     }
 }

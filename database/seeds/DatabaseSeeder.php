@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             AccountsTableSeeder::class,
             BanksTableSeeder::class,
+            TransactionFilterTargetsTableSeeder::class,
             TransactionTypesTableSeeder::class,
         ]);
     }
