@@ -2,7 +2,7 @@
 
   <LoadingContainer :loading="isBusy">
     <b-form-group>
-      <label class="prim-head-sm">Accounts</label>
+      <label class="prim-head-sm">Rekeningen</label>
       <!-- <b-form-checkbox
         v-model="allSelected"
         :indeterminate="indeterminate"

@@ -8,11 +8,11 @@ const DefaultContainer = () => import('@/mijn-ee/containers/DefaultContainer')
 const Accounts = () => import('@/mijn-ee/views/accounts/Accounts')
 const Categories = () => import('@/mijn-ee/views/categories/Categories')
 const Dashboard = () => import('@/mijn-ee/views/dashboard/Dashboard')
+const Home = () => import('@/mijn-ee/views/home/Home')
 const Page404 = () => import('@/mijn-ee/views/Page404')
 const Profile = () => import('@/mijn-ee/views/Profile')
 const TransactionsAdd = () => import('@/mijn-ee/views/transactions/TransactionsAdd')
 const Transactions = () => import('@/mijn-ee/views/transactions/Transactions')
-const Visuals = () => import('@/mijn-ee/views/visuals/Visuals')
 
 Vue.use(Router)
 
@@ -23,19 +23,19 @@ export default new Router({
   routes: [
     {
       path: '/mijn-ee',
-      redirect: '/mijn-ee/dashboard',
+      redirect: '/mijn-ee/home',
       name: 'Mijn-ee',
       component: DefaultContainer,
       children: [
         {
+          path: 'home',
+          name: 'Home',
+          component: Home,
+        },
+        {
           path: 'dashboard',
           name: 'Dashboard',
           component: Dashboard,
-        },
-        {
-          path: 'visueel',
-          name: 'Visueel',
-          component: Visuals,
         },
         {
           path: 'transacties',

@@ -5,7 +5,7 @@
         <LoadingContainer :loading="isBusy('debet')">
           <ListGroup
             :categories="categories"
-            :isBusy="isBusy"
+            :isBusy="isBusy('debet')"
             side="debet"
             @order="onOrder"
             @delete="onDelete"
@@ -18,7 +18,7 @@
         <LoadingContainer :loading="isBusy('credit')">
           <ListGroup
             :categories="categories"
-            :isBusy="isBusy"
+            :isBusy="isBusy('credit')"
             side="credit"
             @order="onOrder"
             @delete="onDelete"

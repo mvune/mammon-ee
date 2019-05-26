@@ -48,8 +48,15 @@
         </template>
       </draggable>
 
+      <b-list-group-item v-if="!sideHasCategories">
+        <template v-if="!isBusy">
+          Geen categorieën.
+        </template>
+        &nbsp;
+      </b-list-group-item>
+
       <!-- New button -->
-      <b-list-group-item>
+      <b-list-group-item class="primary-btn-list-item">
         <b-button @click="$emit('new', side)" type="button" variant="primary">
           <i aria-hidden="true" class="icon-plus"></i>
           Nieuw
@@ -62,6 +69,10 @@
 <style lang="scss" scoped>
 .btn-container {
   margin-right: -0.75rem;
+}
+
+.primary-btn-list-item {
+  padding: 0.5rem 1rem;
 }
 
 .move-button {
@@ -77,7 +88,13 @@ export default {
   components: { draggable },
   props: {
     categories: Array,
+    isBusy: Boolean,
     side: String,
+  },
+  computed: {
+    sideHasCategories () {
+      return this.categories.some(item => item.side === this.side);
+    }
   },
 }
 </script>

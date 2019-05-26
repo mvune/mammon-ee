@@ -1,14 +1,14 @@
 export default {
   items: [
     {
-      name: 'Dashboard',
-      url: '/mijn-ee/dashboard',
+      name: 'Home',
+      url: '/mijn-ee/home',
       icon: 'icon-home',
     },
     {
-      name: 'Visueel',
-      url: '/mijn-ee/visueel',
-      icon: 'icon-eye',
+      name: 'Dashboard',
+      url: '/mijn-ee/dashboard',
+      icon: 'icon-pie-chart',
     },
     {
       name: 'Transacties',
