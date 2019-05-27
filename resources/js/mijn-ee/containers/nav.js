@@ -9,7 +9,7 @@ export default {
       name: 'Dashboard',
       url: '/mijn-ee/dashboard',
       icon: 'icon-pie-chart',
-      description: 'Uw financiën overzichtelijk verwerkt in hapklare grafiekjes en tabelletjes.',
+      description: 'Uw financiën, overzichtelijk verwerkt in hapklare grafiekjes en tabelletjes.',
     },
     {
       name: 'Transacties',
@@ -33,7 +33,7 @@ export default {
       name: 'Categorieën',
       url: '/mijn-ee/categorieen',
       icon: 'icon-tag',
-      description: 'Maak categorieën aan om uw transacties gemakkelijk te sorteren.',
+      description: 'Maak categorieën aan om uw transacties gemakkelijk terug te vinden.',
     },
     {
       name: 'Rekeningen',

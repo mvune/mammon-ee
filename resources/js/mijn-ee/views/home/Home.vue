@@ -49,12 +49,21 @@
   width: 100%;
   height: 100%;
   text-align: center;
-  color: black;
+  color: $gray-lighter;
+  transition: all 0.3s;
+}
+
+.card:hover, .item > a:focus .card {
+  color: $theme-quaternary;
+}
+
+.card:hover .icons, .item > a:focus .icons {
+  font-size: 3.4rem;
 }
 
 .icons {
-  font-weight: bold;
   font-size: 3rem;
+  transition: all 0.3s;
 }
 
 .gold {
