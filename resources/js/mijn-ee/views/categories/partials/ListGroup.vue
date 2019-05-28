@@ -2,13 +2,13 @@
   <b-card no-body>
     <b-list-group>
       <!-- Header -->
-      <b-list-group-item v-if="side === 'debet'" variant="success">
-        Inkomsten
+      <b-list-group-item v-if="side.code === sides.debet.code" variant="success">
+        {{ side.label }}
         <i class="fa fa-arrow-up fa-lg mt-1 float-right"></i>
       </b-list-group-item>
 
-      <b-list-group-item v-if="side === 'credit'" variant="danger">
-        Uitgaven
+      <b-list-group-item v-if="side.code === sides.credit.code" variant="danger">
+        {{ side.label }}
         <i class="fa fa-arrow-down fa-lg mt-1 float-right"></i>
       </b-list-group-item>
 
@@ -16,7 +16,7 @@
       <draggable :list="categories" handle=".handle" @change="$emit('order', $event)">
         <template v-for="category in categories">
           <b-list-group-item
-            v-if="category.side === side"
+            v-if="category.side.code === side.code"
             v-b-modal="'edit-modal-' + category.id"
             :key="category.id"
             @click="$emit('edit', category)"
@@ -82,6 +82,7 @@
 
 <script>
 import draggable from 'vuedraggable'
+import { SIDES } from '@/mijn-ee/globals/constants.js'
 
 export default {
   name: 'CategoriesListGroup',
@@ -89,11 +90,16 @@ export default {
   props: {
     categories: Array,
     isBusy: Boolean,
-    side: String,
+    side: Object,
+  },
+  data () {
+    return {
+      sides: SIDES,
+    }
   },
   computed: {
     sideHasCategories () {
-      return this.categories.some(item => item.side === this.side);
+      return this.categories.some(item => item.side.code === this.side.code);
     }
   },
 }

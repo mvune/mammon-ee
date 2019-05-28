@@ -90,15 +90,13 @@
 import { required, maxLength } from 'vuelidate/lib/validators'
 import FormFieldError from '@/mijn-ee/partials/FormFieldError'
 
-const inSides = value => ['debet', 'credit'].indexOf(value) !== -1;
-
 export default {
   name: 'CategoriesEditModal',
   components: { FormFieldError },
   props: {
     category: Object,
     show: Boolean,
-    side: { validator: value => inSides(value) || value === '' },
+    side: Object,
   },
   data () {
     return {
@@ -130,7 +128,7 @@ export default {
   computed: {
     title () {
       let title = this.category ? 'Categorie bewerken' : 'Categorie toevoegen';
-      title += this.side === 'credit' ? ' - Uitgaven' : ' - Inkomsten';
+      title += this.side ? ' - ' + this.side.label : '';
       return title;
     },
     okTitle () {

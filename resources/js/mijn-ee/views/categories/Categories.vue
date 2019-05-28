@@ -2,11 +2,11 @@
   <div class="animated fadeIn">
     <b-row>
       <b-col sm="8" md="6" lg="5">
-        <LoadingContainer :loading="isBusy('debet')">
+        <LoadingContainer :loading="isBusy(sides.debet)">
           <ListGroup
             :categories="categories"
-            :isBusy="isBusy('debet')"
-            side="debet"
+            :isBusy="isBusy(sides.debet)"
+            :side="sides.debet"
             @order="onOrder"
             @delete="onDelete"
             @edit="onEdit"
@@ -15,11 +15,11 @@
       </b-col>
 
       <b-col sm="8" md="6" lg="5">
-        <LoadingContainer :loading="isBusy('credit')">
+        <LoadingContainer :loading="isBusy(sides.credit)">
           <ListGroup
             :categories="categories"
-            :isBusy="isBusy('credit')"
-            side="credit"
+            :isBusy="isBusy(sides.credit)"
+            :side="sides.credit"
             @order="onOrder"
             @delete="onDelete"
             @edit="onEdit"
@@ -45,6 +45,7 @@
 import EditModal from './partials/EditModal'
 import DeleteModal from './partials/DeleteModal'
 import ListGroup from './partials/ListGroup'
+import { SIDES } from '@/mijn-ee/globals/constants.js'
 import LoadingContainer from '@/mijn-ee/partials/loading/Container'
 import * as CategoryService from '@/mijn-ee/services/CategoryService'
 
@@ -54,8 +55,9 @@ export default {
   data () {
     return {
       categories: [],
+      sides: SIDES,
       category: null,
-      activeSide: '', // 'debet' || 'credit'
+      activeSide: null,
       showEditModal: false,
       showDeleteModal: false,
       isBusyDebet: false,
@@ -96,18 +98,22 @@ export default {
       this.deleteCategory(category);
     },
     getCategories () {
-      this.isBusy('both', true);
+      this.isBusy(SIDES.debet, true);
+      this.isBusy(SIDES.credit, true);
 
       this.$subscribeTo(
         CategoryService.getCategories(),
         data => this.categories = data,
         this.ee_errorHandler,
-        () => this.isBusy('both', false)
+        () => {
+          this.isBusy(SIDES.debet, false);
+          this.isBusy(SIDES.credit, false);
+        }
       );
     },
     orderCategories (side) {
       this.isBusy(side, true);
-      const categories = this.categories.filter(category => category.side === side);
+      const categories = this.categories.filter(category => category.side.code === side.code);
 
       this.$subscribeTo(
         CategoryService.orderCategories(categories),
@@ -166,14 +172,13 @@ export default {
       if (typeof value !== 'undefined') {
         // Setter
         value = Boolean(value);
-        if (side === 'debet') this.isBusyDebet = value;
-        if (side === 'credit') this.isBusyCredit = value;
-        if (side === 'both') this.isBusyDebet = this.isBusyCredit = value;
+        if (side.code === SIDES.debet.code) this.isBusyDebet = value;
+        if (side.code === SIDES.credit.code) this.isBusyCredit = value;
         return value;
       } else {
         // Getter
-        if (side === 'debet') return this.isBusyDebet;
-        if (side === 'credit') return this.isBusyCredit;
+        if (side.code === SIDES.debet.code) return this.isBusyDebet;
+        if (side.code === SIDES.credit.code) return this.isBusyCredit;
       }
     },
   },

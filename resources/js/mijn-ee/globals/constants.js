@@ -17,3 +17,8 @@ export const SCOPES = {
   MONTH: 'month',
   YEAR: 'year',
 };
+
+export const SIDES = {
+  debet: { code: 'debet', label: 'Inkomsten' },
+  credit: { code: 'credit', label: 'Uitgaven' },
+};

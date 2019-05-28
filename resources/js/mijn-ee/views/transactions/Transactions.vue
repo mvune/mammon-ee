@@ -2,16 +2,22 @@
   <div class="animated fadeIn">
     <b-row>
       <b-col md="11" lg="3">
-        <AccountSelect v-stream:selected="accounts$" />
+        <LoadingContainer :loading="isBusyFilters">
+          <label class="prim-head-sm">Rekeningen</label>
+          <AccountSelect v-stream:selected="accounts$" :accounts="accounts" />
+
+          <label class="prim-head-sm">Categorieën</label>
+          <CategorySelect v-stream:selected="categories$" :categories="categories" />
+        </LoadingContainer>
       </b-col>
 
       <b-col md="11" lg="8">
         <div class="ee-spinner-container">
           <b-table
             id="transactions-table"
-            :items="items"
+            :items="transactions"
             :fields="fields"
-            :busy.sync="isBusy"
+            :busy.sync="isBusyTransactions"
             :current-page="currentPage"
             selectable
             select-mode="single"
@@ -40,7 +46,7 @@
               <Details :transaction="row.item" />
             </template>
 
-            <template v-if="items.length == 0" v-slot:table-busy>
+            <template v-if="transactions.length == 0" v-slot:table-busy>
               <div class="d-flex justify-content-center">
                 <b-spinner small variant="primary" label="Laden..."></b-spinner>
               </div>
@@ -52,7 +58,7 @@
 
           </b-table>
 
-          <LoadingSpinner v-if="items.length > 0" :loading="isBusy" />
+          <LoadingSpinner v-if="transactions.length > 0" :loading="isBusyTransactions" />
         </div>
 
         <b-pagination
@@ -76,73 +82,89 @@
 </style>
 
 <script>
+import { combineLatest, forkJoin } from 'rxjs'
+import { pluck, switchMap, tap, startWith, skip, finalize } from 'rxjs/operators'
+import * as AccountService from '@/mijn-ee/services/AccountService'
+import * as CategoryService from '@/mijn-ee/services/CategoryService'
+import * as TransactionService from '@/mijn-ee/services/TransactionService'
+import LoadingContainer from '@/mijn-ee/partials/loading/Container'
+import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
 import Details from './partials/Details'
 import AccountSelect from './partials/AccountSelect'
-import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
-import * as TransactionService from '@/mijn-ee/services/TransactionService'
-import { combineLatest } from 'rxjs'
-import { map, pluck, switchMap, tap, startWith, skip } from 'rxjs/operators'
+import CategorySelect from './partials/CategorySelect'
 
 export default {
   name: 'Transactions',
-  components: { Details, AccountSelect, LoadingSpinner },
+  components: { Details, AccountSelect, CategorySelect, LoadingContainer, LoadingSpinner },
   data () {
     return {
-      isBusy: false,
+      isBusyTransactions: false,
+      isBusyFilters: true,
       fields: [
         { key: 'date', label: 'Datum' },
         { key: 'counterparty_name', label: 'Tegenpartij' },
         { key: 'amount', label: 'Bedrag', tdClass: 'amount-column' },
       ],
-      items: [], // Transactions
+      transactions: [],
       totalRows: 0,
       perPage: 0,
       currentPage: 1,
       currentPageCached: 1,
+      accounts: [],
+      categories: [],
     }
   },
-  domStreams: ['accounts$', 'currentPage$'],
+  domStreams: [
+    'accounts$',
+    'categories$',
+    'currentPage$',
+  ],
   subscriptions () {
-    const items$ = combineLatest(
+    // Observables
+    const transactions$ = combineLatest(
       this.accounts$.pipe(skip(1), pluck('event', 'msg'), startWith(undefined)),
+      this.categories$.pipe(skip(1), pluck('event', 'msg'), startWith(undefined)),
       this.currentPage$.pipe(pluck('event', 'msg'), startWith(undefined)),
     ).pipe(
-      tap(() => this.isBusy = true),
-      switchMap(([accounts, page]) => {
+      tap(() => this.isBusyTransactions = true),
+      switchMap(([accounts, categories, page]) => {
         const nextPage = this.pageIsChanging(page) ? page : undefined;
-        return TransactionService.getTransactions(nextPage, accounts);
+        return TransactionService.getTransactions(nextPage, accounts, categories);
       }),
-      map(this.formatItems),
-      tap(() => this.isBusy = false),
+      tap(() => this.isBusyTransactions = false),
     );
 
-    items$.subscribe(
-      this.handleResponse,
-      this.ee_errorHandler,
+    const filters$ = forkJoin(
+      AccountService.getAccounts(),
+      CategoryService.getCategories(),
+    ).pipe(
+      finalize(() => this.isBusyFilters = false),
     );
+
+    // Subscriptions
+    transactions$.subscribe(this.handleTransactionsResponse, this.ee_errorHandler);
+    filters$.subscribe(this.handleFiltersResponse, this.ee_errorHandler);
   },
   methods: {
-    formatItems (res) {
+    handleTransactionsResponse (res) {
       if (res.data) {
         for (let item of res.data.data) {
           item._showDetails = false;
         }
-      }
-      return res;
-    },
-    handleResponse (res) {
-      if (res.data) {
-        this.items = res.data.data;
+        this.transactions = res.data.data;
         this.totalRows = res.data.meta.total;
         this.perPage = res.data.meta.per_page;
         this.currentPage = res.data.meta.current_page;
       } else {
-        this.items = [];
+        this.transactions = [];
         this.totalRows = 0;
         this.perPage = 0;
         this.currentPage = 1;
       }
       window.scrollTo(0, 0);
+    },
+    handleFiltersResponse (res) {
+      [this.accounts, this.categories] = res;
     },
     pageIsChanging (page) {
       if (typeof page === 'undefined') return undefined;
@@ -161,7 +183,7 @@ export default {
       item._showDetails = !current;
     },
     hideDetailsAll () {
-      for (let item of this.items) {
+      for (let item of this.transactions) {
         item._showDetails = false;
       }
     },

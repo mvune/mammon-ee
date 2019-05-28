@@ -18,7 +18,10 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'side' => $this->side,
+            'side' => [
+                'code' => $this->side,
+                'label' => __("misc.category_sides.{$this->side}"),
+            ],
             'priority' => $this->priority,
             'rules' => TransactionFilterResource::collection($this->transactionFilters),
         ];

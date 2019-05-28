@@ -1,95 +1,52 @@
 <template>
 
-  <LoadingContainer :loading="isBusy">
-    <b-form-group>
-      <label class="prim-head-sm">Rekeningen</label>
-      <!-- <b-form-checkbox
-        v-model="allSelected"
-        :indeterminate="indeterminate"
-        aria-describedby="accounts"
-        aria-controls="accounts"
-        @change="toggleAll"
-      >
-        Alle
-      </b-form-checkbox> -->
+  <b-form-group>
+    <b-form-checkbox-group
+      id="checkbox-group-accounts"
+      v-model="selected"
+      name="accounts"
+      aria-label="Rekeningen"
+    >
+      <b-form-checkbox v-for="ac of accounts" :key="ac.id" :value="ac.id">
+        <template v-if="ac.name">
+          {{ ac.name }}
+          <br />
+          <span class="text-muted under-checkbox">{{ ac.iban | ee_iban }}</span>
+        </template>
 
-      <b-form-checkbox-group
-        id="checkbox-group-accounts"
-        v-model="selected"
-        name="accounts"
-        aria-label="Individuele accounts"
-      >
-        <b-form-checkbox v-for="ac of accounts" :key="ac.id" :value="ac.id">
-          <template v-if="ac.name">
-            {{ ac.name }}
-            <br />
-            <span class="text-muted under-checkbox">{{ ac.iban | ee_iban }}</span>
-          </template>
-
-          <template v-if="!ac.name">
-            <span class="text-muted">{{ ac.iban | ee_iban }}</span>
-          </template>
-        </b-form-checkbox>
-      </b-form-checkbox-group>
-    </b-form-group>
-  </LoadingContainer>
+        <template v-if="!ac.name">
+          <span class="text-muted">{{ ac.iban | ee_iban }}</span>
+        </template>
+      </b-form-checkbox>
+    </b-form-checkbox-group>
+  </b-form-group>
 
 </template>
 
-<script>
-import LoadingContainer from '@/mijn-ee/partials/loading/Container'
+<style lang="scss" scoped>
+.custom-checkbox {
+  width: 46%;
+}
+</style>
 
+<script>
 export default {
   name: 'AccountSelect',
-  components: { LoadingContainer },
+  props: {
+    accounts: Array,
+  },
   data () {
     return {
-      isBusy: false,
-      accounts: [],
       selected: [],
-      allSelected: true,
-      indeterminate: false,
     }
-  },
-  mounted () {
-    this.getAccounts();
-  },
-  methods: {
-    getAccounts () {
-      this.isBusy = true;
-
-      return axios.get('accounts')
-        .then(response => {
-          this.accounts = response.data;
-          this.selected = this.allSelectedArray();
-          this.allSelected = true;
-        })
-        .catch(this.ee_errorHandler)
-        .then(() => this.isBusy = false);
-    },
-    allSelectedArray () {
-      return this.accounts.map(item => item.id);
-    },
-    toggleAll (checked) {
-      this.selected = checked ? this.allSelectedArray() : [];
-    },
   },
   watch: {
-    selected (newVal, oldVal) {
-      // Handle changes in individual account checkboxes
-      if (newVal.length === 0) {
-        this.indeterminate = false
-        this.allSelected = false
-      } else if (newVal.length === this.accounts.length) {
-        this.indeterminate = false
-        this.allSelected = true
-      } else {
-        this.indeterminate = true
-        this.allSelected = false
-      }
-
-      this.$emit('selected', this.selected);
-    }
-  }
+    accounts (newValue) {
+      this.selected = newValue.map(item => item.id);
+    },
+    selected (newValue) {
+      this.$emit('selected', newValue);
+    },
+  },
 }
 </script>

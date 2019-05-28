@@ -28,8 +28,13 @@ class TransactionController extends Controller
     {
         return TransactionResource::collection(
             Auth::user()->transactions()
+                // Filter by accounts.
                 ->when($request->has('accounts'), function ($query) use ($request) {
                     return $query->whereIn('account_id', explode(',', $request->get('accounts')));
+                })
+                // Filter by categories.
+                ->when($request->has('categories'), function ($query) use ($request) {
+                    return $query->whereIn('category_id', explode(',', $request->get('categories')));
                 })
                 ->with('category')
                 ->orderBy('serial_number', 'desc')
