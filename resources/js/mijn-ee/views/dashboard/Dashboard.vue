@@ -7,7 +7,7 @@
     </b-row>
 
     <b-row>
-      <b-col>
+      <b-col lg="11">
         <MonthlySheet />
       </b-col>
     </b-row>

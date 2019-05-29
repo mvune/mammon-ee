@@ -51,7 +51,7 @@
 
 <script>
 import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
-import { MONTHS, SCOPES } from '@/mijn-ee/globals/constants.js'
+import { MONTHS, SCOPES } from '@/mijn-ee/globals/constants'
 import SaldoChart from './Chart'
 
 export default {

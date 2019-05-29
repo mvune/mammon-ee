@@ -191,6 +191,61 @@ body {
     }
 }
 
+// Sheet table
+#sheet-table {
+    th, td {
+        padding: 0.3rem 0.5rem;
+        border: 1px solid $gray-lighter;
+    }
+    
+    th:first-child {
+        left: 0;
+        z-index: 1;
+        border-left: 0;
+        text-align: left;
+    }
+
+    th {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        min-width: 6rem;
+        border-top: 0;
+    }
+
+    td {
+        text-align: right;
+    }
+
+    .header-row {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+      
+        & > td {
+            text-align: center;
+            font-weight: bold;
+            color: $white;
+            background-color: $theme-quaternary;
+            border-color: $theme-quaternary;
+        }
+        
+        & > .sheet-td-left {
+            text-align: left;
+        }
+    }
+    
+    .sheet-td-left {
+        position: sticky;
+        left: 0;
+        color: $white;
+        background-color: lighten($theme-quaternary, 12%);
+        text-align: left;
+        min-width: 9rem;
+        background-clip: padding-box;
+    }
+}
+
 .b-table-details > td {
     width: 100%;
 }

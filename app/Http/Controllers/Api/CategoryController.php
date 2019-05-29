@@ -19,7 +19,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return CategoryResource::collection(Auth::user()->categories()->with('transactionFilters')->get());
+        return CategoryResource::collection(Auth::user()->categoriesWithFilters()->get());
     }
 
     /**

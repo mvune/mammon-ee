@@ -1,11 +1,17 @@
 const eurFormatter = new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' });
 const nbsp = String.fromCharCode(160);
 
-Vue.filter('ee_valuta', function (value, plusSign = false) {
+Vue.filter('ee_valuta', function (value, plusSign = false, minSign = true, symbol = true) {
   let output = eurFormatter.format(value);
 
   if (plusSign && value > 0) {
     output = output.replace(nbsp, nbsp + '+');
+  }
+  if (!minSign) {
+    output = output.replace('-', '');
+  }
+  if (!symbol) {
+    output = output.replace('€', '');
   }
 
   return output;

@@ -33,6 +33,20 @@
     color: $theme-tertiary;
 }
 
+// perfect-scrollbar overrides
+.ps > .ps__scrollbar-x-rail,
+.ps > .ps__scrollbar-y-rail {
+  opacity: 0.6 !important;
+  z-index: 10;
+}
+
+.ps:hover > .ps__scrollbar-x-rail > .ps__scrollbar-x,
+.ps:hover > .ps__scrollbar-x-rail:hover > .ps__scrollbar-x,
+.ps:hover > .ps__scrollbar-y-rail > .ps__scrollbar-y,
+.ps:hover > .ps__scrollbar-y-rail:hover > .ps__scrollbar-y {
+  background-color: $theme-tertiary !important;
+}
+
 // CoreUI overrides
 .list-group-item-action:hover, .list-group-item-action:focus {
   background-color: $white;

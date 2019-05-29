@@ -49,7 +49,12 @@ class User extends Authenticatable
 
     public function categories()
     {
-        return $this->hasMany(Category::class);
+        return $this->hasMany(Category::class)->orderBy('side');
+    }
+
+    public function categoriesWithFilters()
+    {
+        return $this->categories()->with('transactionFilters');
     }
 
     public function transactions()

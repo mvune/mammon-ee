@@ -18,8 +18,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/user', 'Api\UserAccountController@show');
     Route::put('/user', 'Api\UserAccountController@update');
 
-    Route::get('/charts/amounts', 'Api\ChartDataController@getAmounts');
     Route::get('/charts/balances', 'Api\ChartDataController@getBalances');
+    Route::get('/charts/sheet-data', 'Api\ChartDataController@getSheetData');
 
     Route::get('/transaction-filter-targets', 'Api\TransactionFilterTargetController@index');
 

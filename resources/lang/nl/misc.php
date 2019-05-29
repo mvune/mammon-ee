@@ -9,8 +9,10 @@ return [
         'description' => 'Omschrijving',
     ],
     'category_sides' => [
-        'debet' => 'Inkomsten',
+        'debet' => 'Inkomen',
         'credit' => 'Uitgaven',
+        'net' => 'Netto inkomen',
     ],
+    'year_total' => 'Jaar totaal',
 
 ];
