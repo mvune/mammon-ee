@@ -1,35 +1,8 @@
 <template>
 
   <b-card>
-    <b-row>
-      <b-col sm="3">
-        <h4 class="mb-1">Saldo</h4>
-      </b-col>
-      <b-col sm="5">
-        <b-form-select class="d-inline-block time-select mb-2 float-right"
-          v-model="year"
-          :options="years"
-          size="sm"
-        ></b-form-select>
-        <b-form-select class="d-inline-block time-select mb-2 mr-1 float-right"
-          v-if="scope === scopes.MONTH"
-          v-model="month"
-          :options="months"
-          size="sm"
-        ></b-form-select>
-      </b-col>
-      <b-col sm="4">
-        <b-button-toolbar class="float-right">
-          <b-form-radio-group v-model="scope" buttons button-variant="outline-primary">
-            <b-form-radio :value="scopes.MONTH">Maand</b-form-radio>
-            <b-form-radio :value="scopes.YEAR">Jaar</b-form-radio>
-          </b-form-radio-group>
-        </b-button-toolbar>
-      </b-col>
-    </b-row>
-
     <div class="loading-container">
-      <SaldoChart v-on:clicked="onChartClick"
+      <BarChart v-on:clicked="onChartClick"
         height="160"
         :data="scopedData"
         :month="month"
@@ -42,42 +15,36 @@
 
 </template>
 
-<style lang="scss" scoped>
-.time-select {
-  font-size: 0.875rem;
-  width: 48%;
-}
-</style>
-
 <script>
 import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
-import { MONTHS, SCOPES } from '@/mijn-ee/globals/constants'
-import SaldoChart from './Chart'
+import { SCOPES } from '@/mijn-ee/globals/constants'
+import BarChart from './Chart'
 
 export default {
-  name: 'DailyBar',
-  components: { LoadingSpinner, SaldoChart },
+  name: 'Bar',
+  components: { LoadingSpinner, BarChart },
   data () {
     return {
       chartData: [],
       scopedData: [],
-      firstYear: null,
-      lastYear: null,
-      firstMonth: null,
-      lastMonth: null,
-      month: null,
-      year: (new Date).getFullYear(),
-      scope: SCOPES.YEAR,
-      months: [],
-      years: [
-        { value: (new Date).getFullYear(), text: (new Date).getFullYear() },
-      ],
-      scopes: {},
       isBusy: false,
     }
   },
+  computed: {
+    scope: {
+      get: function () { return this.$store.state.scope },
+      set: function (value) { this.$store.dispatch('setScope', value) }
+    },
+    month: {
+      get: function () { return this.$store.state.month },
+      set: function (value) { this.$store.dispatch('setMonth', value) }
+    },
+    year: {
+      get: function () { return this.$store.state.year },
+      set: function (value) { this.$store.dispatch('setYear', value) }
+    },
+  },
   created () {
-    this.scopes = SCOPES;
     this.getBalances();
   },
   methods: {
@@ -88,13 +55,6 @@ export default {
         .then(response => {
           this.chartData = this.dataToChartData(response.data);
           this.scopeChartData();
-          const firstItem = response.data[0];
-          const lastItem = response.data[response.data.length - 1];
-          this.firstYear = firstItem ? (new Date(firstItem.date).getFullYear()) : null;
-          this.lastYear = lastItem ? (new Date(lastItem.date).getFullYear()) : null;
-          this.firstMonth = firstItem ? (new Date(firstItem.date).getMonth()) : null;
-          this.lastMonth = lastItem ? (new Date(lastItem.date).getMonth()) : null;
-          this.populateYearSelect();
         })
         .catch(this.ee_errorHandler)
         .then(() => this.isBusy = false);
@@ -189,34 +149,6 @@ export default {
         if (fd.getTime() === sd.getTime()) return 0;
       });
     },
-    populateYearSelect () {
-      this.years = [];
-
-      for (let y = this.firstYear; y <= this.lastYear; y++) {
-        this.years.push({ value: y, text: y });
-      }
-
-      if (this.years.length > 0) {
-        this.year = this.years[this.years.length - 1].value;
-      }
-    },
-    populateMonthSelect () {
-      if (this.scope === SCOPES.MONTH) {
-        const fromMonth = (this.year === this.firstYear) ? this.firstMonth : undefined;
-        const toMonth = (this.year === this.lastYear) ? this.lastMonth + 1 : undefined;
-
-        this.months = MONTHS.slice(fromMonth, toMonth);
-
-        if (fromMonth && (!this.month || fromMonth > this.month)) {
-          this.month = fromMonth + 1;
-        }
-        if (toMonth && (!this.month || toMonth < this.month)) {
-          this.month = toMonth;
-        }
-      } else {
-        this.months = [];
-      }
-    },
     onChartClick (elements) {
       if (elements.length > 0 && this.scope === SCOPES.YEAR) {
         this.month = (new Date(elements[0]._chart.data.datasets[0].data[elements[0]._index].x)).getMonth() + 1;
@@ -229,11 +161,9 @@ export default {
       this.scopeChartData();
     },
     year: function () {
-      this.populateMonthSelect();
       this.scopeChartData();
     },
     scope: function () {
-      this.populateMonthSelect();
       this.scopeChartData();
     },
   },

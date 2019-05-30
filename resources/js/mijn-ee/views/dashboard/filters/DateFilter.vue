@@ -1,0 +1,132 @@
+<template>
+  
+  <b-row>
+    <b-col sm="3">
+      <h4 class="filter-title text-primary">Periode:</h4>
+    </b-col>
+    <b-col sm="5">
+      <b-form-select class="d-inline-block time-select mb-2 float-right"
+        v-model="year"
+        :options="years"
+        size="sm"
+      ></b-form-select>
+      <b-form-select class="d-inline-block time-select mb-2 mr-1 float-right"
+        v-if="scope === scopes.MONTH"
+        v-model="month"
+        :options="months"
+        size="sm"
+      ></b-form-select>
+    </b-col>
+    <b-col sm="4">
+      <b-button-toolbar class="float-right">
+        <b-form-radio-group v-model="scope" buttons button-variant="outline-primary">
+          <b-form-radio :value="scopes.MONTH">Maand</b-form-radio>
+          <b-form-radio :value="scopes.YEAR">Jaar</b-form-radio>
+        </b-form-radio-group>
+      </b-button-toolbar>
+    </b-col>
+  </b-row>
+
+</template>
+
+<style lang="scss" scoped>
+.filter-title {
+  margin-top: 0.35rem;
+  font-weight: 400;
+  text-align: right;
+}
+.time-select {
+  font-size: 0.875rem;
+  margin-top: 0.1rem;
+  width: 48%;
+}
+</style>
+
+<script>
+import { mapState } from 'vuex'
+import { MONTHS, SCOPES } from '@/mijn-ee/globals/constants'
+import * as ChartService from '@/mijn-ee/services/ChartService'
+
+export default {
+  name: 'DateFilter',
+  data () {
+    return {
+      scopes: SCOPES,
+      months: [],
+      years: [
+        { value: (new Date).getFullYear(), text: (new Date).getFullYear() },
+      ],
+      firstYear: null,
+      lastYear: null,
+      firstMonth: null,
+      lastMonth: null,
+    }
+  },
+  computed: {
+    scope: {
+      get: function () { return this.$store.state.scope },
+      set: function (value) { this.$store.dispatch('setScope', value) }
+    },
+    month: {
+      get: function () { return this.$store.state.month },
+      set: function (value) { this.$store.dispatch('setMonth', value) }
+    },
+    year: {
+      get: function () { return this.$store.state.year },
+      set: function (value) { this.$store.dispatch('setYear', value) }
+    },
+  },
+  created () {
+    ChartService.getFiltersData().subscribe(this.handleResponse, this.ee_errorHandler);
+  },
+  methods: {
+    handleResponse (res) {
+      const fromDate = res.data.dateFilter.fromDate;
+      const toDate = res.data.dateFilter.toDate;
+      this.firstYear = fromDate ? (new Date(fromDate).getFullYear()) : null;
+      this.lastYear = toDate ? (new Date(toDate).getFullYear()) : null;
+      this.firstMonth = fromDate ? (new Date(fromDate).getMonth()) : null;
+      this.lastMonth = toDate ? (new Date(toDate).getMonth()) : null;
+      this.populateYearSelect();
+    },
+    populateYearSelect () {
+      this.years = [];
+
+      for (let y = this.firstYear; y <= this.lastYear; y++) {
+        this.years.push({ value: y, text: y });
+      }
+
+      if (this.years.length > 0) {
+        this.year = this.years[this.years.length - 1].value;
+      }
+    },
+    populateMonthSelect () {
+      if (this.scope === SCOPES.MONTH) {
+        const fromMonth = (this.year === this.firstYear) ? this.firstMonth : undefined;
+        const toMonth = (this.year === this.lastYear) ? this.lastMonth + 1 : undefined;
+
+        this.months = MONTHS.slice(fromMonth, toMonth);
+
+        // If `this.month` is now out of scope, set to first available month.
+        if (fromMonth && (!this.month || fromMonth > this.month)) {
+          this.month = fromMonth + 1;
+        }
+        // If `this.month` is now out of scope, set to last available month.
+        if (toMonth && (!this.month || toMonth < this.month)) {
+          this.month = toMonth;
+        }
+      } else {
+        this.months = [];
+      }
+    },
+  },
+  watch: {
+    year: function () {
+      this.populateMonthSelect();
+    },
+    scope: function () {
+      this.populateMonthSelect();
+    },
+  },
+}
+</script>

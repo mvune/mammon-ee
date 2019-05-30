@@ -1,8 +1,9 @@
 <template>
+
   <VuePerfectScrollbar class="sheet-container ee-spinner-container">
     <b-table
       id="sheet-table"
-      :items="data"
+      :items="scopedData"
       :fields="fields"
       :busy.sync="isBusy"
       :tbody-tr-class="trClass"
@@ -19,6 +20,7 @@
 
     <LoadingSpinner v-if="data.length > 0" :loading="isBusy" />
   </VuePerfectScrollbar>
+
 </template>
 
 <style lang="scss" scoped>
@@ -46,7 +48,7 @@ export default {
   components: { LoadingSpinner, VuePerfectScrollbar },
   data () {
     return {
-      isBusy: true,
+      isBusy: false,
       fields: [
         { key: 'category', label: 'Inkomen', tdClass: 'sheet-td-left' },
         { key: '1', label: MONTHS[0].text },
@@ -63,16 +65,34 @@ export default {
         { key: '12', label: MONTHS[11].text },
         { key: 'year_total', label: 'Jaar totaal' },
       ],
-      data: Array(20).fill({ 1: "\0" }),
+      data: [],
+      emptyData: Array(20).fill({ 1: "\0" }),
     }
   },
-  subscriptions () {
-    ChartService.getSheetData().subscribe(this.handleResponse, this.ee_errorHandler);
+  computed: {
+    year: {
+      get: function () { return this.$store.state.year },
+      set: function (value) { this.$store.dispatch('setYear', value) }
+    },
+    scopedData: function () {
+      return this.data[this.year] || this.emptyData;
+    },
+  },
+  created () {
+    this.getData();
   },
   methods: {
+    getData () {
+      this.isBusy = true;
+
+      ChartService.getSheetData().subscribe(
+        this.handleResponse,
+        this.ee_errorHandler,
+        () => this.isBusy = false
+      );
+    },
     handleResponse (res) {
       this.data = res.data;
-      this.isBusy = false;
     },
     trClass (item, type) {
       if (item && item.is_header_row) return 'header-row';

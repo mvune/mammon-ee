@@ -1,25 +1,32 @@
 <template>
   <div class="animated fadeIn">
     <b-row>
-      <b-col lg="11">
-        <DailyBar />
+      <b-col lg="11" class="mb-2">
+        <Filters />
       </b-col>
     </b-row>
 
     <b-row>
       <b-col lg="11">
-        <MonthlySheet />
+        <Bar />
+      </b-col>
+    </b-row>
+
+    <b-row>
+      <b-col lg="11">
+        <Sheet />
       </b-col>
     </b-row>
   </div>
 </template>
 
 <script>
-import DailyBar from './daily/Bar'
-import MonthlySheet from './monthly/Sheet'
+import Filters from './filters'
+import Bar from './bar'
+import Sheet from './sheet'
 
 export default {
   name: 'Dashboard',
-  components: { DailyBar, MonthlySheet },
+  components: { Filters, Bar, Sheet },
 }
 </script>

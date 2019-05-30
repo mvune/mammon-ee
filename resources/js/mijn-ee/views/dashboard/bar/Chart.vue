@@ -1,10 +1,10 @@
 <script>
 import { Bar } from 'vue-chartjs'
-import { SCOPES } from '@/mijn-ee/globals/constants.js'
+import { SCOPES } from '@/mijn-ee/globals/constants'
 import styles from '@/mijn-ee/variables.scss'
 
 export default {
-  name: 'SaldoChart',
+  name: 'BarChart',
   extends: Bar,
   props: ['height', 'data', 'month', 'year', 'scope'],
   data () {

@@ -18,6 +18,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/user', 'Api\UserAccountController@show');
     Route::put('/user', 'Api\UserAccountController@update');
 
+    Route::get('/charts/filters-data', 'Api\ChartDataController@getFiltersData');
     Route::get('/charts/balances', 'Api\ChartDataController@getBalances');
     Route::get('/charts/sheet-data', 'Api\ChartDataController@getSheetData');
 

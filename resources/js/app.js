@@ -1,9 +1,3 @@
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
 window.Vue = require('vue');
 
 import 'core-js/es6/promise'
@@ -18,6 +12,7 @@ import Chart from 'chart.js'
 
 import App from './mijn-ee/App'
 import router from './mijn-ee/router'
+import store from './mijn-ee/store'
 import styles from '../sass/custom/_variables.scss'
 
 Vue.use(BootstrapVue)
@@ -38,6 +33,7 @@ Chart.defaults.global.tooltips.yPadding = 8;
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App },
 });

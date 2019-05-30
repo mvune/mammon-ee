@@ -13,6 +13,10 @@ return [
         'credit' => 'Uitgaven',
         'net' => 'Netto inkomen',
     ],
+    'no_category' => 'Overig',
+    'total_debet' => 'Totaal inkomen',
+    'total_credit' => 'Totaal uitgaven',
+    'total_net' => 'Totaal netto inkomen',
     'year_total' => 'Jaar totaal',
 
 ];

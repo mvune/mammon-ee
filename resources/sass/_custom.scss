@@ -65,7 +65,7 @@ a.prim-link {
     position: fixed;
     top: $header-height + 12px;
     right: 12px;
-    z-index: 10;
+    z-index: 100;
 }
 
 .alert-dashboard {
@@ -77,7 +77,7 @@ a.prim-link {
     border: 0;
     background-color: $extra-dark;
     color: $white;
-    z-index: 10;
+    z-index: 100;
 
     h5 {
         margin-right: 1.5rem;
@@ -241,7 +241,7 @@ body {
         color: $white;
         background-color: lighten($theme-quaternary, 12%);
         text-align: left;
-        min-width: 9rem;
+        min-width: 10rem;
         background-clip: padding-box;
     }
 }
