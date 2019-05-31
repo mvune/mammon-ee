@@ -10,7 +10,19 @@
     >
       <template v-for="col in [1,2,3,4,5,6,7,8,9,10,11,12,'year_total']" :slot="col" slot-scope="data">
         <template v-if="typeof data.value === 'number'">
-          {{ data.value | ee_valuta(false, false, false) }}
+          <template v-if="data.item.is_totals_row">
+            <template v-if="data.item.is_net_row && data.value < 0">
+              <span :key="col" class="text-danger">
+                {{ data.value | ee_valuta(false) }}
+              </span>
+            </template>
+            <template v-else>
+              {{ data.value | ee_valuta(false, false) }}
+            </template>
+          </template>
+          <template v-else>
+            {{ data.value | ee_valuta(false, false, false) }}
+          </template>
         </template>
         <template v-else>
           {{ data.value }}
@@ -18,7 +30,7 @@
       </template>
     </b-table>
 
-    <LoadingSpinner v-if="data.length > 0" :loading="isBusy" />
+    <LoadingSpinner :loading="isBusy" />
   </VuePerfectScrollbar>
 
 </template>
@@ -63,7 +75,7 @@ export default {
         { key: '10', label: MONTHS[9].text },
         { key: '11', label: MONTHS[10].text },
         { key: '12', label: MONTHS[11].text },
-        { key: 'year_total', label: 'Jaar totaal' },
+        { key: 'year_total', label: 'Jaar totaal', tdClass: 'sheet-td-right' },
       ],
       data: [],
       emptyData: Array(20).fill({ 1: "\0" }),
@@ -95,7 +107,11 @@ export default {
       this.data = res.data;
     },
     trClass (item, type) {
-      if (item && item.is_header_row) return 'header-row';
+      let trClass = '';
+      if (item && item.is_header_row) trClass += ' header-row';
+      if (item && item.is_totals_row) trClass += ' totals-row';
+      if (item && item.is_net_row) trClass += ' net-row';
+      return trClass;
     },
   },
 }

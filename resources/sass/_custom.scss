@@ -193,7 +193,7 @@ body {
 
 // Sheet table
 #sheet-table {
-    th, td {
+    th, td, .header-row > .sheet-td-right {
         padding: 0.3rem 0.5rem;
         border: 1px solid $gray-lighter;
     }
@@ -234,6 +234,20 @@ body {
             text-align: left;
         }
     }
+
+    .totals-row {
+        & > td {
+            background-color: lighten($theme-quaternary, 48%);
+        }
+
+        & > .sheet-td-left {
+            background-color: lighten($theme-quaternary, 12%);
+        }
+
+        &.net-row > .sheet-td-left {
+            padding-bottom: 1.25rem;
+        }
+    }
     
     .sheet-td-left {
         position: sticky;
@@ -243,6 +257,11 @@ body {
         text-align: left;
         min-width: 10rem;
         background-clip: padding-box;
+    }
+
+    .sheet-td-right {
+        min-width: 7rem;
+        padding-right: 1.25rem;
     }
 }
 

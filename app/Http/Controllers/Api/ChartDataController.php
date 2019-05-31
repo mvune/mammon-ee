@@ -58,27 +58,30 @@ class ChartDataController extends Controller
     {
         $rows = [];
         $currentSide = Category::SIDE_DEBET;
-        $categories = Auth::user()->categoriesWithFilters()->get();
+        $categories = Auth::user()->categories()->get();
 
         foreach ($categories as $category) {
             $row = $this->createRow($year, $category);
 
-            if ($category->side !== $currentSide || $category->is($categories->last())) {
-                $rows[] = $this->createRow($year, $this->makeNoCategory($currentSide));
-                $rows[] = $this->createRow($year, $this->makeTotalsCategory($currentSide));
-            }
             if ($category->side !== $currentSide) {
+                $rows[] = $this->createRow($year, $this->makeNoCategory($currentSide));
+                $rows[] = $this->createTotalsRow($year, $currentSide);
                 $rows[] = $this->createHeaderRow($category->side);
+                $rows[] = $row;
                 $currentSide = $category->side;
+            } else if ($category->is($categories->last())) {
+                $rows[] = $row;
+                $rows[] = $this->createRow($year, $this->makeNoCategory($currentSide));
+                $rows[] = $this->createTotalsRow($year, $currentSide);
+            } else {
+                $rows[] = $row;
             }
-
-            $rows[] = $row;
         }
 
         $rows[] = $this->createHeaderRow('net');
         $rows[] = $this->createRow($year, $this->makeTotalsCategory(Category::SIDE_DEBET));
         $rows[] = $this->createRow($year, $this->makeTotalsCategory(Category::SIDE_CREDIT));
-        $rows[] = $this->createRow($year, $this->makeTotalsCategory('net'));
+        $rows[] = $this->createTotalsRow($year, 'net');
 
         return $rows;
     }
@@ -149,5 +152,12 @@ class ChartDataController extends Controller
         $row['is_header_row'] = true;
 
         return $row;
+    }
+
+    private function createTotalsRow(int $year, string $side)
+    {
+        return $this->createRow($year, $this->makeTotalsCategory($side))
+            + [ 'is_totals_row' => true ]
+            + ($side === 'net' ? [ 'is_net_row' => true ] : []);
     }
 }
