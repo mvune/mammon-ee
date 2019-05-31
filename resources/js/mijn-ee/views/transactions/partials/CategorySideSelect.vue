@@ -52,7 +52,9 @@ export default {
   },
   computed: {
     sideCategories () {
-      return this.categories.filter(item => item.side.code === this.side.code);
+      return this.categories
+        .filter(item => item.side.code === this.side.code)
+        .concat(this.makeNoCategory());
     },
   },
   methods: {
@@ -61,6 +63,13 @@ export default {
     },
     allIds () {
       return this.sideCategories.map(item => item.id);
+    },
+    makeNoCategory () {
+      const category = {
+        id: 'null',
+        name: 'Overig',
+      };
+      return category;
     },
   },
   watch: {

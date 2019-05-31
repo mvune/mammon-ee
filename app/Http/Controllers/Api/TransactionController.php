@@ -34,7 +34,13 @@ class TransactionController extends Controller
                 })
                 // Filter by categories.
                 ->when($request->has('categories'), function ($query) use ($request) {
-                    return $query->whereIn('category_id', explode(',', $request->get('categories')));
+                    $catIds = explode(',', $request->get('categories'));
+
+                    return $query
+                        ->whereIn('category_id', $catIds)
+                        ->when(in_array('null', $catIds), function ($query) {
+                            return $query->orWhereNull('category_id');
+                        });
                 })
                 ->with('category')
                 ->orderBy('serial_number', 'desc')
