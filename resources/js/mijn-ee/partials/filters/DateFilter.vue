@@ -1,43 +1,29 @@
 <template>
   
-  <b-row>
-    <b-col sm="3">
-      <h4 class="filter-title text-primary">Periode:</h4>
-    </b-col>
-    <b-col sm="5">
-      <b-form-select class="d-inline-block time-select mb-2 float-right"
-        v-model="year"
-        :options="years"
-        size="sm"
-      ></b-form-select>
-      <b-form-select class="d-inline-block time-select mb-2 mr-1 float-right"
-        v-if="scope === scopes.MONTH"
-        v-model="month"
-        :options="months"
-        size="sm"
-      ></b-form-select>
-    </b-col>
-    <b-col sm="4">
-      <b-button-toolbar class="float-right">
-        <b-form-radio-group v-model="scope" buttons button-variant="outline-primary">
-          <b-form-radio :value="scopes.MONTH">Maand</b-form-radio>
-          <b-form-radio :value="scopes.YEAR">Jaar</b-form-radio>
-        </b-form-radio-group>
-      </b-button-toolbar>
-    </b-col>
-  </b-row>
+  <b-form-group>
+    <b-form-select class="d-inline-block time-select mb-2"
+      v-if="scope === scopes.MONTH"
+      v-model="month"
+      :options="months"
+      size="sm"
+    ></b-form-select>
+    <b-form-select class="d-inline-block time-select mb-2"
+      v-model="year"
+      :options="years"
+      size="sm"
+    ></b-form-select>
+  
+    <b-form-radio-group v-model="scope" buttons button-variant="outline-primary">
+      <b-form-radio :value="scopes.MONTH">Maand</b-form-radio>
+      <b-form-radio :value="scopes.YEAR">Jaar</b-form-radio>
+    </b-form-radio-group>
+  </b-form-group>
 
 </template>
 
 <style lang="scss" scoped>
-.filter-title {
-  margin-top: 0.35rem;
-  font-weight: 400;
-  text-align: right;
-}
 .time-select {
   font-size: 0.875rem;
-  margin-top: 0.1rem;
   width: 48%;
 }
 </style>

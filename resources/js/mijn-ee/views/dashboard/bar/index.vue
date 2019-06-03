@@ -15,6 +15,12 @@
 
 </template>
 
+<style lang="scss" scoped>
+.card-body {
+  padding: 0.75rem;
+}
+</style>
+
 <script>
 import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
 import { SCOPES } from '@/mijn-ee/globals/constants'

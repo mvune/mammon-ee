@@ -12,7 +12,7 @@ export default {
       renderData: {
         datasets: [
           {
-            label: 'Totaal',
+            label: 'Saldo',
             backgroundColor: styles.primary,
             data: [],
           }

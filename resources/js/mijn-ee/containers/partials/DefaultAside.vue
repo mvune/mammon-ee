@@ -1,6 +1,9 @@
 <template>
 
   <VuePerfectScrollbar class="loading-container p-3">
+    <label class="prim-head-sm">Periode</label>
+    <DateFilter />
+
     <label class="prim-head-sm">Rekeningen</label>
     <AccountSelect v-stream:selected="accounts$" :accounts="accounts" />
 
@@ -30,6 +33,7 @@ import { mapState } from 'vuex'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import AccountSelect from '@/mijn-ee/partials/filters/AccountSelect'
 import CategorySelect from '@/mijn-ee/partials/filters/CategorySelect'
+import DateFilter from '@/mijn-ee/partials/filters/DateFilter'
 import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
 import LoadingFaderer from '@/mijn-ee/partials/loading/Faderer'
 
@@ -38,6 +42,7 @@ export default {
   components: {
     AccountSelect,
     CategorySelect,
+    DateFilter,
     LoadingSpinner,
     LoadingFaderer,
     VuePerfectScrollbar,
