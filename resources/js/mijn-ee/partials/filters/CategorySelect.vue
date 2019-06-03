@@ -26,8 +26,6 @@ export default {
   data () {
     return {
       sides: SIDES,
-      firstCategoriesDebet: undefined,
-      firstCategoriesCredit: undefined,
     }
   },
   domStreams: [

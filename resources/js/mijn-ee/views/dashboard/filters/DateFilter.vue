@@ -64,15 +64,15 @@ export default {
   },
   computed: {
     scope: {
-      get: function () { return this.$store.state.scope },
+      get: function () { return this.$store.state.filters.scope },
       set: function (value) { this.$store.dispatch('setScope', value) }
     },
     month: {
-      get: function () { return this.$store.state.month },
+      get: function () { return this.$store.state.filters.month },
       set: function (value) { this.$store.dispatch('setMonth', value) }
     },
     year: {
-      get: function () { return this.$store.state.year },
+      get: function () { return this.$store.state.filters.year },
       set: function (value) { this.$store.dispatch('setYear', value) }
     },
   },

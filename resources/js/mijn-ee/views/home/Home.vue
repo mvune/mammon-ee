@@ -23,7 +23,7 @@
 </template>
 
 <style lang="scss" scoped>
-@import '../../variables.scss';
+@import '@/mijn-ee/variables.scss';
 
 .items-container {
   display: flex;

@@ -83,7 +83,7 @@ export default {
   },
   computed: {
     year: {
-      get: function () { return this.$store.state.year },
+      get: function () { return this.$store.state.filters.year },
       set: function (value) { this.$store.dispatch('setYear', value) }
     },
     scopedData: function () {

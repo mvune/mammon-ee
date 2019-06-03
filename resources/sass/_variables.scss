@@ -4,6 +4,14 @@
 $sidebar-nav-link-hover-bg: $theme-tertiary;
 $sidebar-nav-link-active-bg: $gray;
 $sidebar-nav-link-active-icon-color: $theme-primary;
+$aside-menu-bg: lighten($theme-quaternary, 60%); // #f6f1e3
+$aside-menu-borders: (
+  left: (
+    size: 2px,
+    style: solid,
+    color: $white
+  )
+);
 
 // Variable declarations
 $header-height: 53px;

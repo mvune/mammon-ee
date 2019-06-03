@@ -13,6 +13,11 @@
       <b-navbar-nav class="ml-auto mr-3">
         <AccountDropdown/>
       </b-navbar-nav>
+
+      <div class="mr-2">
+        <AsideToggler class="d-none d-lg-block" />
+        <AsideToggler class="d-lg-none" mobile />
+      </div>
     </AppHeader>
 
     <AlertBox />
@@ -31,6 +36,10 @@
           <router-view></router-view>
         </div>
       </main>
+
+      <AppAside fixed>
+        <DefaultAside />
+      </AppAside>
     </div>
     
     <TheFooter>
@@ -49,8 +58,21 @@
 </style>
 
 <script>
-import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFooter, SidebarForm, SidebarHeader, SidebarMinimizer, SidebarNav, Footer as TheFooter, Breadcrumb } from '@coreui/vue'
+import {
+  Header as AppHeader,
+  SidebarToggler,
+  Sidebar as AppSidebar,
+  SidebarFooter,
+  SidebarForm,
+  SidebarHeader,
+  SidebarMinimizer,
+  SidebarNav,
+  Aside as AppAside,
+  AsideToggler,
+  Footer as TheFooter,
+  Breadcrumb } from '@coreui/vue'
 import nav from './nav'
+import DefaultAside from './partials/DefaultAside'
 import AccountDropdown from './partials/AccountDropdown'
 import AlertBox from '@/mijn-ee/partials/alert/Box'
 
@@ -59,8 +81,11 @@ export default {
   components: {
     AppHeader,
     AppSidebar,
+    AppAside,
+    AsideToggler,
     TheFooter,
     Breadcrumb,
+    DefaultAside,
     AccountDropdown,
     AlertBox,
     SidebarForm,

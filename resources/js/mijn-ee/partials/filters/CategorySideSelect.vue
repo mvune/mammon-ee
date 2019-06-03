@@ -66,7 +66,7 @@ export default {
     },
     makeNoCategory () {
       const category = {
-        id: 'null',
+        id: 'null:' + this.side.code,
         name: 'Overig',
       };
       return category;

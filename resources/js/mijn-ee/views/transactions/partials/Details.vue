@@ -36,7 +36,7 @@
 </template>
 
 <style lang="scss" scoped>
-@import '../../../variables.scss';
+@import '@/mijn-ee/variables.scss';
 
 td {
   border: 0;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Category;
 use App\Transaction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostTransactionsRequest;
@@ -34,13 +35,25 @@ class TransactionController extends Controller
                 })
                 // Filter by categories.
                 ->when($request->has('categories'), function ($query) use ($request) {
-                    $catIds = explode(',', $request->get('categories'));
+                    return $query->where(function ($query) use ($request) {
+                        $ids = explode(',', $request->get('categories'));
 
-                    return $query
-                        ->whereIn('category_id', $catIds)
-                        ->when(in_array('null', $catIds), function ($query) {
-                            return $query->orWhereNull('category_id');
-                        });
+                        $query
+                            ->whereIn('category_id', $ids)
+                            ->when(in_array('null:' . Category::SIDE_DEBET, $ids), function ($query) {
+                                return $query->orWhere(function ($query) {
+                                    $query->whereNull('category_id')
+                                        ->where('amount', '>', 0);
+                                });
+                            })
+                            ->when(in_array('null:' . Category::SIDE_CREDIT, $ids), function ($query) {
+                                return $query->orWhere(function ($query) {
+                                    $query->whereNull('category_id')
+                                        ->where('amount', '<', 0);
+                                });
+                            })
+                        ;
+                    });
                 })
                 ->with('category')
                 ->orderBy('serial_number', 'desc')

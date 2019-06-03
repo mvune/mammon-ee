@@ -1,23 +1,13 @@
 <template>
   <div class="animated fadeIn">
     <b-row>
-      <b-col md="11" lg="3">
-        <LoadingContainer :loading="isBusyFilters">
-          <label class="prim-head-sm">Rekeningen</label>
-          <AccountSelect v-stream:selected="accounts$" :accounts="accounts" />
-
-          <label class="prim-head-sm">Categorieën</label>
-          <CategorySelect v-stream:selected="categories$" :categories="categories" />
-        </LoadingContainer>
-      </b-col>
-
       <b-col md="11" lg="8">
         <div class="ee-spinner-container">
           <b-table
             id="transactions-table"
             :items="transactions"
             :fields="fields"
-            :busy.sync="isBusyTransactions"
+            :busy.sync="isBusy"
             :current-page="currentPage"
             selectable
             select-mode="single"
@@ -58,7 +48,7 @@
 
           </b-table>
 
-          <LoadingSpinner v-if="transactions.length > 0" :loading="isBusyTransactions" />
+          <LoadingSpinner v-if="transactions.length > 0" :loading="isBusy" />
         </div>
 
         <b-pagination
@@ -82,70 +72,66 @@
 </style>
 
 <script>
-import { combineLatest, forkJoin } from 'rxjs'
-import { pluck, switchMap, tap, startWith, skip, finalize } from 'rxjs/operators'
-import * as AccountService from '@/mijn-ee/services/AccountService'
-import * as CategoryService from '@/mijn-ee/services/CategoryService'
+import { combineLatest } from 'rxjs'
+import { pluck, switchMap, tap, startWith, filter } from 'rxjs/operators'
+import { mapState } from 'vuex'
 import * as TransactionService from '@/mijn-ee/services/TransactionService'
-import LoadingContainer from '@/mijn-ee/partials/loading/Container'
 import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
 import Details from './partials/Details'
-import AccountSelect from './partials/AccountSelect'
-import CategorySelect from './partials/CategorySelect'
 
 export default {
   name: 'Transactions',
-  components: { Details, AccountSelect, CategorySelect, LoadingContainer, LoadingSpinner },
+  components: { Details, LoadingSpinner },
   data () {
     return {
-      isBusyTransactions: false,
-      isBusyFilters: true,
+      isBusy: false,
       fields: [
         { key: 'date', label: 'Datum' },
         { key: 'counterparty_name', label: 'Tegenpartij' },
         { key: 'amount', label: 'Bedrag', tdClass: 'amount-column' },
       ],
       transactions: [],
+      transactionsSubscription: null,
       totalRows: 0,
       perPage: 0,
       currentPage: 1,
       currentPageCached: 1,
-      accounts: [],
-      categories: [],
     }
   },
   domStreams: [
-    'accounts$',
-    'categories$',
     'currentPage$',
   ],
-  subscriptions () {
-    // Observables
-    const transactions$ = combineLatest(
-      this.accounts$.pipe(skip(1), pluck('event', 'msg'), startWith(undefined)),
-      this.categories$.pipe(skip(1), pluck('event', 'msg'), startWith(undefined)),
-      this.currentPage$.pipe(pluck('event', 'msg'), startWith(undefined)),
-    ).pipe(
-      tap(() => this.isBusyTransactions = true),
-      switchMap(([accounts, categories, page]) => {
-        const nextPage = this.pageIsChanging(page) ? page : undefined;
-        return TransactionService.getTransactions(nextPage, accounts, categories);
-      }),
-      tap(() => this.isBusyTransactions = false),
-    );
-
-    const filters$ = forkJoin(
-      AccountService.getAccounts(),
-      CategoryService.getCategories(),
-    ).pipe(
-      finalize(() => this.isBusyFilters = false),
-    );
-
-    // Subscriptions
-    transactions$.subscribe(this.handleTransactionsResponse, this.ee_errorHandler);
-    filters$.subscribe(this.handleFiltersResponse, this.ee_errorHandler);
+  computed: {
+    ...mapState({
+      accounts$: state => state.filters.selectedAccounts$,
+      accounts: state => state.filters.selectedAccounts,
+      categories$: state => state.filters.selectedCategories$,
+      categories: state => state.filters.selectedCategories,
+    }),
+    filtersAreReady () {
+      return !!(this.accounts$ && this.categories$);
+    },
   },
   methods: {
+    fetchTransactions (skipFirst) {
+      if (this.filtersAreReady) {
+        this.transactionsSubscription = combineLatest(
+          this.accounts$.pipe(filter((val, i) => !(skipFirst && i < 1)), startWith(this.accounts)),
+          this.categories$.pipe(filter((val, i) => !(skipFirst && i < 1)), startWith(this.categories)),
+          this.currentPage$.pipe(pluck('event', 'msg'), startWith(undefined)),
+        ).pipe(
+          tap(() => this.isBusy = true),
+          switchMap(([accounts, categories, page]) => {
+            const nextPage = this.pageIsChanging(page) ? page : undefined;
+            return TransactionService.getTransactions(nextPage, accounts, categories);
+          }),
+          tap(() => this.isBusy = false),
+        ).subscribe(
+          this.handleTransactionsResponse,
+          this.ee_errorHandler
+        );
+      }
+    },
     handleTransactionsResponse (res) {
       if (res.data) {
         for (let item of res.data.data) {
@@ -162,9 +148,6 @@ export default {
         this.currentPage = 1;
       }
       window.scrollTo(0, 0);
-    },
-    handleFiltersResponse (res) {
-      [this.accounts, this.categories] = res;
     },
     pageIsChanging (page) {
       if (typeof page === 'undefined') return undefined;
@@ -187,6 +170,19 @@ export default {
         item._showDetails = false;
       }
     },
+  },
+  watch: {
+    filtersAreReady () {
+      this.fetchTransactions(true);
+    },
+  },
+  created () {
+    this.fetchTransactions();
+  },
+  beforeDestroy () {
+    if (this.transactionsSubscription) {
+      this.transactionsSubscription.unsubscribe();
+    }
   },
 }
 </script>
