@@ -24,7 +24,7 @@
         v-for="category of sideCategories"
         :key="category.id"
         :value="category.id"
-        class="ml-4"
+        class="sub-checkbox"
       >
         {{ category.name }}
       </b-form-checkbox>
@@ -32,6 +32,15 @@
   </b-form-group>
 
 </template>
+
+<style lang="scss" scoped>
+$sub-margin: 1.5rem;
+
+.sub-checkbox {
+  margin-left: $sub-margin;
+  width: calc(100% - #{$sub-margin});
+}
+</style>
 
 <script>
 export default {

@@ -50,6 +50,9 @@
 </style>
 
 <script>
+import { mapState } from 'vuex'
+import { combineLatest } from 'rxjs'
+import { switchMap, tap, startWith, filter } from 'rxjs/operators'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
 import { MONTHS } from '@/mijn-ee/globals/constants'
@@ -78,7 +81,8 @@ export default {
         { key: 'year_total', label: 'Jaar totaal', tdClass: 'sheet-td-right' },
       ],
       data: [],
-      emptyData: Array(20).fill({ 1: "\0" }),
+      dataSubscription: null,
+      emptyData: Array(15).fill({ 1: "\0" }),
     }
   },
   computed: {
@@ -89,22 +93,44 @@ export default {
     scopedData: function () {
       return this.data[this.year] || this.emptyData;
     },
+    ...mapState({
+      accounts$: state => state.filters.selectedAccounts$,
+      accounts: state => state.filters.selectedAccounts,
+      categories$: state => state.filters.selectedCategories$,
+      categories: state => state.filters.selectedCategories,
+    }),
+    filtersAreReady () {
+      return !!(this.accounts$ && this.categories$);
+    },
   },
   created () {
     this.getData();
   },
+  beforeDestroy () {
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
+  },
   methods: {
-    getData () {
-      this.isBusy = true;
-
-      ChartService.getSheetData().subscribe(
-        this.handleResponse,
-        this.ee_errorHandler,
-        () => this.isBusy = false
-      );
+    getData (skipFirst) {
+      if (this.filtersAreReady) {
+        this.dataSubscription = combineLatest(
+          this.accounts$.pipe(filter((val, i) => !(skipFirst && i < 1)), startWith(this.accounts)),
+          this.categories$.pipe(filter((val, i) => !(skipFirst && i < 1)), startWith(this.categories)),
+        ).pipe(
+          tap(() => this.isBusy = true),
+          switchMap(([accounts, categories]) => {
+            return ChartService.getSheetData(accounts, categories);
+          }),
+          tap(() => this.isBusy = false),
+        ).subscribe(
+          this.handleResponse,
+          this.ee_errorHandler
+        );
+      }
     },
     handleResponse (res) {
-      this.data = res.data;
+      this.data = res.data || [];
     },
     trClass (item, type) {
       let trClass = '';
@@ -112,6 +138,11 @@ export default {
       if (item && item.is_totals_row) trClass += ' totals-row';
       if (item && item.is_net_row) trClass += ' net-row';
       return trClass;
+    },
+  },
+  watch: {
+    filtersAreReady () {
+      this.getData(true);
     },
   },
 }

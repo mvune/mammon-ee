@@ -1,4 +1,5 @@
 import { from, of } from 'rxjs'
+import * as helpers from './helpers'
 
 export function getTransactions(page, accounts, categories) {
   for (let param of [accounts, categories]) {
@@ -7,13 +8,7 @@ export function getTransactions(page, accounts, categories) {
     }
   }
 
-  const params = new URLSearchParams;
-
-  if (page) params.append('page', page);
-  if (accounts) params.append('accounts', accounts);
-  if (categories) params.append('categories', categories);
-
-  const queryString = params.toString() ? '?' + params.toString() : '';
+  const queryString = helpers.toQueryString({page, accounts, categories});
 
   return from(axios.get('transactions' + queryString));
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Str;
 use App\Category;
 use App\Transaction;
 use App\Http\Controllers\Controller;
@@ -13,7 +14,12 @@ use Illuminate\Support\Facades\DB;
 
 class ChartDataController extends Controller
 {
-    public function getFiltersData(Request $request)
+    const DEBET = Category::SIDE_DEBET;
+    const CREDIT = Category::SIDE_CREDIT;
+
+    private $request;
+
+    public function getBoundaryDates(Request $request)
     {
         $dateFilter = [
             'fromDate' => Transaction::ofAuthUser()->min('date'),
@@ -38,63 +44,85 @@ class ChartDataController extends Controller
 
     public function getSheetData(Request $request)
     {
-        $result = Transaction::ofAuthUser()->select(
+        $this->request = $request;
+
+        $years = Transaction::ofAuthUser()->select(
             DB::raw('MIN(YEAR(date)) as fromYear'),
             DB::raw('MAX(YEAR(date)) as toYear')
         )->first();
 
-        $y = $result->fromYear;
-        $toYear = $result->toYear;
-        $years = [];
+        $y = $years->fromYear;
+        $toYear = $years->toYear;
+        $sheetData = [];
 
         for ($y; $y <= $toYear; $y++) {
-            $years[$y] = $this->getSheetDataForYear($y);
+            $sheetData[$y] = $this->getSheetDataForYear($y);
         }
 
-        return $years;
+        return $sheetData;
     }
 
     private function getSheetDataForYear(int $year)
     {
         $rows = [];
-        $currentSide = Category::SIDE_DEBET;
-        $categories = Auth::user()->categories()->get();
+        $categories = Auth::user()->categories()->byIds($this->request)->get();
+        $debetCategories = $categories->filter(function ($item) { return $item->side === self::DEBET; });
+        $creditCategories = $categories->filter(function ($item) { return $item->side === self::CREDIT; });
 
-        foreach ($categories as $category) {
-            $row = $this->createRow($year, $category);
-
-            if ($category->side !== $currentSide) {
-                $rows[] = $this->createRow($year, $this->makeNoCategory($currentSide));
-                $rows[] = $this->createTotalsRow($year, $currentSide);
-                $rows[] = $this->createHeaderRow($category->side);
-                $rows[] = $row;
-                $currentSide = $category->side;
-            } else if ($category->is($categories->last())) {
-                $rows[] = $row;
-                $rows[] = $this->createRow($year, $this->makeNoCategory($currentSide));
-                $rows[] = $this->createTotalsRow($year, $currentSide);
-            } else {
-                $rows[] = $row;
-            }
+        // Debet
+        foreach ($debetCategories as $category) {
+            $rows[] = $this->createRow($year, $category);
         }
 
+        if ($this->isNoCategorySelected(self::DEBET)) {
+            $rows[] = $this->createRow($year, $this->makeNoCategory(self::DEBET));
+        }
+        $rows[] = $this->createTotalsRow($year, self::DEBET);
+
+        // Credit
+        $rows[] = $this->createHeaderRow(self::CREDIT);
+
+        foreach ($creditCategories as $category) {
+            $rows[] = $this->createRow($year, $category);
+        }
+
+        if ($this->isNoCategorySelected(self::CREDIT)) {
+            $rows[] = $this->createRow($year, $this->makeNoCategory(self::CREDIT));
+        }
+        $rows[] = $this->createTotalsRow($year, self::CREDIT);
+
+        // Net
         $rows[] = $this->createHeaderRow('net');
-        $rows[] = $this->createRow($year, $this->makeTotalsCategory(Category::SIDE_DEBET));
-        $rows[] = $this->createRow($year, $this->makeTotalsCategory(Category::SIDE_CREDIT));
+        $rows[] = $this->createRow($year, $this->makeTotalsCategory(self::DEBET));
+        $rows[] = $this->createRow($year, $this->makeTotalsCategory(self::CREDIT));
         $rows[] = $this->createTotalsRow($year, 'net');
 
         return $rows;
     }
 
+    /**
+     * Makes a `Category` object that represent the category 'Other'.
+     *
+     * @param string  $side
+     * @return Category
+     */
     private function makeNoCategory(string $side)
     {
         $noCategory = new Category;
+        $noCategory->id = null;
         $noCategory->name = __('misc.no_category');
         $noCategory->side = $side;
 
         return $noCategory;
     }
 
+    /**
+     * Makes a `Category` object that represents the category 'Totals'.
+     * Note that `id` is int 0.
+     *
+     * @param string  $side
+     * @return Category
+     */
     private function makeTotalsCategory(string $side) {
         $totalsCategory = new Category;
         $totalsCategory->id = 0;
@@ -104,6 +132,13 @@ class ChartDataController extends Controller
         return $totalsCategory;
     }
 
+    private function isNoCategorySelected(string $side)
+    {
+        $ids = $this->request->get('categories');
+
+        return is_null($ids) || !is_null($ids) && Str::contains($ids, "null:{$side}");
+    }
+
     private function createRow(int $year, Category $category)
     {
         $result = Transaction::ofAuthUser()
@@ -111,6 +146,7 @@ class ChartDataController extends Controller
                 DB::raw('MONTH(date) as month'),
                 DB::raw('ROUND(SUM(amount), 2) as amount')
             )
+            ->ByAccounts($this->request)
             ->where(DB::raw('YEAR(date)'), $year)
             ->when(!$category->id, function ($query) use ($category) {
                 if ($category->side === Category::SIDE_DEBET) {
@@ -120,6 +156,9 @@ class ChartDataController extends Controller
                 } else {
                     return $query;
                 }
+            })
+            ->when($category->id === 0, function ($query) {
+                return $query->byCategories($this->request);
             })
             ->when($category->id !== 0, function ($query) use ($category) {
                 return $query

@@ -29,32 +29,8 @@ class TransactionController extends Controller
     {
         return TransactionResource::collection(
             Auth::user()->transactions()
-                // Filter by accounts.
-                ->when($request->has('accounts'), function ($query) use ($request) {
-                    return $query->whereIn('account_id', explode(',', $request->get('accounts')));
-                })
-                // Filter by categories.
-                ->when($request->has('categories'), function ($query) use ($request) {
-                    return $query->where(function ($query) use ($request) {
-                        $ids = explode(',', $request->get('categories'));
-
-                        $query
-                            ->whereIn('category_id', $ids)
-                            ->when(in_array('null:' . Category::SIDE_DEBET, $ids), function ($query) {
-                                return $query->orWhere(function ($query) {
-                                    $query->whereNull('category_id')
-                                        ->where('amount', '>', 0);
-                                });
-                            })
-                            ->when(in_array('null:' . Category::SIDE_CREDIT, $ids), function ($query) {
-                                return $query->orWhere(function ($query) {
-                                    $query->whereNull('category_id')
-                                        ->where('amount', '<', 0);
-                                });
-                            })
-                        ;
-                    });
-                })
+                ->byAccounts($request)
+                ->byCategories($request)
                 ->with('category')
                 ->orderBy('serial_number', 'desc')
                 ->paginate(50)

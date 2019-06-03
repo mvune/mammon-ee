@@ -63,7 +63,7 @@ export default {
     },
   },
   created () {
-    ChartService.getFiltersData().subscribe(this.handleResponse, this.ee_errorHandler);
+    ChartService.getBoundaryDates().subscribe(this.handleResponse, this.ee_errorHandler);
   },
   methods: {
     handleResponse (res) {
