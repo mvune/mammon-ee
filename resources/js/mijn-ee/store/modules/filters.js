@@ -1,5 +1,5 @@
 import { forkJoin } from 'rxjs'
-import { finalize, take, pluck } from 'rxjs/operators'
+import { finalize, take, pluck, debounceTime } from 'rxjs/operators'
 import * as AccountService from '@/mijn-ee/services/AccountService'
 import * as CategoryService from '@/mijn-ee/services/CategoryService'
 import { SCOPES } from '@/mijn-ee/globals/constants'
@@ -33,12 +33,12 @@ const actions = {
     }, self.ee_errorHandler);
   },
   setSelectedAccounts (ctx, value) {
-    value = value.pipe(pluck('event', 'msg'));
+    value = value.pipe(debounceTime(750), pluck('event', 'msg'));
     ctx.commit('setSelectedAccounts$', value);
     value.subscribe(accounts => ctx.commit('setSelectedAccounts', accounts));
   },
   setSelectedCategories (ctx, value) {
-    value = value.pipe(pluck('event', 'msg'));
+    value = value.pipe(debounceTime(750), pluck('event', 'msg'));
     ctx.commit('setSelectedCategories$', value);
     value.subscribe(categories => ctx.commit('setSelectedCategories', categories));
   },

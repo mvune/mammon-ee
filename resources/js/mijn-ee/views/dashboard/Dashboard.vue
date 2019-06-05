@@ -1,13 +1,13 @@
 <template>
   <div class="animated fadeIn">
     <b-row>
-      <b-col lg="11">
+      <b-col>
         <Bar />
       </b-col>
     </b-row>
 
     <b-row>
-      <b-col lg="11">
+      <b-col>
         <Sheet />
       </b-col>
     </b-row>

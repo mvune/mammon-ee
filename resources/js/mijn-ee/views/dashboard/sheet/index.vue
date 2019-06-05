@@ -55,29 +55,29 @@ import { combineLatest } from 'rxjs'
 import { switchMap, tap, startWith, filter } from 'rxjs/operators'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
-import { MONTHS } from '@/mijn-ee/globals/constants'
+import { MONTHS, SCOPES } from '@/mijn-ee/globals/constants'
 import * as ChartService from '@/mijn-ee/services/ChartService'
 
 export default {
-  name: 'MonthlySheet',
+  name: 'Sheet',
   components: { LoadingSpinner, VuePerfectScrollbar },
   data () {
     return {
       isBusy: false,
       fields: [
         { key: 'category', label: 'Inkomen', tdClass: 'sheet-td-left' },
-        { key: '1', label: MONTHS[0].text },
-        { key: '2', label: MONTHS[1].text },
-        { key: '3', label: MONTHS[2].text },
-        { key: '4', label: MONTHS[3].text },
-        { key: '5', label: MONTHS[4].text },
-        { key: '6', label: MONTHS[5].text },
-        { key: '7', label: MONTHS[6].text },
-        { key: '8', label: MONTHS[7].text },
-        { key: '9', label: MONTHS[8].text },
-        { key: '10', label: MONTHS[9].text },
-        { key: '11', label: MONTHS[10].text },
-        { key: '12', label: MONTHS[11].text },
+        { key: '1', label: MONTHS[0].text, tdClass: '' },
+        { key: '2', label: MONTHS[1].text, tdClass: '' },
+        { key: '3', label: MONTHS[2].text, tdClass: '' },
+        { key: '4', label: MONTHS[3].text, tdClass: '' },
+        { key: '5', label: MONTHS[4].text, tdClass: '' },
+        { key: '6', label: MONTHS[5].text, tdClass: '' },
+        { key: '7', label: MONTHS[6].text, tdClass: '' },
+        { key: '8', label: MONTHS[7].text, tdClass: '' },
+        { key: '9', label: MONTHS[8].text, tdClass: '' },
+        { key: '10', label: MONTHS[9].text, tdClass: '' },
+        { key: '11', label: MONTHS[10].text, tdClass: '' },
+        { key: '12', label: MONTHS[11].text, tdClass: '' },
         { key: 'year_total', label: 'Jaar totaal', tdClass: 'sheet-td-right' },
       ],
       data: [],
@@ -86,10 +86,6 @@ export default {
     }
   },
   computed: {
-    year: {
-      get: function () { return this.$store.state.filters.year },
-      set: function (value) { this.$store.dispatch('setYear', value) }
-    },
     scopedData: function () {
       return this.data[this.year] || this.emptyData;
     },
@@ -98,6 +94,9 @@ export default {
       accounts: state => state.filters.selectedAccounts,
       categories$: state => state.filters.selectedCategories$,
       categories: state => state.filters.selectedCategories,
+      month: state => state.filters.month,
+      year: state => state.filters.year,
+      scope: state => state.filters.scope,
     }),
     filtersAreReady () {
       return !!(this.accounts$ && this.categories$);
@@ -132,6 +131,18 @@ export default {
     handleResponse (res) {
       this.data = res.data || [];
     },
+    removeHighlightedColClass () {
+      for (let field of this.fields) {
+        field.tdClass = field.tdClass.replace('highlighted-col', '');
+      }
+    },
+    assignHighlightedColClass () {
+      const filteredCol = this.fields.filter(item => item.key === this.month)[0];
+
+      if (filteredCol) {
+        filteredCol.tdClass += ' highlighted-col';
+      }
+    },
     trClass (item, type) {
       let trClass = '';
       if (item && item.is_header_row) trClass += ' header-row';
@@ -143,6 +154,17 @@ export default {
   watch: {
     filtersAreReady () {
       this.getData(true);
+    },
+    scope (newValue) {
+      if (newValue === SCOPES.MONTH) {
+        this.assignHighlightedColClass();
+      } else {
+        this.removeHighlightedColClass();
+      }
+    },
+    month () {
+      this.removeHighlightedColClass();
+      this.assignHighlightedColClass();
     },
   },
 }

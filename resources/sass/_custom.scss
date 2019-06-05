@@ -248,6 +248,10 @@ body {
             padding-bottom: 1rem;
         }
     }
+
+    .highlighted-col {
+        background-color: lighten($theme-quaternary, 60%);
+    }
     
     .sheet-td-left {
         position: sticky;
