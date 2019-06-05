@@ -19,9 +19,6 @@ export default {
         ]
       },
       options: {
-        onClick: (event, elements) => {
-          this.$emit('clicked', elements);
-        },
         tooltips: {
           intersect: false,
           mode: 'index',

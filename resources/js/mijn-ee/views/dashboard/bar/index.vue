@@ -2,7 +2,7 @@
 
   <b-card>
     <div class="loading-container">
-      <BarChart v-on:clicked="onChartClick"
+      <BarChart
         height="160"
         :data="scopedData"
         :month="month"
@@ -22,6 +22,7 @@
 </style>
 
 <script>
+import { mapState } from 'vuex'
 import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
 import { SCOPES } from '@/mijn-ee/globals/constants'
 import BarChart from './Chart'
@@ -37,18 +38,11 @@ export default {
     }
   },
   computed: {
-    scope: {
-      get: function () { return this.$store.state.filters.scope },
-      set: function (value) { this.$store.dispatch('setScope', value) }
-    },
-    month: {
-      get: function () { return this.$store.state.filters.month },
-      set: function (value) { this.$store.dispatch('setMonth', value) }
-    },
-    year: {
-      get: function () { return this.$store.state.filters.year },
-      set: function (value) { this.$store.dispatch('setYear', value) }
-    },
+    ...mapState({
+      month: state => state.filters.month,
+      year: state => state.filters.year,
+      scope: state => state.filters.scope,
+    }),
   },
   created () {
     this.getBalances();
@@ -154,12 +148,6 @@ export default {
         if (fd > sd) return 1;
         if (fd.getTime() === sd.getTime()) return 0;
       });
-    },
-    onChartClick (elements) {
-      if (elements.length > 0 && this.scope === SCOPES.YEAR) {
-        this.month = (new Date(elements[0]._chart.data.datasets[0].data[elements[0]._index].x)).getMonth() + 1;
-        this.scope = SCOPES.MONTH;
-      }
     },
   },
   watch: {
