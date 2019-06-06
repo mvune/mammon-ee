@@ -93,8 +93,8 @@ class ChartDataController extends Controller
 
         // Net
         $rows[] = $this->createHeaderRow('net');
-        $rows[] = $this->createRow($year, $this->makeTotalsCategory(self::DEBET));
-        $rows[] = $this->createRow($year, $this->makeTotalsCategory(self::CREDIT));
+        $rows[] = $this->createSubtotalsRow($year, self::DEBET);
+        $rows[] = $this->createSubtotalsRow($year, self::CREDIT);
         $rows[] = $this->createTotalsRow($year, 'net');
 
         return $rows;
@@ -170,8 +170,9 @@ class ChartDataController extends Controller
             ->get();
 
         $row = array_combine(Arr::pluck($result, 'month'), Arr::pluck($result, 'amount'));
-        $row['year_total'] = array_sum($row);
+        $row['year_total'] = round(array_sum($row), 2);
         $row['category'] = $category->name;
+        $row['side'] = $category->side;
 
         return $row;
     }
@@ -198,5 +199,11 @@ class ChartDataController extends Controller
         return $this->createRow($year, $this->makeTotalsCategory($side))
             + [ 'is_totals_row' => true ]
             + ($side === 'net' ? [ 'is_net_row' => true ] : []);
+    }
+
+    private function createSubtotalsRow(int $year, string $side)
+    {
+        return $this->createRow($year, $this->makeTotalsCategory($side))
+            + [ 'is_subtotals_row' => true ];
     }
 }

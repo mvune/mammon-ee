@@ -4,12 +4,12 @@
       <!-- Header -->
       <b-list-group-item v-if="side.code === sides.debet.code" variant="success">
         {{ side.label }}
-        <i class="fa fa-arrow-up fa-lg mt-1 float-right"></i>
+        <i class="fa fa-arrow-up fa-lg mt-1 float-right" aria-hidden="true"></i>
       </b-list-group-item>
 
       <b-list-group-item v-if="side.code === sides.credit.code" variant="danger">
         {{ side.label }}
-        <i class="fa fa-arrow-down fa-lg mt-1 float-right"></i>
+        <i class="fa fa-arrow-down fa-lg mt-1 float-right" aria-hidden="true"></i>
       </b-list-group-item>
 
       <!-- Items -->

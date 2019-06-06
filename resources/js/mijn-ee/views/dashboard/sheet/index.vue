@@ -39,7 +39,7 @@
 @import '@/mijn-ee/variables.scss';
 
 .sheet-container {
-  max-height: 80vh;
+  // max-height: 80vh;
   border: 2px solid $extra-dark;
 }
 
@@ -130,6 +130,7 @@ export default {
     },
     handleResponse (res) {
       this.data = res.data || [];
+      this.$store.dispatch('setSheetData', this.data);
     },
     removeHighlightedColClass () {
       for (let field of this.fields) {

@@ -42,9 +42,18 @@ const actions = {
     ctx.commit('setSelectedCategories$', value);
     value.subscribe(categories => ctx.commit('setSelectedCategories', categories));
   },
-  setMonth (ctx, value) { ctx.commit('setMonth', value) },
-  setYear (ctx, value) { ctx.commit('setYear', value) },
-  setScope (ctx, value) { ctx.commit('setScope', value) },
+  setMonth (ctx, value) {
+    ctx.commit('setMonth', value);
+    ctx.dispatch('setDonutData');
+  },
+  setYear (ctx, value) {
+    ctx.commit('setYear', value);
+    ctx.dispatch('setDonutData');
+  },
+  setScope (ctx, value) {
+    ctx.commit('setScope', value);
+    ctx.dispatch('setDonutData');
+  },
 }
 
 const mutations = {
