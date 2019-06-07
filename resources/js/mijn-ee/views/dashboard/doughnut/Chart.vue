@@ -21,11 +21,11 @@ export default {
         tooltips: {
           callbacks: {
             title: (item, chart) => chart.labels[item[0].index],
-            label: (item, chart) => ' € ' + Math.abs(chart.datasets[0].data[item.index]).toFixed(2),
+            label: this.getLabel,
           },
         },
         legend: {
-          onClick: e => e.stopPropagation(),
+          display: false,
         },
       },
       backgroundColors: [
@@ -58,7 +58,27 @@ export default {
   },
   methods: {
     render () {
+      this.$emit('legend', this.createCustomLegend());
       this.renderChart(this.chartData, this.options);
+    },
+    createCustomLegend () {
+      const legend = [];
+
+      for (let i = 0; i < this.labels.length; i++) {
+        legend.push({
+          color: this.backgroundColors[i % this.backgroundColors.length],
+          label: this.labels[i],
+          value: this.data[i],
+        });
+      }
+
+      return legend;
+    },
+    getLabel (item, chart) {
+      const value = chart.datasets[0].data[item.index];
+      const total = _.sum(chart.datasets[0].data);
+
+      return ' € ' + Math.abs(value).toFixed(2) + ' (' + (value / total * 100).toFixed(1) + '%)';
     },
   },
   watch: {
