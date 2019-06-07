@@ -1,6 +1,6 @@
 <style lang="scss" scoped>
 .chartjs-render-monitor {
-  max-width: 500px;
+  max-width: 420px;
   margin: 0 auto;
 }
 </style>

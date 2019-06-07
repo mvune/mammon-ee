@@ -28,6 +28,9 @@ export default {
             label: (item) => ' € ' + item.yLabel.toFixed(2),
           },
         },
+        legend: {
+          onClick: e => e.stopPropagation(),
+        },
         scales: {
           xAxes: [{
             display: false,

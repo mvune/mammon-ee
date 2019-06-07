@@ -1,13 +1,10 @@
 <template>
   <div>
-    <h2 v-if="side.code === sides.debet.code" class="text-success text-center">
+    <h3 class="text-center">
       {{ sum | ee_valuta }}
-      <i class="fa fa-arrow-up" aria-hidden="true"></i>
-    </h2>
-    <h2 v-if="side.code === sides.credit.code" class="text-danger text-center">
-      {{ sum | ee_valuta }}
-      <i class="fa fa-arrow-down" aria-hidden="true"></i>
-    </h2>
+      <i v-if="side.code === sides.debet.code" class="fa fa-arrow-up text-success" aria-hidden="true"></i>
+      <i v-if="side.code === sides.credit.code" class="fa fa-arrow-down text-danger" aria-hidden="true"></i>
+    </h3>
     
     <DoughnutChart @legend="legend = $event" :data="data" :labels="labels" class="mb-3" />
 

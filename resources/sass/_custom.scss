@@ -250,7 +250,7 @@ body {
     }
 
     .highlighted-col {
-        background-color: lighten($theme-quaternary, 60%);
+        background-color: lighten($theme-quaternary, 56%);
     }
     
     .sheet-td-left {
@@ -271,6 +271,37 @@ body {
 
 .b-table-details > td {
     width: 100%;
+}
+
+// Tabs
+.bare-tabs {
+    .nav-tabs {
+      border: none;
+      margin-left: 1.5rem;
+      
+      .nav-link,
+      .nav-link:hover,
+      .nav-link.active,
+      .nav-link.active:focus {
+        color: $primary;
+        background: none;
+        border: 2px solid transparent;
+      }
+      
+      .nav-link.active,
+      .nav-link.active:focus {
+        border-bottom: 2px solid $primary;
+      }
+    }
+      
+    .tab-content {
+      background: none;
+      border: none;
+      
+      .tab-pane {
+        padding: 1rem 0;
+      }
+    }
 }
 
 // Dashboard
