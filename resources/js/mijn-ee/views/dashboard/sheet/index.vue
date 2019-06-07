@@ -138,7 +138,7 @@ export default {
       }
     },
     assignHighlightedColClass () {
-      const filteredCol = this.fields.filter(item => item.key === this.month)[0];
+      const filteredCol = this.fields.filter(item => item.key == this.month)[0];
 
       if (filteredCol) {
         filteredCol.tdClass += ' highlighted-col';

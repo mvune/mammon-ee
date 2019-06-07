@@ -4,7 +4,7 @@
       <template slot="tabs">
         <li class="nav-item ml-auto mr-5">
           <h1 class="text-primary text-center m-0">
-            <template v-if="scope === scopes.MONTH">{{ months[month - 1].text }}</template>
+            <template v-if="scope === scopes.MONTH && month">{{ months[month - 1].text }}</template>
             {{ year }}
           </h1>
         </li>
