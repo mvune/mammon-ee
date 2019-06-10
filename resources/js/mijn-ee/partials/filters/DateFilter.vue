@@ -69,10 +69,10 @@ export default {
     handleResponse (res) {
       const fromDate = res.data.dateFilter.fromDate;
       const toDate = res.data.dateFilter.toDate;
-      this.firstYear = fromDate ? (new Date(fromDate).getFullYear()) : null;
-      this.lastYear = toDate ? (new Date(toDate).getFullYear()) : null;
-      this.firstMonth = fromDate ? (new Date(fromDate).getMonth()) : null;
-      this.lastMonth = toDate ? (new Date(toDate).getMonth()) : null;
+      this.firstYear = fromDate ? new Date(fromDate).getFullYear() : (new Date).getFullYear();
+      this.lastYear = toDate ? new Date(toDate).getFullYear() : (new Date).getFullYear();
+      this.firstMonth = fromDate ? new Date(fromDate).getMonth() : null;
+      this.lastMonth = toDate ? new Date(toDate).getMonth() : null;
       this.populateYearSelect();
     },
     populateYearSelect () {

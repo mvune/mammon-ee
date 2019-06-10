@@ -56,13 +56,14 @@ class ChartDataController extends Controller
         $sheetData = [];
 
         for ($y; $y <= $toYear; $y++) {
+            $y = $y ?: Carbon::now()->year;
             $sheetData[$y] = $this->getSheetDataForYear($y);
         }
 
         return $sheetData;
     }
 
-    private function getSheetDataForYear(int $year)
+    private function getSheetDataForYear(int $year = null)
     {
         $rows = [];
         $categories = Auth::user()->categories()->byIds($this->request)->get();
@@ -139,7 +140,7 @@ class ChartDataController extends Controller
         return is_null($ids) || !is_null($ids) && Str::contains($ids, "null:{$side}");
     }
 
-    private function createRow(int $year, Category $category)
+    private function createRow(int $year = null, Category $category)
     {
         $result = Transaction::ofAuthUser()
             ->select(
@@ -194,14 +195,14 @@ class ChartDataController extends Controller
         return $row;
     }
 
-    private function createTotalsRow(int $year, string $side)
+    private function createTotalsRow(int $year = null, string $side)
     {
         return $this->createRow($year, $this->makeTotalsCategory($side))
             + [ 'is_totals_row' => true ]
             + ($side === 'net' ? [ 'is_net_row' => true ] : []);
     }
 
-    private function createSubtotalsRow(int $year, string $side)
+    private function createSubtotalsRow(int $year = null, string $side)
     {
         return $this->createRow($year, $this->makeTotalsCategory($side))
             + [ 'is_subtotals_row' => true ];

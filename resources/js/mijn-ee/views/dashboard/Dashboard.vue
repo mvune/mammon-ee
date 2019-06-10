@@ -16,11 +16,11 @@
         </template>
 
         <b-row>
-          <b-col v-if="debetData.length" lg="6">
+          <b-col lg="6">
             <Doughnut :side="sides.debet" :data="debetData" :labels="debetLabels" />
           </b-col>
 
-          <b-col v-if="creditData.length" lg="6">
+          <b-col lg="6">
             <Doughnut :side="sides.credit" :data="creditData" :labels="creditLabels" />
           </b-col>
         </b-row>

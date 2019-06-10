@@ -87,7 +87,7 @@ export default {
 
       const cursor = new Date(fromDate);
       const betweens = [];
-      const lastDate = new Date(this.chartData[this.chartData.length - 1].x);
+      const lastDate = this.chartData.length > 0 ? new Date(this.chartData[this.chartData.length - 1].x) : null;
       let previousBalance;
 
       const firstItemIndex = this.chartData.findIndex(item => {

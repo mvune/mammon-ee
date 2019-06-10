@@ -6,6 +6,8 @@
       <i v-if="side.code === sides.credit.code" class="fa fa-arrow-down text-danger" aria-hidden="true"></i>
     </h3>
     
+    <div v-if="data.length === 0">Geen gegevens.</div>
+
     <DoughnutChart @legend="legend = $event" :data="data" :labels="labels" class="mb-3" />
 
     <ul class="legend">

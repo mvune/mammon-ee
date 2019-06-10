@@ -2,7 +2,7 @@
 
   <b-form-group>
     <b-form-checkbox
-      v-if="categories.length > 0"
+      v-if="sideCategories.length > 0"
       v-model="allSelected"
       :indeterminate="indeterminate"
       aria-describedby="categories"
@@ -55,7 +55,7 @@ export default {
   data () {
     return {
       selected: [],
-      allSelected: true,
+      allSelected: false,
       indeterminate: false,
     }
   },
