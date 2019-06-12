@@ -16,8 +16,8 @@ Route::get('/', 'HomeController@index')->name('home');
 Route::get('/mijn-ee/{vue_capture?}', 'DashboardController@index')
     ->where('vue_capture', '[\/\w\.\,\-]*')
     ->name('dashboard')
-    ->middleware('auth');
+    ->middleware('auth', 'verified');
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::delete('/destroy', 'Api\UserAccountController@destroy');

@@ -6,7 +6,7 @@ body, body *:not(html):not(style):not(br):not(tr):not(code) {
 }
 
 body {
-    background-color: #F8FAFC;
+    background-color: #515052;
     color: #74787E;
     height: 100%;
     hyphens: auto;
@@ -82,7 +82,7 @@ img {
 /* Layout */
 
 .wrapper {
-    background-color: #F8FAFC;
+    background-color: #515052;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -118,7 +118,7 @@ img {
 /* Body */
 
 .body {
-    background-color: #FFFFFF;
+    background-color: #feecc0;
     border-bottom: 1px solid #EDEFF2;
     border-top: 1px solid #EDEFF2;
     margin: 0;
@@ -130,7 +130,7 @@ img {
 }
 
 .inner-body {
-    background-color: #FFFFFF;
+    background-color: #feecc0;
     margin: 0 auto;
     padding: 0;
     width: 570px;
@@ -220,11 +220,11 @@ img {
 
 .button-blue,
 .button-primary {
-    background-color: #3490DC;
-    border-top: 10px solid #3490DC;
-    border-right: 18px solid #3490DC;
-    border-bottom: 10px solid #3490DC;
-    border-left: 18px solid #3490DC;
+    background-color: #7b4397;
+    border-top: 10px solid #7b4397;
+    border-right: 18px solid #7b4397;
+    border-bottom: 10px solid #7b4397;
+    border-left: 18px solid #7b4397;
 }
 
 .button-green,
@@ -268,7 +268,7 @@ img {
 /* Promotions */
 
 .promotion {
-    background-color: #FFFFFF;
+    background-color: #feecc0;
     border: 2px dashed #9BA2AB;
     margin: 0;
     margin-bottom: 25px;

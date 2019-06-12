@@ -24,7 +24,7 @@
     @yield('styles')
 </head>
 
-<body @if (Route::is('login') || Route::is('register') || Route::is('password.request') || Route::is('password.reset')) class="alt-bg"@endif>
+<body @if (Route::is('login') || Route::is('register') || Route::is('password.request') || Route::is('password.reset') || Route::is('verification.notice')) class="alt-bg"@endif>
     <div id="top">
         @include('layouts.header')
 
