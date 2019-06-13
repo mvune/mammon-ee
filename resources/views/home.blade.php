@@ -19,7 +19,7 @@
           <div class="device-mockup macbook portrait white">
             <div class="device">
               <div class="screen">
-                
+                <img src="/images/donuts.png" class="img-fluid" alt="Dashboardpagina met donutdiagrammen">
               </div>
               <div class="button"></div>
             </div>
@@ -55,7 +55,7 @@
           <div class="device-mockup macbook portrait white">
             <div class="device">
               <div class="screen">
-
+                <img src="/images/sheet.png" class="img-fluid" alt="Dashboardpagina met overzichtstabel">
               </div>
               <div class="button"></div>
             </div>
