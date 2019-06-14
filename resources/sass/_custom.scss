@@ -7,7 +7,14 @@ html {
 }
 
 #top {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     padding-top: $padding-top-total;
+}
+
+main {
+    flex: 1 0 auto;
 }
 
 .inline-ee {
@@ -20,7 +27,7 @@ html {
 }
 
 .auth-card {
-    margin-top: 50px;
+    margin-top: 1rem;
 
     .card-header {
         color: inherit;
@@ -29,6 +36,20 @@ html {
 
     .card-body {
         background-color: $light;
+    }
+}
+
+.centered-info-container {
+    margin: 0 auto;
+    padding: 1rem;
+    max-width: 42rem;
+
+    h4 {
+        color: $theme-quaternary;
+    }
+
+    p {
+        font-size: 14px;
     }
 }
 

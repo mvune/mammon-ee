@@ -13,6 +13,8 @@
 
 Route::get('/', 'HomeController@index')->name('home');
 
+Route::get('/privacy', function () { return view('privacy'); })->name('privacy');
+
 Route::get('/mijn-ee/{vue_capture?}', 'DashboardController@index')
     ->where('vue_capture', '[\/\w\.\,\-]*')
     ->name('dashboard')

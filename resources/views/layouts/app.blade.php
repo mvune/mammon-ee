@@ -41,6 +41,10 @@
         <main>
             @yield('content')
         </main>
+
+        @if (!Route::is('dashboard'))
+        @include('layouts.footer')
+        @endif
     </div>
 
     <!-- Scripts -->

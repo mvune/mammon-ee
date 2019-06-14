@@ -1,5 +1,6 @@
 // Styling for the footer
 .home-footer {
+    flex-shrink: 0;
     padding: 25px 0;
     text-align: center;
     color: fade-out(white, .7);
