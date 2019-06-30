@@ -191,6 +191,7 @@ export default {
         .subscribe((response) => {
           this.items.push(this.formatItem(response.data));
           this.ee_showAlert('defaultSuccess');
+          this.$store.dispatch('fetchFiltersData', this);
         },
         this.ee_errorHandler,
         () => {
@@ -222,6 +223,7 @@ export default {
             row.item.iban = this.form.iban;
             this.toggleForm(row);
             this.ee_showAlert('defaultSuccess');
+            this.$store.dispatch('fetchFiltersData', this);
           },
           this.ee_errorHandler,
           () => this.isBusy = false);
@@ -234,6 +236,7 @@ export default {
         .subscribe(() => {
           this.items = this.items.filter(item => item.id !== row.item.id);
           this.ee_showAlert('accountDeleted');
+          this.$store.dispatch('fetchFiltersData', this);
         },
         this.ee_errorHandler,
         () => this.isBusy = false);

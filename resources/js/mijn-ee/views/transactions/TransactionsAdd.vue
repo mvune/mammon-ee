@@ -95,6 +95,7 @@ export default {
           .then(response => {
             this.resetForm();
             this.ee_showAlert('defaultSuccess');
+            this.$store.dispatch('fetchFiltersData', this);
           })
           .catch(this.ee_errorHandler)
           .then(() => this.isBusy = false);

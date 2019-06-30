@@ -137,6 +137,7 @@ export default {
           }
 
           this.ee_showAlert('defaultSuccess');
+          this.$store.dispatch('fetchFiltersData', this);
         },
         this.ee_errorHandler,
         () => this.isBusy(category.side, false)
@@ -150,6 +151,7 @@ export default {
         res => {
           this.categories.push(res.data);
           this.ee_showAlert('defaultSuccess');
+          this.$store.dispatch('fetchFiltersData', this);
         },
         this.ee_errorHandler,
         () => this.isBusy(category.side, false)
@@ -163,6 +165,7 @@ export default {
         () => {
           this.categories = this.categories.filter(item => item.id !== category.id);
           this.ee_showAlert('categoryDeleted');
+          this.$store.dispatch('fetchFiltersData', this);
         },
         this.ee_errorHandler,
         () => this.isBusy(category.side, false)
