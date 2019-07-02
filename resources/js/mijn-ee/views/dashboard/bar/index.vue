@@ -2,6 +2,7 @@
 
   <b-card>
     <div class="loading-container">
+      <h4 class="text-primary ml-1 mb-0">Saldo</h4>
       <BarChart
         height="160"
         :data="scopedData"
@@ -32,8 +33,8 @@ export default {
   components: { LoadingSpinner, BarChart },
   data () {
     return {
-      chartData: [],
-      scopedData: [],
+      chartData: {},
+      scopedData: {},
       isBusy: false,
     }
   },
@@ -60,13 +61,17 @@ export default {
         .then(() => this.isBusy = false);
     },
     dataToChartData (data) {
-      const chartData = [];
+      const chartData = {};
 
-      for (let item of data) {
-        chartData.push({
-          x: item.date,
-          y: item.balance,
-        });
+      for (let accountId in data) {
+        chartData[accountId] = [];
+
+        for (let item of data[accountId]) {
+          chartData[accountId].push({
+            x: item.date,
+            y: item.balance,
+          });
+        }
       }
 
       return chartData;
@@ -77,48 +82,55 @@ export default {
       const toDateExcl = new Date(toDate);
       fromDateExcl.setDate(fromDateExcl.getDate() - 1);
       toDateExcl.setDate(toDateExcl.getDate() + 1);
+      let scopedDatas = {};
 
-      let scopedData = this.chartData.filter(item => {
-        const d = new Date(item.x);
-        d.setHours(6);
-        
-        return d > fromDateExcl && d < toDateExcl;
-      });
-
-      const cursor = new Date(fromDate);
-      const betweens = [];
-      const lastDate = this.chartData.length > 0 ? new Date(this.chartData[this.chartData.length - 1].x) : null;
-      let previousBalance;
-
-      const firstItemIndex = this.chartData.findIndex(item => {
-        return scopedData[0] ? item.x === scopedData[0].x : false;
-      });
-      
-      if (firstItemIndex > 0) {
-        previousBalance = this.chartData[firstItemIndex - 1].y;
-      }
-
-      while (cursor < toDateExcl) {
-        let rememberItem = scopedData.filter(item => {
-          return (new Date(item.x)).toISOString().substring(0, 10) === cursor.toISOString().substring(0, 10);
+      for (let accountId in this.chartData) {
+        let scopedData = this.chartData[accountId].filter(item => {
+          const d = new Date(item.x);
+          d.setHours(6);
+          
+          return d > fromDateExcl && d < toDateExcl;
         });
 
-        if (rememberItem.length > 0) {
-          previousBalance = rememberItem[0].y;
-        } else {
-          if (cursor < lastDate) {
-            betweens.push({x: cursor.toISOString().substring(0, 10), y: previousBalance});
-          } else {
-            betweens.push({x: cursor.toISOString().substring(0, 10), y: undefined});
-          }
+        const cursor = new Date(fromDate);
+        const betweens = [];
+        const lastDate = this.chartData[accountId].length > 0
+          ? new Date(this.chartData[accountId][this.chartData[accountId].length - 1].x)
+          : null;
+        let previousBalance;
+
+        const firstItemIndex = this.chartData[accountId].findIndex(item => {
+          return scopedData[0] ? item.x === scopedData[0].x : false;
+        });
+        
+        if (firstItemIndex > 0) {
+          previousBalance = this.chartData[accountId][firstItemIndex - 1].y;
         }
 
-        cursor.setDate(cursor.getDate() + 1);
+        while (cursor < toDateExcl) {
+          let rememberItem = scopedData.filter(item => {
+            return (new Date(item.x)).toISOString().substring(0, 10) === cursor.toISOString().substring(0, 10);
+          });
+
+          if (rememberItem.length > 0) {
+            previousBalance = rememberItem[0].y;
+          } else {
+            if (cursor < lastDate) {
+              betweens.push({x: cursor.toISOString().substring(0, 10), y: previousBalance});
+            } else {
+              betweens.push({x: cursor.toISOString().substring(0, 10), y: undefined});
+            }
+          }
+
+          cursor.setDate(cursor.getDate() + 1);
+        }
+
+        scopedData.push(...betweens);
+        scopedData = this.sortByDate(scopedData);
+        scopedDatas[accountId] = scopedData;
       }
 
-      scopedData.push(...betweens);
-      scopedData = this.sortByDate(scopedData);
-      this.scopedData = scopedData;
+      this.scopedData = scopedDatas;
     },
     getBoundaryDates () {
       const fromDate = new Date(this.year.toString());

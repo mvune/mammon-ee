@@ -31,15 +31,24 @@ class ChartDataController extends Controller
 
     public function getBalances(Request $request)
     {
-        return Transaction::ofAuthUser()
-            ->select('date', 'balance_after_transaction as balance')
-            ->whereIn('serial_number', function ($query) {
-                return (new Transaction)->scopeOfAuthUser($query)
-                    ->select(DB::raw('MAX(serial_number)'))
-                    ->groupBy('date');
-            })
-            ->orderBy('date')
-            ->get();
+        $balances = [];
+        $accounts = Auth::user()->accounts;
+
+        foreach ($accounts as $account) {
+            $balances[$account->id] = Transaction::ofAuthUser()
+                ->select('date', 'balance_after_transaction as balance')
+                ->where('account_id', $account->id)
+                ->whereIn('serial_number', function ($query) use ($account) {
+                    return (new Transaction)->scopeOfAuthUser($query)
+                        ->select(DB::raw('MAX(serial_number)'))
+                        ->where('account_id', $account->id)
+                        ->groupBy('date');
+                })
+                ->orderBy('date')
+                ->get();
+        }
+
+        return $balances;
     }
 
     public function getSheetData(Request $request)

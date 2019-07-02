@@ -1,7 +1,7 @@
 <script>
+import { mapState } from 'vuex'
 import { Bar } from 'vue-chartjs'
 import { SCOPES } from '@/mijn-ee/globals/constants'
-import styles from '@/mijn-ee/variables.scss'
 
 export default {
   name: 'BarChart',
@@ -10,13 +10,7 @@ export default {
   data () {
     return {
       renderData: {
-        datasets: [
-          {
-            label: 'Saldo',
-            backgroundColor: styles.primary,
-            data: [],
-          }
-        ]
+        datasets: []
       },
       options: {
         tooltips: {
@@ -25,7 +19,7 @@ export default {
           axis: 'x',
           callbacks: {
             title: (item) => this.$options.filters.ee_date(item[0].xLabel),
-            label: (item) => ' € ' + item.yLabel.toFixed(2),
+            label: (item) => isNaN(item.yLabel) ? ' n.v.t.' : ' € ' + item.yLabel.toFixed(2),
           },
         },
         legend: {
@@ -49,11 +43,21 @@ export default {
             },
           }]
         }
-      }
+      },
+      colors: [
+        '#7b4397', '#ed2f3c', '#ff9226', '#a35d19', '#64b72d',
+      ],
     }
   },
+  computed: {
+    ...mapState({
+      selectedAccounts$: state => state.filters.selectedAccounts$,
+      selectedAccounts: state => state.filters.selectedAccounts,
+      accounts: state => state.filters.accounts,
+    }),
+  },
   mounted () {
-    this.render();
+    this.selectedAccounts$.subscribe(() => this.render());
   },
   methods: {
     turnOnAxes () {
@@ -69,14 +73,39 @@ export default {
         this.options.scales.xAxes[0].time.unit = 'day';
       }
     },
+    toggleSelected () {
+      for (let dataset of this.renderData.datasets) {
+        if (this.selectedAccounts.includes(dataset.accountId)) {
+          dataset.hidden = false;
+        } else {
+          dataset.hidden = true;
+        }
+      }
+    },
     render () {
       this.setXAxisTimeUnit();
+      this.toggleSelected();
       this.renderChart(this.renderData, this.options);
     },
   },
   watch: {
     data: function (newValue, oldValue) {
-      this.renderData.datasets[0].data = newValue;
+      let i = 0;
+      this.renderData.datasets = [];
+
+      for (let accountId in newValue) {
+        accountId = parseInt(accountId, 10);
+        const account = this.accounts.filter(item => item.id === accountId)[0];
+
+        this.renderData.datasets.push({
+          label: account.name || this.$options.filters.ee_iban(account.iban),
+          backgroundColor: this.colors[i],
+          data: newValue[accountId],
+          accountId: accountId,
+        });
+        
+        i++;
+      }
       this.turnOnAxes();
       this.render();
     },
