@@ -103,9 +103,13 @@ export default {
 
       this.$subscribeTo(
         CategoryService.getCategories(),
-        data => this.categories = data,
-        this.ee_errorHandler,
-        () => {
+        data => {
+          this.categories = data;
+          this.isBusy(SIDES.debet, false);
+          this.isBusy(SIDES.credit, false);
+        },
+        e => {
+          this.ee_errorHandler(e);
           this.isBusy(SIDES.debet, false);
           this.isBusy(SIDES.credit, false);
         }
@@ -119,9 +123,12 @@ export default {
         CategoryService.orderCategories(categories),
         () => {
           this.ee_showAlert('defaultSuccess');
+          this.isBusy(side, false);
         },
-        this.ee_errorHandler,
-        () => this.isBusy(side, false)
+        e => {
+          this.ee_errorHandler(e);
+          this.isBusy(side, false);
+        }
       );
     },
     updateCategory (category) {
@@ -138,9 +145,12 @@ export default {
 
           this.ee_showAlert('defaultSuccess');
           this.$store.dispatch('fetchFiltersData', this);
+          this.isBusy(category.side, false);
         },
-        this.ee_errorHandler,
-        () => this.isBusy(category.side, false)
+        e => {
+          this.ee_errorHandler(e);
+          this.isBusy(category.side, false);
+        }
       );
     },
     createCategory (category) {
@@ -152,9 +162,12 @@ export default {
           this.categories.push(res.data);
           this.ee_showAlert('defaultSuccess');
           this.$store.dispatch('fetchFiltersData', this);
+          this.isBusy(category.side, false);
         },
-        this.ee_errorHandler,
-        () => this.isBusy(category.side, false)
+        e => {
+          this.ee_errorHandler(e);
+          this.isBusy(category.side, false);
+        }
       );
     },
     deleteCategory (category) {
@@ -166,9 +179,12 @@ export default {
           this.categories = this.categories.filter(item => item.id !== category.id);
           this.ee_showAlert('categoryDeleted');
           this.$store.dispatch('fetchFiltersData', this);
+          this.isBusy(category.side, false);
         },
-        this.ee_errorHandler,
-        () => this.isBusy(category.side, false)
+        e => {
+          this.ee_errorHandler(e);
+          this.isBusy(category.side, false);
+        }
       )
     },
     isBusy (side, value) {
