@@ -96,6 +96,7 @@ export default {
       for (let accountId in newValue) {
         accountId = parseInt(accountId, 10);
         const account = this.accounts.filter(item => item.id === accountId)[0];
+        if (!account) continue;
 
         this.renderData.datasets.push({
           label: account.name || this.$options.filters.ee_iban(account.iban),
