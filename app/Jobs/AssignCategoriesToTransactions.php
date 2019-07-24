@@ -36,22 +36,25 @@ class AssignCategoriesToTransactions implements ShouldQueue
     {
         Transaction::whereRaw(1)->update(['category_id' => null]);
 
-        $categories = $this->user->transactionFilters->groupBy('category_id');
+        $categories = $this->user->categoriesWithFilters
+            ->sortByDesc('priority')
+            ->values()->all(); // Reindex.
 
-        foreach ($categories as $categoryWithFilters) {
-            $query = Transaction::whereNull('category_id');
+        foreach ($categories as $category) {
+            $transactions = Transaction::whereNull('category_id');
+            $transactions->bySide($category->side);
 
-            foreach ($categoryWithFilters as $filter) {
+            foreach ($category->transactionFilters as $filter) {
                 $target = $filter->transactionFilterTarget->name;
 
                 if (self::isRegex($filter->expression)) {
-                    $query->where($target, 'regexp', trim($filter->expression, '/'));
+                    $transactions->where($target, 'regexp', trim($filter->expression, '/'));
                 } else {
-                    $query->where($target, 'like', '%' . $filter->expression . '%');
+                    $transactions->where($target, 'like', '%' . $filter->expression . '%');
                 }
             }
 
-            $query->update(['category_id' => $filter->category_id]);
+            $transactions->update(['category_id' => $filter->category_id]);
         }
     }
 

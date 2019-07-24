@@ -159,21 +159,13 @@ class ChartDataController extends Controller
             ->ByAccounts($this->request)
             ->where(DB::raw('YEAR(date)'), $year)
             ->when(!$category->id, function ($query) use ($category) {
-                if ($category->side === Category::SIDE_DEBET) {
-                    return $query->where('amount', '>', 0);
-                } else if ($category->side === Category::SIDE_CREDIT) {
-                    return $query->where('amount', '<', 0);
-                } else {
-                    return $query;
-                }
+                return $query->bySide($category->side);
             })
             ->when($category->id === 0, function ($query) {
                 return $query->byCategories($this->request);
             })
             ->when($category->id !== 0, function ($query) use ($category) {
-                return $query
-                    ->where('category_id', $category->id)
-                    ->groupBy('category_id');
+                return $query->byCategory($category);
             })
             ->groupBy(DB::raw('YEAR(date)'))
             ->groupBy(DB::raw('MONTH(date)'))
