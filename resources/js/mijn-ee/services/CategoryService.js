@@ -13,11 +13,15 @@ export function orderCategories(data) {
   return from(axios.patch('categories/order', data));
 }
 
-export function createCategory(data) {
+export function createCategory(category) {
+  const data = _.cloneDeep(category);
+  data.side = data.side.code;
   return from(axios.post('categories', data));
 }
 
-export function updateCategory(id, data) {
+export function updateCategory(id, category) {
+  const data = _.cloneDeep(category);
+  data.side = data.side.code;
   return from(axios.put(`categories/${id}`, data));
 }
 
