@@ -60,6 +60,25 @@ export default {
     this.selectedAccounts$.subscribe(() => this.render());
   },
   methods: {
+    setRenderData () {
+      let i = 0;
+      this.renderData.datasets = [];
+
+      for (let accountId in this.data) {
+        accountId = parseInt(accountId, 10);
+        const account = this.accounts.filter(item => item.id === accountId)[0];
+        if (!account) continue;
+
+        this.renderData.datasets.push({
+          label: account.name || this.$options.filters.ee_iban(account.iban),
+          backgroundColor: this.colors[i],
+          data: this.data[accountId],
+          accountId: accountId,
+        });
+        
+        i++;
+      }
+    },
     turnOnAxes () {
       this.options.scales.xAxes[0].display = true;
       this.options.scales.yAxes[0].display = true;
@@ -83,6 +102,7 @@ export default {
       }
     },
     render () {
+      this.setRenderData();
       this.setXAxisTimeUnit();
       this.toggleSelected();
       this.renderChart(this.renderData, this.options);
@@ -90,23 +110,6 @@ export default {
   },
   watch: {
     data: function (newValue, oldValue) {
-      let i = 0;
-      this.renderData.datasets = [];
-
-      for (let accountId in newValue) {
-        accountId = parseInt(accountId, 10);
-        const account = this.accounts.filter(item => item.id === accountId)[0];
-        if (!account) continue;
-
-        this.renderData.datasets.push({
-          label: account.name || this.$options.filters.ee_iban(account.iban),
-          backgroundColor: this.colors[i],
-          data: newValue[accountId],
-          accountId: accountId,
-        });
-        
-        i++;
-      }
       this.turnOnAxes();
       this.render();
     },
