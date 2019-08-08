@@ -22,9 +22,6 @@ export default {
             label: (item) => isNaN(item.yLabel) ? ' n.v.t.' : ' € ' + item.yLabel.toFixed(2),
           },
         },
-        legend: {
-          onClick: e => e.stopPropagation(),
-        },
         scales: {
           xAxes: [{
             display: false,
@@ -51,13 +48,11 @@ export default {
   },
   computed: {
     ...mapState({
-      selectedAccounts$: state => state.filters.selectedAccounts$,
-      selectedAccounts: state => state.filters.selectedAccounts,
       accounts: state => state.filters.accounts,
     }),
   },
   mounted () {
-    this.selectedAccounts$.subscribe(() => this.render());
+    this.render();
   },
   methods: {
     setRenderData () {
@@ -92,19 +87,9 @@ export default {
         this.options.scales.xAxes[0].time.unit = 'day';
       }
     },
-    toggleSelected () {
-      for (let dataset of this.renderData.datasets) {
-        if (this.selectedAccounts.includes(dataset.accountId)) {
-          dataset.hidden = false;
-        } else {
-          dataset.hidden = true;
-        }
-      }
-    },
     render () {
       this.setRenderData();
       this.setXAxisTimeUnit();
-      this.toggleSelected();
       this.renderChart(this.renderData, this.options);
     },
   },
