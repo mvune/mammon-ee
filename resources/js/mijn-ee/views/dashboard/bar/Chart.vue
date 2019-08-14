@@ -49,10 +49,11 @@ export default {
   computed: {
     ...mapState({
       accounts: state => state.filters.accounts,
+      selectedAccounts$: state => state.filters.selectedAccounts$,
     }),
   },
   mounted () {
-    this.render();
+    this.selectedAccounts$.subscribe(this.render);
   },
   methods: {
     setRenderData () {
