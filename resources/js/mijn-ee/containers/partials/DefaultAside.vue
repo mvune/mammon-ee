@@ -2,7 +2,7 @@
 
   <VuePerfectScrollbar class="loading-container p-3">
     <label class="prim-head-sm">Periode</label>
-    <DateFilter />
+    <DatePeriodFilter v-stream:selectedFrom="dateFrom$" v-stream:selectedTo="dateTo$" />
 
     <label class="prim-head-sm">Rekeningen</label>
     <AccountSelect v-stream:selected="accounts$" :accounts="accounts" />
@@ -33,7 +33,7 @@ import { mapState } from 'vuex'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import AccountSelect from '@/mijn-ee/partials/filters/AccountSelect'
 import CategorySelect from '@/mijn-ee/partials/filters/CategorySelect'
-import DateFilter from '@/mijn-ee/partials/filters/DateFilter'
+import DatePeriodFilter from '@/mijn-ee/partials/filters/DatePeriodFilter'
 import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
 import LoadingFaderer from '@/mijn-ee/partials/loading/Faderer'
 
@@ -42,7 +42,7 @@ export default {
   components: {
     AccountSelect,
     CategorySelect,
-    DateFilter,
+    DatePeriodFilter,
     LoadingSpinner,
     LoadingFaderer,
     VuePerfectScrollbar,
@@ -50,6 +50,8 @@ export default {
   domStreams: [
     'accounts$',
     'categories$',
+    'dateFrom$',
+    'dateTo$',
   ],
   computed: {
     ...mapState({
@@ -62,6 +64,8 @@ export default {
     this.$store.dispatch('fetchFiltersData', this);
     this.$store.dispatch('setSelectedAccounts', this.accounts$);
     this.$store.dispatch('setSelectedCategories', this.categories$);
+    this.$store.dispatch('setDateFrom', this.dateFrom$);
+    this.$store.dispatch('setDateTo', this.dateTo$);
   },
 }
 </script>

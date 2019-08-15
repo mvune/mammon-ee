@@ -7,6 +7,8 @@ import { SCOPES } from '@/mijn-ee/globals/constants'
 const state = {
   accounts: [],
   categories: [],
+  dateFrom$: null,
+  dateTo$: null,
   selectedAccounts$: null,
   selectedAccounts: null,
   selectedCategories$: null,
@@ -54,11 +56,21 @@ const actions = {
     ctx.commit('setScope', value);
     ctx.dispatch('setDonutData');
   },
+  setDateFrom (ctx, value) {
+    ctx.commit('setDateFrom$', value);
+    ctx.dispatch('setDonutData');
+  },
+  setDateTo (ctx, value) {
+    ctx.commit('setDateTo$', value);
+    ctx.dispatch('setDonutData');
+  },
 }
 
 const mutations = {
   setAccounts (state, payload) { state.accounts = payload },
   setCategories (state, payload) { state.categories = payload },
+  setDateFrom$ (state, payload) { state.dateFrom$ = payload },
+  setDateTo$ (state, payload) { state.dateTo$ = payload },
   setSelectedAccounts$ (state, payload) { state.selectedAccounts$ = payload },
   setSelectedAccounts (state, payload) { state.selectedAccounts = payload },
   setSelectedCategories$ (state, payload) { state.selectedCategories$ = payload },

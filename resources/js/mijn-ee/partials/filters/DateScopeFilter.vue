@@ -1,23 +1,27 @@
 <template>
   
-  <b-form-group>
-    <b-form-select class="d-inline-block time-select mb-2"
-      v-if="scope === scopes.MONTH"
-      v-model="month"
-      :options="months"
-      size="sm"
-    ></b-form-select>
-    <b-form-select class="d-inline-block time-select mb-2"
-      v-model="year"
-      :options="years"
-      size="sm"
-    ></b-form-select>
+  <b-row>
+    <b-col sm="6" class="py-0">
+      <b-form-select class="d-inline-block time-select mb-2 float-right"
+        v-model="year"
+        :options="years"
+        size="sm"
+      ></b-form-select>
+      <b-form-select class="d-inline-block time-select mb-2 mr-1 float-right"
+        v-if="scope === scopes.MONTH"
+        v-model="month"
+        :options="months"
+        size="sm"
+      ></b-form-select>
+    </b-col>
   
-    <b-form-radio-group v-model="scope" buttons button-variant="outline-primary">
-      <b-form-radio :value="scopes.MONTH">Maand</b-form-radio>
-      <b-form-radio :value="scopes.YEAR">Jaar</b-form-radio>
-    </b-form-radio-group>
-  </b-form-group>
+    <b-col sm="6" class="py-0">
+      <b-form-radio-group v-model="scope" buttons button-variant="outline-primary" class="float-right">
+        <b-form-radio :value="scopes.MONTH">Maand</b-form-radio>
+        <b-form-radio :value="scopes.YEAR">Jaar</b-form-radio>
+      </b-form-radio-group>
+    </b-col>
+  </b-row>
 
 </template>
 
@@ -34,7 +38,7 @@ import { MONTHS, SCOPES } from '@/mijn-ee/globals/constants'
 import * as ChartService from '@/mijn-ee/services/ChartService'
 
 export default {
-  name: 'DateFilter',
+  name: 'DateScopeFilter',
   data () {
     return {
       scopes: SCOPES,

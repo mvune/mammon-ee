@@ -111,4 +111,32 @@ class Transaction extends Model
             });
         });
     }
+
+    /**
+     * Filter by date.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Http\Request|null  $request
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByDate($query, Request $request = null)
+    {
+        return $query
+            ->byDateFrom($request)
+            ->byDateTo($request);
+    }
+
+    public function scopeByDateFrom($query, Request $request = null)
+    {
+        return $query->when($request && $request->has('from'), function ($query) use ($request) {
+            return $query->where('date', '>=', $request->get('from'));
+        });
+    }
+
+    public function scopeByDateTo($query, Request $request = null)
+    {
+        return $query->when($request && $request->has('to'), function ($query) use ($request) {
+            return $query->where('date', '<=', $request->get('to'));
+        });
+    }
 }

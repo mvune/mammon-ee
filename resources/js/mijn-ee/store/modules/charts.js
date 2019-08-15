@@ -32,7 +32,7 @@ const actions = {
         debetData = debetData.map(item => item.year_total || undefined);
         creditData = creditData.map(item => item.year_total || undefined);
       }
-      else if (scope === SCOPES.MONTH) {        
+      else if (scope === SCOPES.MONTH) {
         debetData = debetData.map(item => item[month] || undefined);
         creditData = creditData.map(item => item[month] || undefined);
       }

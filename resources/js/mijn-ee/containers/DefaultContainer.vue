@@ -8,7 +8,7 @@
       </a>
       <SidebarToggler class="d-md-down-none" display="lg" />
 
-      <Breadcrumb :list="list"/>
+      <Breadcrumb class="breadcrumb" :list="list"/>
       
       <b-navbar-nav class="ml-auto mr-3">
         <AccountDropdown/>
@@ -51,9 +51,15 @@
   </div>
 </template>
 
-<style>
+<style lang="scss">
+  @import '@/mijn-ee/variables.scss';
+
   p {
     font-size: 14px;
+  }
+
+  .breadcrumb a {
+    color: $theme-primary;
   }
 </style>
 

@@ -107,9 +107,11 @@ export default {
       accounts: state => state.filters.selectedAccounts,
       categories$: state => state.filters.selectedCategories$,
       categories: state => state.filters.selectedCategories,
+      dateFrom$: state => state.filters.dateFrom$,
+      dateTo$: state => state.filters.dateTo$,
     }),
     filtersAreReady () {
-      return !!(this.accounts$ && this.categories$);
+      return !!(this.accounts$ && this.categories$ && this.dateFrom$ && this.dateTo$);
     },
   },
   methods: {
@@ -118,12 +120,14 @@ export default {
         this.transactionsSubscription = combineLatest(
           this.accounts$.pipe(filter((val, i) => !(skipFirst && i < 1)), startWith(this.accounts)),
           this.categories$.pipe(filter((val, i) => !(skipFirst && i < 1)), startWith(this.categories)),
+          this.dateFrom$.pipe(pluck('event', 'msg'), startWith(undefined)),
+          this.dateTo$.pipe(pluck('event', 'msg'), startWith(undefined)),
           this.currentPage$.pipe(pluck('event', 'msg'), startWith(undefined)),
         ).pipe(
           tap(() => this.isBusy = true),
-          switchMap(([accounts, categories, page]) => {
+          switchMap(([accounts, categories, dateFrom, dateTo, page]) => {
             const nextPage = this.pageIsChanging(page) ? page : undefined;
-            return TransactionService.getTransactions(nextPage, accounts, categories);
+            return TransactionService.getTransactions(nextPage, accounts, categories, dateFrom, dateTo);
           }),
           tap(() => this.isBusy = false),
         ).subscribe(

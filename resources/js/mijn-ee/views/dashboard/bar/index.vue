@@ -1,8 +1,16 @@
 <template>
 
   <b-card>
+    <b-row>
+      <b-col sm="3">
+        <h4 class="text-primary mt-1">Saldo</h4>
+      </b-col>
+      <b-col sm="9">
+        <DateScopeFilter />
+      </b-col>
+    </b-row>
+
     <div class="loading-container">
-      <h4 class="text-primary ml-1 mb-0">Saldo</h4>
       <BarChart
         height="160"
         :data="scopedData"
@@ -27,10 +35,11 @@ import { mapState } from 'vuex'
 import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
 import { SCOPES } from '@/mijn-ee/globals/constants'
 import BarChart from './Chart'
+import DateScopeFilter from '@/mijn-ee/partials/filters/DateScopeFilter'
 
 export default {
   name: 'Bar',
-  components: { LoadingSpinner, BarChart },
+  components: { LoadingSpinner, BarChart, DateScopeFilter },
   data () {
     return {
       chartData: {},

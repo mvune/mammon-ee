@@ -31,6 +31,7 @@ class TransactionController extends Controller
             Auth::user()->transactions()
                 ->byAccounts($request)
                 ->byCategories($request)
+                ->byDate($request)
                 ->with('category')
                 ->orderBy('serial_number', 'desc')
                 ->paginate(50)

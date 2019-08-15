@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 
 /*
  |--------------------------------------------------------------------------
@@ -17,6 +18,9 @@ mix.js('resources/js/app.js', 'public/js')
    .copyDirectory('resources/images', 'public/images');
 
 mix.webpackConfig({
+  plugins: [
+    new VuetifyLoaderPlugin()
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'resources/js/')

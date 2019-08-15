@@ -1,8 +1,14 @@
 import { from, of } from 'rxjs'
 import * as helpers from './helpers'
 
+const getBoundaryDatesObs = (function () {
+  const obs = from(axios.get('charts/boundary-dates'));
+
+  return function () { return obs; }
+})();
+
 export function getBoundaryDates() {
-  return from(axios.get('charts/boundary-dates'));
+  return getBoundaryDatesObs();
 }
 
 export function getSheetData(accounts, categories) {

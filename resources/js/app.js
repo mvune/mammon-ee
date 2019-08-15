@@ -13,6 +13,7 @@ import Chart from 'chart.js'
 import App from './mijn-ee/App'
 import router from './mijn-ee/router'
 import store from './mijn-ee/store'
+import vuetify from './vuetify'
 import styles from '../sass/custom/_variables.scss'
 
 Vue.use(BootstrapVue)
@@ -34,6 +35,7 @@ new Vue({
   el: '#app',
   router,
   store,
+  vuetify,
   template: '<App/>',
   components: { App },
 });
