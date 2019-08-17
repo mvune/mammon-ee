@@ -58,11 +58,11 @@ class ChartDataController extends Controller
         foreach (Category::SIDES as $side) {
             $doughnutData[$side] = Transaction::ofAuthUser()
                 ->join('categories', 'transactions.category_id', '=', 'categories.id')
-                ->select('category_id', 'categories.name', DB::raw('SUM(amount) as total'))
+                ->select('category_id', 'categories.name', DB::raw('ROUND(SUM(amount), 2) as total'))
                 ->where('categories.side', $side)
-                ->byCategories($this->request)
-                ->byAccounts($this->request)
-                ->byDate($this->request)
+                ->byCategories($request)
+                ->byAccounts($request)
+                ->byDate($request)
                 ->groupBy('category_id')
                 ->get();
         }
