@@ -78,7 +78,7 @@ export default {
       const value = chart.datasets[0].data[item.index];
       const total = _.sum(chart.datasets[0].data);
 
-      return ' € ' + Math.abs(value).toFixed(2) + ' (' + (value / total * 100).toFixed(1) + '%)';
+      return ' ' + this.$options.filters.ee_valuta(value) + ' (' + (value / total * 100).toFixed(1) + '%)';
     },
   },
   watch: {
