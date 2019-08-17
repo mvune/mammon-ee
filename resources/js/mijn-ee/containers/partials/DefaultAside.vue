@@ -31,7 +31,7 @@
 <script>
 import { mapState } from 'vuex'
 import { combineLatest } from 'rxjs'
-import { pluck, startWith, filter } from 'rxjs/operators'
+import { pluck, startWith, filter, map } from 'rxjs/operators'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import AccountSelect from '@/mijn-ee/partials/filters/AccountSelect'
 import CategorySelect from '@/mijn-ee/partials/filters/CategorySelect'
@@ -77,7 +77,7 @@ export default {
         this.categories$.pipe(filter((val, i) => !(skipFirst && i < 1)), pluck('event', 'msg'), startWith(this.selectedCategories)),
         this.dateFrom$.pipe(pluck('event', 'msg'), startWith(undefined)),
         this.dateTo$.pipe(pluck('event', 'msg'), startWith(undefined)),
-      );
+      ).pipe(map(([accounts, categories, dateFrom, dateTo]) => ({accounts, categories, dateFrom, dateTo})));
     }
 
     this.$store.dispatch('setFilters', filters);

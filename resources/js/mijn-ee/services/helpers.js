@@ -9,3 +9,13 @@ export function toQueryString({page, accounts, categories, dateFrom, dateTo}) {
 
   return params.toString() ? '?' + params.toString() : '';
 }
+
+export function noResultsExpected({accounts, categories}) {
+  for (let param of [accounts, categories]) {
+    if (_.isArray(param) && _.isEmpty(param)) {
+      return true;
+    }
+
+    return false;
+  }
+}

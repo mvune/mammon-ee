@@ -7,12 +7,8 @@
         </template>
 
         <b-row>
-          <b-col lg="6">
-            <Doughnut :side="sides.debet" :data="debetData" :labels="debetLabels" />
-          </b-col>
-
-          <b-col lg="6">
-            <Doughnut :side="sides.credit" :data="creditData" :labels="creditLabels" />
+          <b-col>
+            <Donut />
           </b-col>
         </b-row>
       </b-tab>
@@ -51,27 +47,12 @@ i.icons {
 </style>
 
 <script>
-import { mapState } from 'vuex'
 import Bar from './bar'
 import Sheet from './sheet'
-import Doughnut from './doughnut'
-import { SIDES } from '@/mijn-ee/globals/constants'
+import Donut from './donut'
 
 export default {
   name: 'Dashboard',
-  components: { Bar, Sheet, Doughnut },
-  data () {
-    return {
-      sides: SIDES,
-    }
-  },
-  computed: {
-    ...mapState({
-      debetLabels: state => state.charts.donutDebetLabels,
-      creditLabels: state => state.charts.donutCreditLabels,
-      debetData: state => state.charts.donutDebetData,
-      creditData: state => state.charts.donutCreditData,
-    }),
-  },
+  components: { Bar, Sheet, Donut },
 }
 </script>

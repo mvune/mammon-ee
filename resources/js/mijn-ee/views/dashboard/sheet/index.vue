@@ -118,8 +118,6 @@ export default {
       return this.data[this.year] || this.emptyData;
     },
     ...mapState({
-      accounts: state => state.filters.selectedAccounts,
-      categories: state => state.filters.selectedCategories,
       filters$: state => state.filters.filters$,
     }),
   },

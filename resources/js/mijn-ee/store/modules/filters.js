@@ -47,23 +47,18 @@ const actions = {
   },
   setMonth (ctx, value) {
     ctx.commit('setMonth', value);
-    ctx.dispatch('setDonutData');
   },
   setYear (ctx, value) {
     ctx.commit('setYear', value);
-    ctx.dispatch('setDonutData');
   },
   setScope (ctx, value) {
     ctx.commit('setScope', value);
-    ctx.dispatch('setDonutData');
   },
   setDateFrom (ctx, value) {
     ctx.commit('setDateFrom$', value);
-    ctx.dispatch('setDonutData');
   },
   setDateTo (ctx, value) {
     ctx.commit('setDateTo$', value);
-    ctx.dispatch('setDonutData');
   },
   setFilters (ctx, value) {
     ctx.commit('setFilters$', value);

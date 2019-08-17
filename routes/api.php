@@ -20,6 +20,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('/charts/boundary-dates', 'Api\ChartDataController@getBoundaryDates');
     Route::get('/charts/balances', 'Api\ChartDataController@getBalances');
+    Route::get('/charts/doughnut-data', 'Api\ChartDataController@getDoughnutData');
     Route::get('/charts/sheet-data', 'Api\ChartDataController@getSheetData');
 
     Route::get('/transaction-filter-targets', 'Api\TransactionFilterTargetController@index');

@@ -51,6 +51,25 @@ class ChartDataController extends Controller
         return $balances;
     }
 
+    public function getDoughnutData(Request $request)
+    {
+        $doughnutData = [];
+
+        foreach (Category::SIDES as $side) {
+            $doughnutData[$side] = Transaction::ofAuthUser()
+                ->join('categories', 'transactions.category_id', '=', 'categories.id')
+                ->select('category_id', 'categories.name', DB::raw('SUM(amount) as total'))
+                ->where('categories.side', $side)
+                ->byCategories($this->request)
+                ->byAccounts($this->request)
+                ->byDate($this->request)
+                ->groupBy('category_id')
+                ->get();
+        }
+
+        return $doughnutData;
+    }
+
     public function getSheetData(Request $request)
     {
         $this->request = $request;
