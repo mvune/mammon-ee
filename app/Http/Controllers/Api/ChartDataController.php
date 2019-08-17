@@ -55,10 +55,13 @@ class ChartDataController extends Controller
     {
         $this->request = $request;
 
-        $years = Transaction::ofAuthUser()->select(
-            DB::raw('MIN(YEAR(date)) as fromYear'),
-            DB::raw('MAX(YEAR(date)) as toYear')
-        )->first();
+        $years = Transaction::ofAuthUser()
+            ->select(
+                DB::raw('MIN(YEAR(date)) as fromYear'),
+                DB::raw('MAX(YEAR(date)) as toYear')
+            )
+            ->byDate($this->request)
+            ->first();
 
         $y = $years->fromYear;
         $toYear = $years->toYear;
@@ -156,7 +159,8 @@ class ChartDataController extends Controller
                 DB::raw('MONTH(date) as month'),
                 DB::raw('ROUND(SUM(amount), 2) as amount')
             )
-            ->ByAccounts($this->request)
+            ->byAccounts($this->request)
+            ->byDate($this->request)
             ->where(DB::raw('YEAR(date)'), $year)
             ->when(!$category->id, function ($query) use ($category) {
                 return $query->bySide($category->side);

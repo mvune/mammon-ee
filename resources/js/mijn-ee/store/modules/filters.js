@@ -16,19 +16,20 @@ const state = {
   month: null,
   year: (new Date).getFullYear(),
   scope: SCOPES.YEAR,
-  isBusy: false,
+  areReady: true,
+  filters$: null,
 }
 
 const actions = {
   fetchFiltersData ({ commit }, self) {
-    commit('setIsBusy', true);
+    commit('setAreReady', false);
 
     forkJoin(
       AccountService.getAccounts(),
       CategoryService.getCategories(),
     ).pipe(
       take(1),
-      finalize(() => commit('setIsBusy', false)),
+      finalize(() => commit('setAreReady', true)),
     ).subscribe(response => {
       commit('setAccounts', response[0]);
       commit('setCategories', response[1]);
@@ -64,6 +65,9 @@ const actions = {
     ctx.commit('setDateTo$', value);
     ctx.dispatch('setDonutData');
   },
+  setFilters (ctx, value) {
+    ctx.commit('setFilters$', value);
+  },
 }
 
 const mutations = {
@@ -78,7 +82,8 @@ const mutations = {
   setMonth (state, value) { state.month = value },
   setYear (state, value) { state.year = value },
   setScope (state, value) { state.scope = value },
-  setIsBusy (state, value) { state.isBusy = value },
+  setAreReady (state, value) { state.areReady = value },
+  setFilters$ (state, value) { state.filters$ = value },
 }
 
 export default {

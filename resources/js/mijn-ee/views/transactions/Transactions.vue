@@ -103,31 +103,26 @@ export default {
   ],
   computed: {
     ...mapState({
-      accounts$: state => state.filters.selectedAccounts$,
       accounts: state => state.filters.selectedAccounts,
-      categories$: state => state.filters.selectedCategories$,
       categories: state => state.filters.selectedCategories,
-      dateFrom$: state => state.filters.dateFrom$,
-      dateTo$: state => state.filters.dateTo$,
+      filters$: state => state.filters.filters$,
     }),
-    filtersAreReady () {
-      return !!(this.accounts$ && this.categories$ && this.dateFrom$ && this.dateTo$);
-    },
+  },
+  created () {
+    this.fetchTransactions();
   },
   methods: {
     fetchTransactions (skipFirst) {
-      if (this.filtersAreReady) {
+      if (this.filters$) {
         this.transactionsSubscription = combineLatest(
-          this.accounts$.pipe(filter((val, i) => !(skipFirst && i < 1)), startWith(this.accounts)),
-          this.categories$.pipe(filter((val, i) => !(skipFirst && i < 1)), startWith(this.categories)),
-          this.dateFrom$.pipe(pluck('event', 'msg'), startWith(undefined)),
-          this.dateTo$.pipe(pluck('event', 'msg'), startWith(undefined)),
+          this.filters$(skipFirst),
           this.currentPage$.pipe(pluck('event', 'msg'), startWith(undefined)),
         ).pipe(
           tap(() => this.isBusy = true),
-          switchMap(([accounts, categories, dateFrom, dateTo, page]) => {
+          switchMap(([filters, page]) => {
             const nextPage = this.pageIsChanging(page) ? page : undefined;
-            return TransactionService.getTransactions(nextPage, accounts, categories, dateFrom, dateTo);
+            
+            return TransactionService.getTransactions(nextPage, filters);
           }),
           tap(() => this.isBusy = false),
         ).subscribe(
@@ -176,12 +171,9 @@ export default {
     },
   },
   watch: {
-    filtersAreReady () {
+    filters$ () {
       this.fetchTransactions(true);
     },
-  },
-  created () {
-    this.fetchTransactions();
   },
   beforeDestroy () {
     if (this.transactionsSubscription) {

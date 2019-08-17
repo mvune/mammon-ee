@@ -10,8 +10,8 @@
     <label class="prim-head-sm">Categorieën</label>
     <CategorySelect v-stream:selected="categories$" :categories="categories" />
 
-    <LoadingSpinner :loading="isBusy" />
-    <LoadingFaderer class="faderer" :loading="isBusy" />
+    <LoadingSpinner :loading="!filtersAreReady" />
+    <LoadingFaderer class="faderer" :loading="!filtersAreReady" />
   </VuePerfectScrollbar>
 
 </template>
@@ -30,6 +30,8 @@
 
 <script>
 import { mapState } from 'vuex'
+import { combineLatest } from 'rxjs'
+import { pluck, startWith, filter } from 'rxjs/operators'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import AccountSelect from '@/mijn-ee/partials/filters/AccountSelect'
 import CategorySelect from '@/mijn-ee/partials/filters/CategorySelect'
@@ -56,8 +58,10 @@ export default {
   computed: {
     ...mapState({
       accounts: state => state.filters.accounts,
+      selectedAccounts: state => state.filters.selectedAccounts,
       categories: state => state.filters.categories,
-      isBusy: state => state.filters.isBusy,
+      selectedCategories: state => state.filters.selectedCategories,
+      filtersAreReady: state => state.filters.areReady,
     }),
   },
   created () {
@@ -66,6 +70,17 @@ export default {
     this.$store.dispatch('setSelectedCategories', this.categories$);
     this.$store.dispatch('setDateFrom', this.dateFrom$);
     this.$store.dispatch('setDateTo', this.dateTo$);
+
+    const filters = (skipFirst) => {
+      return combineLatest(
+        this.accounts$.pipe(filter((val, i) => !(skipFirst && i < 1)), pluck('event', 'msg'), startWith(this.selectedAccounts)),
+        this.categories$.pipe(filter((val, i) => !(skipFirst && i < 1)), pluck('event', 'msg'), startWith(this.selectedCategories)),
+        this.dateFrom$.pipe(pluck('event', 'msg'), startWith(undefined)),
+        this.dateTo$.pipe(pluck('event', 'msg'), startWith(undefined)),
+      );
+    }
+
+    this.$store.dispatch('setFilters', filters);
   },
 }
 </script>

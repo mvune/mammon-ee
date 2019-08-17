@@ -11,14 +11,14 @@ export function getBoundaryDates() {
   return getBoundaryDatesObs();
 }
 
-export function getSheetData(accounts, categories) {
+export function getSheetData([accounts, categories, dateFrom, dateTo]) {
   for (let param of [accounts, categories]) {
     if (_.isArray(param) && _.isEmpty(param)) {
       return of({});
     }
   }
   
-  const queryString = helpers.toQueryString({accounts, categories});
+  const queryString = helpers.toQueryString({accounts, categories, dateFrom, dateTo});
 
   return from(axios.get('charts/sheet-data' + queryString));
 }

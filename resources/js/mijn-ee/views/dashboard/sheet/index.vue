@@ -1,5 +1,13 @@
 <template>
 
+<div>
+  <div class="nav-container mb-2">
+    <b-form-select class="year-select"
+      v-model="year"
+      :options="years"
+    ></b-form-select>
+  </div>
+
   <VuePerfectScrollbar class="sheet-container ee-spinner-container">
     <b-table
       id="sheet-table"
@@ -33,14 +41,30 @@
     <LoadingSpinner :loading="isBusy" />
   </VuePerfectScrollbar>
 
+  <div class="nav-container mt-2">
+    <b-form-select class="year-select"
+      v-model="year"
+      :options="years"
+    ></b-form-select>
+  </div>
+</div>
+
 </template>
 
 <style lang="scss" scoped>
 @import '@/mijn-ee/variables.scss';
 
 .sheet-container {
-  // max-height: 80vh;
   border: 2px solid $extra-dark;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: center;
+}
+
+.year-select {
+  width: 100px;
 }
 
 .table {
@@ -52,10 +76,10 @@
 <script>
 import { mapState } from 'vuex'
 import { combineLatest } from 'rxjs'
-import { switchMap, tap, startWith, filter } from 'rxjs/operators'
+import { pluck, switchMap, tap, startWith, filter } from 'rxjs/operators'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
-import { MONTHS, SCOPES } from '@/mijn-ee/globals/constants'
+import { MONTHS } from '@/mijn-ee/globals/constants'
 import * as ChartService from '@/mijn-ee/services/ChartService'
 
 export default {
@@ -64,6 +88,10 @@ export default {
   data () {
     return {
       isBusy: false,
+      year: (new Date).getFullYear(),
+      years: [
+        { value: (new Date).getFullYear(), text: (new Date).getFullYear() },
+      ],
       fields: [
         { key: 'category', label: 'Inkomen', tdClass: 'sheet-td-left' },
         { key: '1', label: MONTHS[0].text, tdClass: '' },
@@ -80,7 +108,7 @@ export default {
         { key: '12', label: MONTHS[11].text, tdClass: '' },
         { key: 'year_total', label: 'Jaar totaal', tdClass: 'sheet-td-right' },
       ],
-      data: [],
+      data: {},
       dataSubscription: null,
       emptyData: Array(15).fill({ 1: "\0" }),
     }
@@ -90,36 +118,21 @@ export default {
       return this.data[this.year] || this.emptyData;
     },
     ...mapState({
-      accounts$: state => state.filters.selectedAccounts$,
       accounts: state => state.filters.selectedAccounts,
-      categories$: state => state.filters.selectedCategories$,
       categories: state => state.filters.selectedCategories,
-      month: state => state.filters.month,
-      year: state => state.filters.year,
-      scope: state => state.filters.scope,
+      filters$: state => state.filters.filters$,
     }),
-    filtersAreReady () {
-      return !!(this.accounts$ && this.categories$);
-    },
   },
   created () {
     this.getData();
   },
-  beforeDestroy () {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
-    }
-  },
   methods: {
     getData (skipFirst) {
-      if (this.filtersAreReady) {
-        this.dataSubscription = combineLatest(
-          this.accounts$.pipe(filter((val, i) => !(skipFirst && i < 1)), startWith(this.accounts)),
-          this.categories$.pipe(filter((val, i) => !(skipFirst && i < 1)), startWith(this.categories)),
-        ).pipe(
+      if (this.filters$) {
+        this.dataSubscription = this.filters$(skipFirst).pipe(
           tap(() => this.isBusy = true),
-          switchMap(([accounts, categories]) => {
-            return ChartService.getSheetData(accounts, categories);
+          switchMap((filters) => {
+            return ChartService.getSheetData(filters);
           }),
           tap(() => this.isBusy = false),
         ).subscribe(
@@ -129,19 +142,15 @@ export default {
       }
     },
     handleResponse (res) {
-      this.data = res.data || [];
+      this.data = res.data || {};
       this.$store.dispatch('setSheetData', this.data);
     },
-    removeHighlightedColClass () {
-      for (let field of this.fields) {
-        field.tdClass = field.tdClass.replace('highlighted-col', '');
-      }
-    },
-    assignHighlightedColClass () {
-      const filteredCol = this.fields.filter(item => item.key == this.month)[0];
+    populateYearSelect () {
+      const years = Object.keys(this.data);
+      this.years = years.map(y => ({ value: y, text: y }));
 
-      if (filteredCol) {
-        filteredCol.tdClass += ' highlighted-col';
+      if (this.years.length > 0 && !_.includes(years, this.year)) {
+        this.year = this.years[this.years.length - 1].value;
       }
     },
     trClass (item, type) {
@@ -153,20 +162,17 @@ export default {
     },
   },
   watch: {
-    filtersAreReady () {
+    filters$ () {
       this.getData(true);
     },
-    scope (newValue) {
-      if (newValue === SCOPES.MONTH) {
-        this.assignHighlightedColClass();
-      } else {
-        this.removeHighlightedColClass();
-      }
+    data () {
+      this.populateYearSelect();
     },
-    month () {
-      this.removeHighlightedColClass();
-      this.assignHighlightedColClass();
-    },
+  },
+  beforeDestroy () {
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
   },
 }
 </script>
