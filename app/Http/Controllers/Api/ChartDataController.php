@@ -56,14 +56,23 @@ class ChartDataController extends Controller
         $doughnutData = [];
 
         foreach (Category::SIDES as $side) {
+            $operator = ($side === Category::SIDE_CREDIT) ? '<' : '>';
+
             $doughnutData[$side] = Transaction::ofAuthUser()
-                ->join('categories', 'transactions.category_id', '=', 'categories.id')
-                ->select('category_id', 'categories.name', DB::raw('ROUND(SUM(amount), 2) as total'))
+                ->leftJoin('categories', 'categories.id', '=', 'transactions.category_id')
+                ->select(
+                    'category_id as id',
+                    DB::raw('COALESCE(categories.name, "' . __('misc.no_category') . '") as name'),
+                    DB::raw('ROUND(SUM(amount), 2) as total')
+                )
                 ->where('categories.side', $side)
+                ->orWhereNull('categories.side')
+                ->where('amount', $operator, 0)
                 ->byCategories($request)
                 ->byAccounts($request)
                 ->byDate($request)
                 ->groupBy('category_id')
+                ->orderBy('categories.priority', 'DESC')
                 ->get();
         }
 
