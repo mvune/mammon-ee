@@ -71,7 +71,7 @@ class ChartDataController extends Controller
                 ->byCategories($request)
                 ->byAccounts($request)
                 ->byDate($request)
-                ->groupBy('category_id')
+                ->groupBy('category_id', 'name')
                 ->orderBy('categories.priority', 'DESC')
                 ->get();
         }
