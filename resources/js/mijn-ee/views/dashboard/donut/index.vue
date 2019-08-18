@@ -22,7 +22,7 @@ import { switchMap, tap } from 'rxjs/operators'
 import { SIDES } from '@/mijn-ee/globals/constants'
 import LoadingContainer from '@/mijn-ee/partials/loading/Container'
 import * as ChartService from '@/mijn-ee/services/ChartService'
-import Doughnut from './doughnut'
+import Doughnut from './Doughnut'
 
 export default {
   name: 'Donut',
