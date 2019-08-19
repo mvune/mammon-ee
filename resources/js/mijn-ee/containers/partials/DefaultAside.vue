@@ -71,16 +71,14 @@ export default {
     this.$store.dispatch('setDateFrom', this.dateFrom$);
     this.$store.dispatch('setDateTo', this.dateTo$);
 
-    const filters = (skipFirst) => {
-      return combineLatest(
-        this.accounts$.pipe(filter((val, i) => !(skipFirst && i < 1)), pluck('event', 'msg'), startWith(this.selectedAccounts)),
-        this.categories$.pipe(filter((val, i) => !(skipFirst && i < 1)), pluck('event', 'msg'), startWith(this.selectedCategories)),
-        this.dateFrom$.pipe(pluck('event', 'msg'), startWith(undefined)),
-        this.dateTo$.pipe(pluck('event', 'msg'), startWith(undefined)),
-      ).pipe(map(([accounts, categories, dateFrom, dateTo]) => ({accounts, categories, dateFrom, dateTo})));
-    }
+    const filters$ = combineLatest(
+      this.accounts$.pipe(filter((val, i) => !(i < 1)), pluck('event', 'msg'), startWith(this.selectedAccounts)),
+      this.categories$.pipe(filter((val, i) => !(i < 1)), pluck('event', 'msg'), startWith(this.selectedCategories)),
+      this.dateFrom$.pipe(pluck('event', 'msg'), startWith(undefined)),
+      this.dateTo$.pipe(pluck('event', 'msg'), startWith(undefined)),
+    ).pipe(map(([accounts, categories, dateFrom, dateTo]) => ({accounts, categories, dateFrom, dateTo})));
 
-    this.$store.dispatch('setFilters', filters);
+    this.$store.dispatch('setFilters', filters$);
   },
 }
 </script>

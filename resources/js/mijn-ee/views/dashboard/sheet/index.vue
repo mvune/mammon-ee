@@ -118,26 +118,21 @@ export default {
       return this.data[this.year] || this.emptyData;
     },
     ...mapState({
-      filters$: state => state.filters.filters$,
+      filters: state => state.filters.filters,
     }),
   },
   created () {
     this.getData();
   },
   methods: {
-    getData (skipFirst) {
-      if (this.filters$) {
-        this.dataSubscription = this.filters$(skipFirst).pipe(
-          tap(() => this.isBusy = true),
-          switchMap((filters) => {
-            return ChartService.getSheetData(filters);
-          }),
-          tap(() => this.isBusy = false),
-        ).subscribe(
-          this.handleResponse,
-          this.ee_errorHandler
-        );
-      }
+    getData () {
+      this.isBusy = true;
+
+      ChartService.getSheetData(this.filters).subscribe(
+        this.handleResponse,
+        this.ee_errorHandler,
+        () => this.isBusy = false
+      );
     },
     handleResponse (res) {
       this.data = res.data || {};
@@ -160,17 +155,16 @@ export default {
     },
   },
   watch: {
-    filters$ () {
-      this.getData(true);
+    filters (newVal, oldVal) {
+      const isInit = _.isEmpty(oldVal);
+
+      if (!isInit) {
+        this.getData();
+      }
     },
     data () {
       this.populateYearSelect();
     },
-  },
-  beforeDestroy () {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
-    }
   },
 }
 </script>

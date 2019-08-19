@@ -18,6 +18,7 @@ const state = {
   scope: SCOPES.YEAR,
   areReady: true,
   filters$: null,
+  filters: [],
 }
 
 const actions = {
@@ -61,7 +62,9 @@ const actions = {
     ctx.commit('setDateTo$', value);
   },
   setFilters (ctx, value) {
+    value = value.pipe(debounceTime(750));
     ctx.commit('setFilters$', value);
+    value.subscribe(filters => ctx.commit('setFilters', filters));
   },
 }
 
@@ -79,6 +82,7 @@ const mutations = {
   setScope (state, value) { state.scope = value },
   setAreReady (state, value) { state.areReady = value },
   setFilters$ (state, value) { state.filters$ = value },
+  setFilters (state, value) { state.filters = value },
 }
 
 export default {

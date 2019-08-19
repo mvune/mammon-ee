@@ -73,7 +73,7 @@
 
 <script>
 import { combineLatest } from 'rxjs'
-import { pluck, switchMap, tap, startWith, filter } from 'rxjs/operators'
+import { pluck, switchMap, tap, startWith, filter, take } from 'rxjs/operators'
 import { mapState } from 'vuex'
 import * as TransactionService from '@/mijn-ee/services/TransactionService'
 import LoadingSpinner from '@/mijn-ee/partials/loading/Spinner'
@@ -106,18 +106,20 @@ export default {
       accounts: state => state.filters.selectedAccounts,
       categories: state => state.filters.selectedCategories,
       filters$: state => state.filters.filters$,
+      filters: state => state.filters.filters,
     }),
   },
   created () {
-    this.fetchTransactions();
+    this.getData();
   },
   methods: {
-    fetchTransactions (skipFirst) {
+    getData () {
       if (this.filters$) {
-        this.transactionsSubscription = combineLatest(
-          this.filters$(skipFirst),
+        combineLatest(
+          this.filters$.pipe(startWith(this.filters)),
           this.currentPage$.pipe(pluck('event', 'msg'), startWith(undefined)),
         ).pipe(
+          take(1),
           tap(() => this.isBusy = true),
           switchMap(([filters, page]) => {
             const nextPage = this.pageIsChanging(page) ? page : undefined;
@@ -126,12 +128,12 @@ export default {
           }),
           tap(() => this.isBusy = false),
         ).subscribe(
-          this.handleTransactionsResponse,
+          this.handleResponse,
           this.ee_errorHandler
         );
       }
     },
-    handleTransactionsResponse (res) {
+    handleResponse (res) {
       if (res.data) {
         for (let item of res.data.data) {
           item._showDetails = false;
@@ -171,14 +173,9 @@ export default {
     },
   },
   watch: {
-    filters$ () {
-      this.fetchTransactions(true);
+    filters () {
+      this.getData();
     },
-  },
-  beforeDestroy () {
-    if (this.transactionsSubscription) {
-      this.transactionsSubscription.unsubscribe();
-    }
   },
 }
 </script>

@@ -15,7 +15,7 @@ export function noResultsExpected({accounts, categories}) {
     if (_.isArray(param) && _.isEmpty(param)) {
       return true;
     }
-
-    return false;
   }
+  
+  return false;
 }

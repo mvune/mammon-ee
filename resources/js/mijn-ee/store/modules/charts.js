@@ -13,10 +13,10 @@ const actions = {
     ctx.commit('setSheetData', value);
   },
   setDonutData (ctx, value) {
-    ctx.commit('setDonutDebetData', value[SIDES.debet.code].map(category => _.toNumber(category.total)));
-    ctx.commit('setDonutCreditData', value[SIDES.credit.code].map(category => _.toNumber(category.total)));
-    ctx.commit('setDonutDebetLabels', value[SIDES.debet.code].map(category => category.name));
-    ctx.commit('setDonutCreditLabels', value[SIDES.credit.code].map(category => category.name));
+    ctx.commit('setDonutDebetData', value ? value[SIDES.debet.code].map(category => _.toNumber(category.total)) : []);
+    ctx.commit('setDonutCreditData', value ? value[SIDES.credit.code].map(category => _.toNumber(category.total)) : []);
+    ctx.commit('setDonutDebetLabels', value ? value[SIDES.debet.code].map(category => category.name) : []);
+    ctx.commit('setDonutCreditLabels', value ? value[SIDES.credit.code].map(category => category.name) : []);
   },
   setDonutDebetData (ctx, value) { ctx.commit('setDonutDebetData', value) },
   setDonutCreditData (ctx, value) { ctx.commit('setDonutCreditData', value) },

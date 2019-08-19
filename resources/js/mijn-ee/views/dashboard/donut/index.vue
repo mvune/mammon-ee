@@ -40,40 +40,34 @@ export default {
       creditData: state => state.charts.donutCreditData,
       debetLabels: state => state.charts.donutDebetLabels,
       creditLabels: state => state.charts.donutCreditLabels,
-      filters$: state => state.filters.filters$,
+      filters: state => state.filters.filters,
     }),
   },
   created () {
     this.getData();
   },
   methods: {
-    getData (skipFirst) {
-      if (this.filters$) {
-        this.dataSubscription = this.filters$(skipFirst).pipe(
-          tap(() => this.isBusy = true),
-          switchMap((filters) => {
-            return ChartService.getDonutData(filters);
-          }),
-          tap(() => this.isBusy = false),
-        ).subscribe(
-          this.handleResponse,
-          this.ee_errorHandler
-        );
-      }
+    getData () {
+      this.isBusy = true;
+
+      ChartService.getDonutData(this.filters).subscribe(
+        this.handleResponse,
+        this.ee_errorHandler,
+        () => this.isBusy = false
+      );
     },
     handleResponse (res) {
       this.$store.dispatch('setDonutData', res.data);
     },
   },
   watch: {
-    filters$ () {
-      this.getData(true);
+    filters (newVal, oldVal) {
+      const isInit = _.isEmpty(oldVal);
+
+      if (!isInit) {
+        this.getData();
+      }
     },
-  },
-  beforeDestroy () {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
-    }
   },
 }
 </script>
